@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Base de datos SQL Server
+  auth-db:
+    build:
+      context: ./.dockers/sqlserver
+      dockerfile: Dockerfile
+    container_name: auth-database
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Root123!
+      MSSQL_PID: Express
+    ports:
+      - "1434:1433"
+    volumes:
+      - auth_db_data:/var/opt/mssql
+    networks:
+      - auth-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Root123! -Q "SELECT 1" -C || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  # API de Autenticación
+  auth-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-api-app
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=auth-db,1433;Database=AuthDB;User Id=sa;Password=Root123!;TrustServerCertificate=true;
+    ports:
+      - "5004:8080"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    networks:
+      - auth-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/user/health", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  auth_db_data:
+    driver: local
+
+networks:
+  auth-network:
+    driver: bridge

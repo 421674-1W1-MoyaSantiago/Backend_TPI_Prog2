@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # SQL Server personalizado
+  auth-db-custom:
+    build:
+      context: ./.dockers/sqlserver
+      dockerfile: Dockerfile
+    container_name: auth-sqlserver-custom
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Root123!
+      MSSQL_PID: Express
+    ports:
+      - "1434:1433"  # Puerto externo cambiado a 1434
+    volumes:
+      - auth_db_custom_data:/var/opt/mssql           # Volumen nombrado (actual)
+      # - ./data/sqlserver:/var/opt/mssql            # Bind mount alternativo
+      # - ./backups:/var/opt/mssql/backups           # Carpeta para backups
+    networks:
+      - auth-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Root123! -Q "SELECT 1" || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # API de Autenticación (para desarrollo local, no containerizada)
+  # Para usar: dotnet run en la carpeta del proyecto
+
+volumes:
+  auth_db_custom_data:
+    driver: local
+
+networks:
+  auth-network:
+    driver: bridge

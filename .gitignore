@@ -1,0 +1,59 @@
+# .NET Core / .NET 5+
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.pdb
+*.exe
+
+# Visual Studio / Visual Studio Code
+.vs/
+.vscode/
+*.vsidx
+*.v2
+.futdcache.v2
+.dtbcache.v2
+
+# Configuration files with sensitive data
+appsettings.Production.json
+appsettings.Local.json
+*.secrets.json
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Runtime files
+*.runtimeconfig.json
+*.deps.json
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# Docker
+.dockerignore
+
+# Database
+*.db
+*.sqlite
+*.mdf
+*.ldf
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE temp files
+*~
+*.swp
+*.tmp

@@ -50,11 +50,27 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+// Configuración CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+
+// Habilitar CORS
+app.UseCors("AllowAll");
+
 app.UseAuthentication();
 app.UseAutoCreateUser(); // Middleware para auto-crear usuarios
 app.UseAuthorization();

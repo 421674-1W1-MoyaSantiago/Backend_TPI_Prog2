@@ -89,38 +89,9 @@ fi
 
 echo "Configuración completada. SQL Server listo para recibir conexiones."
 
-# Crear un health check simple usando Python
-echo "Iniciando health check HTTP en puerto 8080..."
-python3 -c "
-import socket
-import threading
-import time
+echo "Contenedor listo - SQL Server en puerto 1433"
 
-def health_server():
-    while True:
-        try:
-            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            server.bind(('0.0.0.0', 8080))
-            server.listen(1)
-            
-            while True:
-                client, addr = server.accept()
-                response = 'HTTP/1.1 200 OK\r\nContent-Length: 19\r\n\r\nSQL Server Ready!'
-                client.send(response.encode())
-                client.close()
-        except Exception as e:
-            print(f'Health check error: {e}')
-            time.sleep(5)
-
-thread = threading.Thread(target=health_server)
-thread.daemon = True
-thread.start()
-
-# Mantener el script corriendo
-while True:
-    time.sleep(60)
-" &
-
-# Mantener el contenedor corriendo
-wait
+# Mantener el contenedor corriendo indefinidamente
+while true; do
+    sleep 3600  # Dormir 1 hora y repetir
+done

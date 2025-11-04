@@ -44,4 +44,4 @@ EXPOSE 8080
 USER mssql
 
 # Comando personalizado para iniciar SQL Server y ejecutar scripts
-CMD /bin/bash -c "/opt/mssql-scripts/configure-db.sh"
+CMD ["/bin/bash", "/opt/mssql-scripts/configure-db.sh"]

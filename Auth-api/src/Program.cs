@@ -46,6 +46,16 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Configuración CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddControllers();
 
@@ -55,6 +65,9 @@ var app = builder.Build();
 // Ver scripts en .dockers/sqlserver/init-scripts/
 
 app.UseHttpsRedirection();
+
+// Habilitar CORS
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

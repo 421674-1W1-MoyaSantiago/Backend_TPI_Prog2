@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg2 \
     software-properties-common \
-    netcat-openbsd \
+    python3 \
     && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
     && echo "deb [arch=amd64,armhf,arm64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/ubuntu/22.04/prod jammy main" > /etc/apt/sources.list.d/mssql-release.list \
     && apt-get update \
@@ -34,6 +34,7 @@ RUN chmod +x /opt/mssql-scripts/configure-db.sh
 ENV ACCEPT_EULA=Y
 ENV SA_PASSWORD=Root123!
 ENV MSSQL_PID=Express
+ENV MSSQL_MEMORY_LIMIT_MB=1024
 
 # Exponer puertos
 EXPOSE 1433
@@ -43,4 +44,4 @@ EXPOSE 8080
 USER mssql
 
 # Comando personalizado para iniciar SQL Server y ejecutar scripts
-CMD /bin/bash /opt/mssql-scripts/configure-db.sh
+CMD /bin/bash -c "/opt/mssql-scripts/configure-db.sh"

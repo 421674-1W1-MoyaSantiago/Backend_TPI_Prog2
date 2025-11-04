@@ -1,0 +1,5 @@
+[build]
+builder = "dockercompose"
+
+[deploy]
+restartPolicyType = "on-failure"

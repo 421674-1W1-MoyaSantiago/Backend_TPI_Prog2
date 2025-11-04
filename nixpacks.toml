@@ -1,5 +1,0 @@
-[build.env]
-NIXPACKS_BUILD_CMD = "echo 'Using Docker Compose'"
-
-[start]
-cmd = "docker-compose up"

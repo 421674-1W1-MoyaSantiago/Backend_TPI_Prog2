@@ -59,33 +59,19 @@ done
 # Ejecutar scripts de inicialización solo si SQL Server está respondiendo
 echo "Ejecutando scripts de inicialización..."
 
-# Intentar crear base de datos (con manejo de errores)
-echo "Creando base de datos AuthDB..."
-if /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d master -i /opt/mssql-scripts/01-create-database.sql; then
-    echo "Base de datos creada exitosamente"
-    
-    # Solo continuar si la base se creó correctamente
-    echo "Creando tablas..."
-    /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d AuthDB -i /opt/mssql-scripts/02-create-tables.sql
+# Crear las bases de datos usando el archivo SQL
+echo "Creando bases de datos desde archivo SQL..."
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -d master -i /opt/mssql-scripts/01-create-database.sql -C
 
-    echo "Insertando datos iniciales..."
-    /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d AuthDB -i /opt/mssql-scripts/03-seed-data.sql
-    
-    echo "¡Base de datos AuthDB configurada correctamente!"
-else
-    echo "ADVERTENCIA: No se pudo crear la base de datos"
-    echo "Intentando sin certificado..."
-    
-    # Intentar sin verificación de certificado
-    if /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d master -i /opt/mssql-scripts/01-create-database.sql -C; then
-        echo "Base de datos creada con -C flag"
-        /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d AuthDB -i /opt/mssql-scripts/02-create-tables.sql -C
-        /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d AuthDB -i /opt/mssql-scripts/03-seed-data.sql -C
-        echo "¡Base de datos AuthDB configurada correctamente!"
-    else
-        echo "ERROR: No se pudo crear la base de datos"
-    fi
-fi
+# Crear tablas de AuthDB
+echo "Creando tablas en AuthDB..."
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -d AuthDB -i /opt/mssql-scripts/02-create-tables.sql -C
+
+# Insertar datos iniciales en AuthDB
+echo "Insertando datos iniciales en AuthDB..."
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$SA_PASSWORD" -d AuthDB -i /opt/mssql-scripts/03-seed-data.sql -C
+
+echo "¡Bases de datos AuthDB y PharmDB configuradas correctamente!"
 
 echo "Configuración completada. SQL Server listo para recibir conexiones."
 

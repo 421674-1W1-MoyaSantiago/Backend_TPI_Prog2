@@ -1,8 +1,8 @@
 # Usar la imagen base de .NET 8 para runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+# Railway asigna el puerto dinámicamente
+EXPOSE $PORT
 
 # Instalar curl para health checks
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*

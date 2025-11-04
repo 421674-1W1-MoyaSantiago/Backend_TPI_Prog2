@@ -34,8 +34,9 @@ ENV ACCEPT_EULA=Y
 ENV SA_PASSWORD=Root123!
 ENV MSSQL_PID=Express
 
-# Exponer puerto
+# Exponer puertos
 EXPOSE 1433
+EXPOSE 8080
 
 # Volver al usuario mssql
 USER mssql

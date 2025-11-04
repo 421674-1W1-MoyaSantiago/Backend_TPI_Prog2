@@ -41,13 +41,33 @@ public class PingController : ControllerBase
                 return BadRequest(new ErrorResponseDto { Message = "Connection string no configurado" });
             }
 
+            // Debug: log de connection string (sin password)
+            Console.WriteLine($"[PHARM-API] Connection string recibido: {MaskConnectionString(connectionString)}");
+
             var masterConnectionString = connectionString.Replace("Database=PharmDB", "Database=master");
+            Console.WriteLine($"[PHARM-API] Master connection string: {MaskConnectionString(masterConnectionString)}");
 
             using var masterConnection = new SqlConnection(masterConnectionString);
             await masterConnection.OpenAsync();
+            Console.WriteLine("[PHARM-API] Conexión a master exitosa");
 
-           
+            // Verificar si PharmDB existe
             using var checkDbCommand = new SqlCommand("SELECT COUNT(*) FROM sys.databases WHERE name = 'PharmDB'", masterConnection);
+            var dbCount = await checkDbCommand.ExecuteScalarAsync();
+            var dbExists = dbCount != null && (int)dbCount > 0;
+            
+            Console.WriteLine($"[PHARM-API] PharmDB existe: {dbExists}, Count: {dbCount}");
+
+            // Listar todas las bases de datos para debug
+            using var listDbCommand = new SqlCommand("SELECT name FROM sys.databases", masterConnection);
+            using var reader = await listDbCommand.ExecuteReaderAsync();
+            var databases = new List<string>();
+            while (await reader.ReadAsync())
+            {
+                databases.Add(reader.GetString(0));
+            }
+            Console.WriteLine($"[PHARM-API] Bases de datos disponibles: {string.Join(", ", databases)}");
+            reader.Close();
             var dbCount = await checkDbCommand.ExecuteScalarAsync();
             var dbExists = dbCount != null && (int)dbCount > 0;
 

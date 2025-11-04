@@ -33,9 +33,9 @@ namespace Pharm_api.Repositories
                     Cantidad = d.cantidad,
                     PrecioUnitario = d.precioUnitario,
                     CodCobertura = d.codCobertura,
-                    NombreCobertura = d.Cobertura != null ? d.Cobertura.CodObraSocialNavigation.RazonSocial : null,
+                    NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? d.Cobertura.CodObraSocialNavigation.RazonSocial : null,
                     CodMedicamento = d.codMedicamento,
-                    NombreMedicamento = d.Medicamento.Descripcion,
+                    NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
                     Concentracion = null, // Por ahora null hasta agregar al modelo
                     Presentacion = d.Medicamento.CodTipoPresentacionNavigation != null ? 
                         d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null
@@ -75,7 +75,7 @@ namespace Pharm_api.Repositories
                     Cantidad = d.cantidad,
                     PrecioUnitario = d.precioUnitario,
                     CodMedicamento = d.codMedicamento,
-                    NombreMedicamento = d.Medicamento.Descripcion,
+                    NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
                     Concentracion = null, // Agregar cuando esté en el modelo
                     Presentacion = d.Medicamento.CodTipoPresentacionNavigation != null ? 
                         d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null,

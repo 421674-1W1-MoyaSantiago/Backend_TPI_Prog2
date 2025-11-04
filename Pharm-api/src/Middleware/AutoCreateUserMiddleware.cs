@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Pharm_api.Data;
 
 namespace Pharm_api.Middleware

@@ -36,9 +36,6 @@ echo "Ejecutando scripts de inicialización..."
 
 echo "Configuración completada. SQL Server listo para recibir conexiones."
 
-# Instalar netcat para health checks HTTP
-apt-get update && apt-get install -y netcat-openbsd
-
 # Crear un simple health check HTTP en puerto 8080
 echo "Iniciando health check HTTP en puerto 8080..."
 (

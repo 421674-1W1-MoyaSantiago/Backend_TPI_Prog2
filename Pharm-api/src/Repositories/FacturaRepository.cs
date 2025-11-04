@@ -37,7 +37,7 @@ namespace Pharm_api.Repositories
                     CodMedicamento = d.codMedicamento,
                     NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
                     Concentracion = null, // Por ahora null hasta agregar al modelo
-                    Presentacion = d.Medicamento.CodTipoPresentacionNavigation != null ? 
+                    Presentacion = d.Medicamento != null && d.Medicamento.CodTipoPresentacionNavigation != null ? 
                         d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null
                 }).ToListAsync();
         }
@@ -77,7 +77,7 @@ namespace Pharm_api.Repositories
                     CodMedicamento = d.codMedicamento,
                     NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
                     Concentracion = null, // Agregar cuando esté en el modelo
-                    Presentacion = d.Medicamento.CodTipoPresentacionNavigation != null ? 
+                    Presentacion = d.Medicamento != null && d.Medicamento.CodTipoPresentacionNavigation != null ? 
                         d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null,
                     CodCobertura = d.codCobertura,
                     NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? 

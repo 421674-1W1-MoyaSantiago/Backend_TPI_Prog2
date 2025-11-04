@@ -1,4 +1,4 @@
-# Docker Compose simplificado para Railway
+# Docker Compose - Solo Auth API para testing
 version: '3.8'
 
 services:
@@ -10,14 +10,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://0.0.0.0:$PORT
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
     ports:
       - "$PORT:$PORT"
-
-  # Pharm API  
-  pharm-api:
-    build:
-      context: ./Pharm-api
-      dockerfile: Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://0.0.0.0:$PORT

@@ -23,6 +23,8 @@ builder.Services.AddScoped<IMedicamentoRepository, MedicamentoRepository>();
 builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
 builder.Services.AddScoped<ISucursalRepository, SucursalRepository>();
 builder.Services.AddScoped<ISucursalService, SucursalService>();
+builder.Services.AddScoped<IDashboardRepository, IDashboardRepository>();
+builder.Services.AddScoped<IDashboardService, IDashboardService>();
 
 // Configuración JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured");

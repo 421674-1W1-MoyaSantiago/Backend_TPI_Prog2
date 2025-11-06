@@ -91,6 +91,26 @@ public class UsuariosController : ControllerBase
         var token = _jwtService.GenerateToken(userModel);
         return Ok(new { token });
     }
+    
+    [HttpGet("{username}/sucursales")]
+    public async Task<ActionResult> GetSucursalesUsuario(string username)
+    {
+        try
+        {
+            var sucursales = await _usuarioService.GetSucursalesUsuarioAsync(username);
+            return Ok(new { 
+                Username = username,
+                SucursalesAsignadas = sucursales,
+                TotalSucursales = sucursales.Count(),
+                Mensaje = sucursales.Any() ? "Usuario tiene sucursales asignadas" : "Usuario NO tiene sucursales asignadas"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error al obtener sucursales: {ex.Message}");
+        }
+    }
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsuarios()
     {

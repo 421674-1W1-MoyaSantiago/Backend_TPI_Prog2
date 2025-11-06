@@ -5,6 +5,7 @@ API REST para gestión de farmacia desarrollada con .NET 8, Entity Framework Cor
 ## 🚀 Características
 
 - ✅ **CRUD de Empleados** - Gestión completa de empleados con validaciones
+- ✅ **CRUD de Medicamentos** - Gestión completa de medicamentos con validaciones y búsquedas
 - ✅ **Gestión de Facturas** - Consultar facturas con detalles de medicamentos y artículos
 - ✅ **Autenticación JWT** - Integración con Auth-API para autenticación centralizada
 - ✅ **Control de Acceso** - Usuarios con acceso por sucursales
@@ -31,6 +32,7 @@ Pharm-api/
     ├── Controllers/            # Controladores REST API
     │   ├── EmpleadosController.cs
     │   ├── FacturasController.cs
+    │   ├── MedicamentosController.cs
     │   ├── PingController.cs
     │   └── UsuariosController.cs
     ├── Data/                   # Contexto de Entity Framework
@@ -39,6 +41,7 @@ Pharm-api/
     │   ├── EmpleadoDtos.cs
     │   ├── FacturaVentaDto.cs
     │   ├── LoginDto.cs
+    │   ├── MedicamentoDtos.cs
     │   ├── PingDtos.cs
     │   ├── SucursalDto.cs
     │   └── UsuarioDto.cs
@@ -60,6 +63,8 @@ Pharm-api/
     │   ├── EmpleadoRepository.cs
     │   ├── IFacturaRepository.cs
     │   ├── FacturaRepository.cs
+    │   ├── IMedicamentoRepository.cs
+    │   ├── MedicamentoRepository.cs
     │   ├── IUsuarioRepository.cs
     │   └── UsuarioRepository.cs
     ├── Services/               # Lógica de negocio
@@ -67,6 +72,8 @@ Pharm-api/
     │   ├── EmpleadoService.cs
     │   ├── IFacturaService.cs
     │   ├── FacturaService.cs
+    │   ├── IMedicamentoService.cs
+    │   ├── MedicamentoService.cs
     │   ├── IUsuarioService.cs
     │   ├── UsuarioService.cs
     │   ├── IJwtService.cs
@@ -208,6 +215,134 @@ Authorization: Bearer {token}
 
 ---
 
+### 💊 **Medicamentos**
+
+#### Obtener todos los medicamentos
+```http
+GET /api/medicamentos
+Authorization: Bearer {token}
+```
+**Descripción:** Lista todos los medicamentos con información completa  
+**Respuesta:**
+```json
+[
+  {
+    "codMedicamento": 1,
+    "codBarra": "7801111111111",
+    "descripcion": "Paracetamol 500mg",
+    "requiereReceta": false,
+    "ventaLibre": true,
+    "precioUnitario": 150.50,
+    "dosis": 500,
+    "posologia": "Tomar 1 comprimido cada 8 horas",
+    "codLoteMedicamento": 1,
+    "loteDescripcion": "Lote A-2024",
+    "codLaboratorio": 1,
+    "laboratorioDescripcion": "Laboratorio Ejemplo SA",
+    "codTipoPresentacion": 1,
+    "tipoPresentacionDescripcion": "Comprimidos",
+    "codUnidadMedida": 1,
+    "unidadMedidaDescripcion": "mg",
+    "codTipoMedicamento": 1,
+    "tipoMedicamentoDescripcion": "Analgésico"
+  }
+]
+```
+
+#### Obtener medicamento por ID
+```http
+GET /api/medicamentos/{id}
+Authorization: Bearer {token}
+```
+**Descripción:** Obtiene un medicamento específico por su ID  
+**Ejemplo:** `GET /api/medicamentos/1`
+
+#### Buscar medicamentos por descripción
+```http
+GET /api/medicamentos/buscar?descripcion={descripcion}
+Authorization: Bearer {token}
+```
+**Descripción:** Busca medicamentos que contengan la descripción especificada  
+**Ejemplos:**
+- `GET /api/medicamentos/buscar?descripcion=paracetamol`
+- `GET /api/medicamentos/buscar?descripcion=aspirina`
+
+#### Obtener medicamentos por laboratorio
+```http
+GET /api/medicamentos/laboratorio/{laboratorioId}
+Authorization: Bearer {token}
+```
+**Descripción:** Lista medicamentos de un laboratorio específico  
+**Ejemplo:** `GET /api/medicamentos/laboratorio/1`
+
+#### Obtener medicamentos por tipo
+```http
+GET /api/medicamentos/tipo/{tipoMedicamentoId}
+Authorization: Bearer {token}
+```
+**Descripción:** Lista medicamentos de un tipo específico  
+**Ejemplo:** `GET /api/medicamentos/tipo/1`
+
+#### Crear medicamento
+```http
+POST /api/medicamentos
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "codBarra": "123456789012",
+  "descripcion": "Ibuprofeno 400mg",
+  "requiereReceta": false,
+  "ventaLibre": true,
+  "precioUnitario": 180.75,
+  "dosis": 400,
+  "posologia": "Tomar 1 comprimido cada 6-8 horas con alimentos",
+  "codLoteMedicamento": 1,
+  "codLaboratorio": 2,
+  "codTipoPresentacion": 1,
+  "codUnidadMedida": 1,
+  "codTipoMedicamento": 2
+}
+```
+**Validaciones:**
+- Descripción requerida (máx 200 caracteres)
+- Precio unitario mayor a 0
+- Código de barra único (si se proporciona)
+- No puede requerir receta Y ser de venta libre simultáneamente
+- Debe ser de venta libre O requerir receta
+- Todos los códigos de referencia deben existir en BD
+
+#### Actualizar medicamento
+```http
+PUT /api/medicamentos/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "codBarra": "123456789012",
+  "descripcion": "Ibuprofeno 400mg - Actualizado",
+  "requiereReceta": false,
+  "ventaLibre": true,
+  "precioUnitario": 195.00,
+  "dosis": 400,
+  "posologia": "Tomar 1 comprimido cada 6-8 horas con alimentos",
+  "codLoteMedicamento": 1,
+  "codLaboratorio": 2,
+  "codTipoPresentacion": 1,
+  "codUnidadMedida": 1,
+  "codTipoMedicamento": 2
+}
+```
+
+#### Eliminar medicamento
+```http
+DELETE /api/medicamentos/{id}
+Authorization: Bearer {token}
+```
+**Restricciones:** No se puede eliminar si tiene registros asociados en facturas
+
+---
+
 ### 🧾 **Facturas**
 
 #### Obtener facturas del usuario
@@ -252,32 +387,99 @@ Authorization: Bearer {token}
 ]
 ```
 
----
-
-### 👤 **Usuarios**
-
-#### Obtener información del usuario actual
+#### Obtener factura con detalles por ID
 ```http
-GET /api/usuarios/me
+GET /api/facturas/{codFacturaVenta}/detalles
 Authorization: Bearer {token}
 ```
+**Descripción:** Obtiene una factura específica con todos sus detalles  
+**Ejemplo:** `GET /api/facturas/1/detalles`
 
-#### Asignar sucursales a usuario
+#### Crear nueva factura
 ```http
-POST /api/usuarios/{username}/sucursales
+POST /api/facturas
 Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "sucursalesIds": [1, 2, 3]
+  "codEmpleado": 1,
+  "codCliente": 1,
+  "codSucursal": 1,
+  "codFormaPago": 1,
+  "total": 1500.00
 }
 ```
+**Validaciones:**
+- Usuario debe tener acceso a la sucursal especificada
+- Empleado, cliente, sucursal y forma de pago deben existir
+
+#### Endpoints de Debug (desarrollo)
+```http
+GET /api/facturas/debug/medicamentos/{facturaId}
+GET /api/facturas/debug/detalles/{facturaId}
+```
+**Descripción:** Endpoints para verificar medicamentos y detalles unificados de facturas
+
+---
+
+### 👤 **Usuarios**
+
+#### Obtener usuario por username
+```http
+GET /api/usuarios/by-username/{username}
+Authorization: Bearer {token}
+```
+**Descripción:** Obtiene información de un usuario por su username  
+**Ejemplo:** `GET /api/usuarios/by-username/admin`
+
+#### Crear usuario desde Auth-API
+```http
+POST /api/usuarios
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "username": "nuevo_usuario",
+  "email": "usuario@farmacia.com"
+}
+```
+**Descripción:** Crear usuario en Pharm-API (usado por Auth-API)
+
+#### Asignar sucursales a usuario
+```http
+POST /api/usuarios/{userId}/sucursales
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "sucursales": [1, 2, 3]
+}
+```
+**Descripción:** Asigna sucursales específicas a un usuario  
+**Ejemplo:** `POST /api/usuarios/1/sucursales`
 
 #### Obtener sucursales de usuario
 ```http
-GET /api/usuarios/{username}/sucursales
+GET /api/usuarios/{userId}/sucursales
 Authorization: Bearer {token}
 ```
+**Descripción:** Lista las sucursales asignadas a un usuario específico  
+**Ejemplo:** `GET /api/usuarios/1/sucursales`
+
+#### Generar token para usuario
+```http
+GET /api/usuarios/generate-token/{username}
+Authorization: Bearer {token}
+```
+**Descripción:** Genera un token JWT para un usuario (desarrollo)  
+**Ejemplo:** `GET /api/usuarios/generate-token/admin`
+
+#### Obtener todos los usuarios
+```http
+GET /api/usuarios
+Authorization: Bearer {token}
+```
+**Descripción:** Lista todos los usuarios del sistema
 
 ---
 
@@ -631,22 +833,84 @@ ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=PharmDB;Us
 
 ## 📖 Ejemplos de Uso
 
-### Crear empleado:
+### 🔗 URLs de Producción en Railway:
+- **Auth-API:** `https://auth-api-production-1503.up.railway.app`
+- **Pharm-API:** `https://pharm-api-production.up.railway.app`
+
+### 🚀 Endpoints de Prueba Rápidos:
+
 ```bash
-POST /api/empleados
+# 1. Health Check (sin autenticación)
+GET https://pharm-api-production.up.railway.app/api/ping
+
+# 2. Obtener todos los medicamentos ⭐ NUEVO
+GET https://pharm-api-production.up.railway.app/api/medicamentos
+Authorization: Bearer {tu_token}
+
+# 3. Buscar medicamento específico ⭐ NUEVO  
+GET https://pharm-api-production.up.railway.app/api/medicamentos/1
+Authorization: Bearer {tu_token}
+
+# 4. Buscar medicamentos por descripción ⭐ NUEVO
+GET https://pharm-api-production.up.railway.app/api/medicamentos/buscar?descripcion=paracetamol
+Authorization: Bearer {tu_token}
+
+# 5. Obtener empleados
+GET https://pharm-api-production.up.railway.app/api/empleados
+Authorization: Bearer {tu_token}
+
+# 6. Obtener facturas
+GET https://pharm-api-production.up.railway.app/api/facturas/mis-facturas
+Authorization: Bearer {tu_token}
+```
+
+### 📝 Ejemplos de Creación:
+
+#### Crear medicamento ⭐ NUEVO:
+```bash
+POST https://pharm-api-production.up.railway.app/api/medicamentos
+Authorization: Bearer {token}
+Content-Type: application/json
+
 {
-  "nomEmpleado": "Juan",
-  "apeEmpleado": "Pérez",
-  "email": "juan.perez@farmacia.com",
-  "codTipoEmpleado": 1,
-  "codSucursal": 1,
-  "fechaIngreso": "2024-01-15T00:00:00"
+  "descripcion": "Ibuprofeno 400mg",
+  "requiereReceta": false,
+  "ventaLibre": true,
+  "precioUnitario": 180.75,
+  "dosis": 400,
+  "posologia": "Tomar 1 comprimido cada 6-8 horas con alimentos",
+  "codLoteMedicamento": 1,
+  "codLaboratorio": 1,
+  "codTipoPresentacion": 1,
+  "codUnidadMedida": 1,
+  "codTipoMedicamento": 1
 }
 ```
 
-### Crear factura:
+#### Crear empleado:
 ```bash
-POST /api/facturas
+POST https://pharm-api-production.up.railway.app/api/empleados
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "nomEmpleado": "Juan Carlos",
+  "apeEmpleado": "Pérez García",
+  "nroTel": "011-5555-5555",
+  "email": "juan.perez@farmacia.com",
+  "fechaIngreso": "2024-11-06T00:00:00",
+  "codTipoEmpleado": 2,
+  "codTipoDocumento": 1,
+  "codSucursal": 1
+}
+```
+
+#### Crear factura:
+```bash
+POST https://pharm-api-production.up.railway.app/api/facturas
+Authorization: Bearer {token}
+Content-Type: application/json
+
 {
   "codEmpleado": 1,
   "codCliente": 1,

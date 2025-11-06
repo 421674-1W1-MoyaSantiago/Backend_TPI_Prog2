@@ -117,30 +117,162 @@ INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
 ('Proveedor2 Ejemplo SA', '30-22222222-2', '011-4000-2002'),
 ('Proveedor3 Ejemplo SA', '30-33333333-3', '011-4000-3003');
 
--- Laboratorios de ejemplo
+-- Laboratorios de ejemplo - EXPANDIDO para simular farmacia real
 INSERT INTO Laboratorios (descripcion, cod_Proveedor) VALUES
 ('Laboratorio1 Ejemplo', 1),
 ('Laboratorio2 Ejemplo', 2),
-('Laboratorio3 Ejemplo', 3);
+('Laboratorio3 Ejemplo', 3),
+('Bayer Argentina', 1),
+('Roemmers', 2),
+('Bagó', 3),
+('Gador', 1),
+('Pfizer Argentina', 2),
+('Novartis Argentina', 3),
+('Abbott Laboratorios', 1),
+('Roche Argentina', 2),
+('Sanofi Argentina', 3),
+('GlaxoSmithKline', 1),
+('Merck Sharp & Dohme', 2),
+('Laboratorios Phoenix', 3),
+('Laboratorios Elea', 1),
+('Laboratorios Richmond', 2),
+('Laboratorios Andrómaco', 3),
+('Laboratorios Casasco', 1),
+('Laboratorios Bernabó', 2),
+('Laboratorios Montpellier', 3),
+('Laboratorios Raffo', 1),
+('Laboratorios Rontag', 2);
 
--- Lotes de medicamentos de ejemplo
+-- Lotes de medicamentos de ejemplo - EXPANDIDO con fechas variadas
 INSERT INTO Lotes_Medicamentos (fecha_Elaboracion, fecha_Vencimiento, cantidad) VALUES
 ('2024-01-15', '2026-01-15', 1000),
 ('2024-02-01', '2025-12-01', 500),
-('2024-03-10', '2026-03-10', 750);
+('2024-03-10', '2026-03-10', 750),
+('2024-01-20', '2026-06-30', 150),
+('2024-02-15', '2025-08-15', 90),
+('2024-03-10', '2026-03-10', 200),
+('2024-01-25', '2025-07-25', 75),
+('2024-02-20', '2026-04-20', 300),
+('2024-03-15', '2025-09-15', 125),
+('2024-01-30', '2026-01-30', 175),
+('2024-02-25', '2025-11-25', 110),
+('2024-03-20', '2026-05-20', 220),
+('2024-01-10', '2025-10-10', 85),
+('2024-02-05', '2026-02-05', 160),
+('2024-03-25', '2025-12-25', 95),
+('2024-01-05', '2026-07-05', 280),
+('2024-02-28', '2025-06-28', 65),
+('2024-03-30', '2026-08-30', 190),
+('2024-01-12', '2025-05-12', 140),
+('2024-02-18', '2026-09-18', 230),
+('2024-03-08', '2025-11-08', 105),
+('2024-01-22', '2026-03-22', 185),
+('2024-02-12', '2025-04-12', 70),
+('2024-03-18', '2026-10-18', 210),
+('2024-01-28', '2025-08-28', 120),
+('2024-02-22', '2026-11-22', 165),
+('2024-03-12', '2025-07-12', 80),
+('2024-01-08', '2026-12-08', 245),
+('2024-02-14', '2025-03-14', 55),
+('2024-03-28', '2026-06-28', 195);
 
--- Medicamentos de ejemplo
+-- Medicamentos de ejemplo - EXPANDIDO con medicamentos argentinos comunes
 INSERT INTO Medicamentos (cod_barra, descripcion, requiere_receta, venta_libre, precio_unitario, dosis, posologia, cod_lote_medicamento, codLaboratorio, cod_tipo_presentacion, cod_unidad_medida, cod_tipo_medicamento) VALUES
 ('7801111111111', 'Medicamento1 Ejemplo 400mg', 0, 1, 150.00, 400, 'Tomar 1 cada 8 horas', 1, 1, 1, 1, 3),
 ('7801111111112', 'Medicamento2 Ejemplo 500mg', 1, 0, 200.00, 500, 'Tomar 1 cada 12 horas por 7 días', 2, 2, 2, 1, 2),
-('7801111111113', 'Medicamento3 Ejemplo 500mg', 0, 1, 120.00, 500, 'Tomar 1 cada 6 horas', 3, 3, 1, 1, 1);
+('7801111111113', 'Medicamento3 Ejemplo 500mg', 0, 1, 120.00, 500, 'Tomar 1 cada 6 horas', 3, 3, 1, 1, 1),
+-- Analgésicos comunes
+('7790011234567', 'Tafirol 500mg', 0, 1, 450.00, 500, 'Tomar 1 comprimido cada 6-8 horas', 4, 7, 1, 1, 1),
+('7790022345678', 'Actron 400mg', 0, 1, 620.00, 400, 'Tomar 1 comprimido cada 8 horas', 5, 4, 1, 1, 3),
+('7790033456789', 'Bayaspirina 500mg', 0, 1, 380.00, 500, 'Tomar 1 comprimido cada 6 horas', 6, 4, 1, 1, 1),
+('7790044567890', 'Mejoral 500mg', 0, 1, 520.00, 500, 'Tomar 1-2 comprimidos cada 6 horas', 7, 4, 1, 1, 1),
+('7790055678901', 'Ibupirac 600mg', 0, 1, 680.00, 600, 'Tomar 1 comprimido cada 8 horas', 8, 7, 1, 1, 3),
+-- Antibióticos
+('7790066789012', 'Amoxidal 500mg', 1, 0, 890.00, 500, 'Tomar 1 cápsula cada 8 horas por 7 días', 9, 5, 2, 1, 2),
+('7790077890123', 'Clavulin 875mg', 1, 0, 1250.00, 875, 'Tomar 1 comprimido cada 12 horas', 10, 7, 1, 1, 2),
+('7790088901234', 'Eritromicina 500mg', 1, 0, 1150.00, 500, 'Tomar 1 cápsula cada 6 horas', 11, 10, 2, 1, 2),
+('7790099012345', 'Cefalexina 500mg', 1, 0, 980.00, 500, 'Tomar 1 cápsula cada 6 horas', 12, 11, 2, 1, 2),
+-- Digestivos
+('7790144567890', 'Buscapina 10mg', 0, 1, 680.00, 10, 'Tomar 1 comprimido cada 8 horas', 13, 4, 1, 1, 5),
+('7790155678901', 'Mylanta Plus', 0, 1, 520.00, 10, 'Tomar 1-2 cucharadas después de comidas', 14, 4, 3, 3, 5),
+('7790166789012', 'Omeprazol 20mg', 0, 1, 890.00, 20, 'Tomar 1 cápsula en ayunas', 15, 5, 2, 1, 5),
+('7790177890123', 'Ranitidina 150mg', 0, 1, 450.00, 150, 'Tomar 1 comprimido cada 12 horas', 16, 6, 1, 1, 5),
+-- Cardiovasculares
+('7790188901234', 'Enalapril 10mg', 1, 0, 680.00, 10, 'Tomar 1 comprimido cada 12 horas', 17, 8, 1, 1, 6),
+('7790199012345', 'Losartan 50mg', 1, 0, 850.00, 50, 'Tomar 1 comprimido por día', 18, 10, 1, 1, 6),
+('7790200123456', 'Amlodipina 5mg', 1, 0, 720.00, 5, 'Tomar 1 comprimido por día', 19, 11, 1, 1, 6),
+('7790211234567', 'Atenolol 50mg', 1, 0, 620.00, 50, 'Tomar 1 comprimido por día', 20, 12, 1, 1, 6),
+-- Respiratorios
+('7790222345678', 'Salbutamol 100mcg', 1, 0, 1200.00, 100, '2 puff cada 6 horas según necesidad', 21, 13, 7, 1, 7),
+('7790233456789', 'Loratadina 10mg', 0, 1, 480.00, 10, 'Tomar 1 comprimido por día', 22, 14, 1, 1, 7),
+('7790244567890', 'Cetirizina 10mg', 0, 1, 520.00, 10, 'Tomar 1 comprimido por día', 23, 15, 1, 1, 7),
+('7790255678901', 'Ambroxol 30mg', 0, 1, 380.00, 30, 'Tomar 1 comprimido cada 8 horas', 24, 16, 1, 1, 7),
+-- Vitaminas
+('7790266789012', 'Vitamina C 1g', 0, 1, 680.00, 1000, 'Tomar 1 comprimido por día', 25, 4, 1, 1, 4),
+('7790277890123', 'Complejo B', 0, 1, 850.00, 1, 'Tomar 1 cápsula por día', 26, 5, 2, 5, 4),
+('7790288901234', 'Hierro + Ácido Fólico', 0, 1, 750.00, 1, 'Tomar 1 comprimido por día', 27, 6, 1, 5, 4),
+('7790299012345', 'Calcio + Vitamina D', 0, 1, 920.00, 1, 'Tomar 1 comprimido por día', 28, 7, 1, 5, 4),
+-- Antidiabéticos
+('7790333456789', 'Metformina 850mg', 1, 0, 420.00, 850, 'Tomar 1 comprimido cada 12 horas', 29, 12, 1, 1, 2),
+('7790344567890', 'Glibenclamida 5mg', 1, 0, 380.00, 5, 'Tomar 1 comprimido antes del desayuno', 30, 13, 1, 1, 2);
 
--- Artículos de ejemplo  
+-- Artículos de ejemplo - EXPANDIDO con productos de farmacia realistas
 INSERT INTO Articulos (cod_barra, descripcion, precioUnitario, cod_Proveedor, cod_Categoria_Articulo) VALUES
 ('7801111110001', 'Producto1 Ejemplo 400ml', 350.00, 1, 1),
 ('7801111110002', 'Producto2 Ejemplo 200ml', 280.00, 2, 2),
 ('7801111110003', 'Producto3 Ejemplo 100ml', 1200.00, 3, 3),
-('7801111110004', 'Producto4 Ejemplo Digital', 450.00, 1, 4);
+('7801111110004', 'Producto4 Ejemplo Digital', 450.00, 1, 4),
+-- Higiene Personal
+('7790500123456', 'Shampoo Anticaspa Head & Shoulders 400ml', 750.00, 1, 1),
+('7790511234567', 'Acondicionador Pantene Reparación 400ml', 680.00, 1, 1),
+('7790522345678', 'Jabón Líquido Dove 250ml', 520.00, 1, 1),
+('7790533456789', 'Desodorante Rexona Aerosol 150ml', 480.00, 1, 1),
+('7790544567890', 'Crema Dental Colgate Total 90g', 320.00, 1, 1),
+('7790555678901', 'Enjuague Bucal Listerine 500ml', 650.00, 1, 1),
+('7790566789012', 'Cepillo de Dientes Oral-B', 280.00, 2, 1),
+('7790577890123', 'Papel Higiénico Elite x4', 450.00, 2, 1),
+('7790588901234', 'Toallas Femeninas Always x16', 580.00, 1, 1),
+-- Cosmética
+('7790599012345', 'Crema Hidratante Nivea 200ml', 950.00, 1, 2),
+('7790600123456', 'Protector Solar Eucerin FPS 60', 1850.00, 1, 2),
+('7790611234567', 'Base de Maquillaje Maybelline', 1250.00, 1, 2),
+('7790622345678', 'Labial Revlon Color Rosa', 850.00, 1, 2),
+('7790633456789', 'Rimmel Máscara de Pestañas', 920.00, 1, 2),
+('7790644567890', 'Crema Antiarrugas Olay 50ml', 2200.00, 1, 2),
+-- Perfumería
+('7790655678901', 'Perfume Antonio Banderas 100ml', 3500.00, 1, 3),
+('7790666789012', 'Perfume Paco Rabanne 80ml', 4200.00, 1, 3),
+('7790677890123', 'Colonia Agua de Rosas 500ml', 1200.00, 1, 3),
+('7790688901234', 'Desodorante Roll-On Nivea 50ml', 380.00, 1, 3),
+-- Cuidado Infantil
+('7790699012345', 'Pañales Pampers M x30', 2800.00, 1, 1),
+('7790700123456', 'Shampoo Johnson Baby 400ml', 650.00, 1, 1),
+('7790711234567', 'Crema Pañalitis Bepanthen 100g', 980.00, 1, 1),
+('7790722345678', 'Toallitas Húmedas Huggies x80', 450.00, 1, 1),
+('7790733456789', 'Aceite Johnson Baby 200ml', 520.00, 1, 1),
+('7790744567890', 'Mamaderas Chicco 260ml', 1200.00, 2, 1),
+('7790755678901', 'Chupetes MAM x2', 680.00, 2, 1),
+-- Accesorios Médicos
+('7790811234567', 'Termómetro Digital', 1200.00, 2, 4),
+('7790822345678', 'Tensiómetro Digital Brazo', 4500.00, 2, 4),
+('7790833456789', 'Glucómetro One Touch + 25 tiras', 2800.00, 2, 4),
+('7790844567890', 'Nebulizador Ultrasonico', 3200.00, 2, 4),
+('7790855678901', 'Jeringas Descartables 5ml x10', 450.00, 2, 4),
+('7790866789012', 'Gasas Estériles 10x10 x25', 380.00, 2, 4),
+('7790877890123', 'Alcohol en Gel 250ml', 320.00, 2, 4),
+('7790888901234', 'Barbijos Quirúrgicos x50', 1200.00, 2, 4),
+('7790899012345', 'Vendas Elásticas 10cm', 650.00, 2, 4),
+('7790900123456', 'Curitas Adhesivas x40', 280.00, 2, 4),
+-- Productos adicionales
+('7790911234567', 'Algodón Hidrófilo 100g', 320.00, 2, 1),
+('7790922345678', 'Agua Oxigenada 10vol 250ml', 180.00, 2, 1),
+('7790933456789', 'Alcohol Etílico 70° 250ml', 220.00, 2, 1),
+('7790944567890', 'Iodopovidona Solución 120ml', 450.00, 2, 1),
+-- Suplementos
+('7790955678901', 'Omega 3 en Cápsulas x60', 1850.00, 1, 1),
+('7790966789012', 'Magnesio + B6 x30', 920.00, 1, 1),
+('7790977890123', 'Probióticos en Cápsulas x30', 1650.00, 1, 1),
+('7790988901234', 'Coenzima Q10 x60', 2200.00, 1, 1);
 
 -- Empleados de ejemplo (NECESARIOS ANTES que las facturas)
 INSERT INTO Empleados (nom_Empleado, ape_Empleado, nro_Tel, calle, altura, email, fechaIngreso, codTipoEmpleado, codTipoDocumento, codSucursal)

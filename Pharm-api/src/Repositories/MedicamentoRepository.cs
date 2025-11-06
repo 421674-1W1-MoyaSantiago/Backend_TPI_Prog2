@@ -260,29 +260,33 @@ namespace Pharm_api.Repositories
                 .Include(m => m.CodTipoMedicamentoNavigation)
                 .Include(m => m.CodTipoPresentacionNavigation)
                 .Include(m => m.CodUnidadMedidaNavigation)
-                .Where(m => m.CodLoteMedicamentoNavigation.Cantidad < cantidadMinima)
-                .Select(m => new MedicamentoDto
+                .Join(_context.StockMedicamentos,
+                    medicamento => medicamento.CodMedicamento,
+                    stock => stock.CodMedicamento,
+                    (medicamento, stock) => new { medicamento, stock })
+                .Where(ms => ms.stock.Cantidad < cantidadMinima)
+                .Select(ms => new MedicamentoDto
                 {
-                    CodMedicamento = m.CodMedicamento,
-                    CodBarra = m.CodBarra,
-                    Descripcion = m.Descripcion,
-                    RequiereReceta = m.RequiereReceta,
-                    VentaLibre = m.VentaLibre,
-                    PrecioUnitario = m.PrecioUnitario,
-                    Dosis = m.Dosis,
-                    Posologia = m.Posologia,
-                    CodLoteMedicamento = m.CodLoteMedicamento,
-                    LoteDescripcion = $"Lote {m.CodLoteMedicamento} - Vence: {m.CodLoteMedicamentoNavigation.FechaVencimiento:dd/MM/yyyy}",
-                    StockDisponible = m.CodLoteMedicamentoNavigation.Cantidad,
-                    FechaVencimiento = m.CodLoteMedicamentoNavigation.FechaVencimiento,
-                    CodLaboratorio = m.CodLaboratorio,
-                    LaboratorioDescripcion = m.CodLaboratorioNavigation.Descripcion,
-                    CodTipoPresentacion = m.CodTipoPresentacion,
-                    TipoPresentacionDescripcion = m.CodTipoPresentacionNavigation.Descripcion,
-                    CodUnidadMedida = m.CodUnidadMedida,
-                    UnidadMedidaDescripcion = m.CodUnidadMedidaNavigation.UnidadMedida,
-                    CodTipoMedicamento = m.CodTipoMedicamento,
-                    TipoMedicamentoDescripcion = m.CodTipoMedicamentoNavigation.Descripcion
+                    CodMedicamento = ms.medicamento.CodMedicamento,
+                    CodBarra = ms.medicamento.CodBarra,
+                    Descripcion = ms.medicamento.Descripcion,
+                    RequiereReceta = ms.medicamento.RequiereReceta,
+                    VentaLibre = ms.medicamento.VentaLibre,
+                    PrecioUnitario = ms.medicamento.PrecioUnitario,
+                    Dosis = ms.medicamento.Dosis,
+                    Posologia = ms.medicamento.Posologia,
+                    CodLoteMedicamento = ms.medicamento.CodLoteMedicamento,
+                    LoteDescripcion = $"Lote {ms.medicamento.CodLoteMedicamento} - Vence: {ms.medicamento.CodLoteMedicamentoNavigation.FechaVencimiento:dd/MM/yyyy}",
+                    StockDisponible = ms.stock.Cantidad,
+                    FechaVencimiento = ms.medicamento.CodLoteMedicamentoNavigation.FechaVencimiento,
+                    CodLaboratorio = ms.medicamento.CodLaboratorio,
+                    LaboratorioDescripcion = ms.medicamento.CodLaboratorioNavigation.Descripcion,
+                    CodTipoPresentacion = ms.medicamento.CodTipoPresentacion,
+                    TipoPresentacionDescripcion = ms.medicamento.CodTipoPresentacionNavigation.Descripcion,
+                    CodUnidadMedida = ms.medicamento.CodUnidadMedida,
+                    UnidadMedidaDescripcion = ms.medicamento.CodUnidadMedidaNavigation.UnidadMedida,
+                    CodTipoMedicamento = ms.medicamento.CodTipoMedicamento,
+                    TipoMedicamentoDescripcion = ms.medicamento.CodTipoMedicamentoNavigation.Descripcion
                 })
                 .ToListAsync();
         }
@@ -290,8 +294,11 @@ namespace Pharm_api.Repositories
         public async Task<int> GetCountMedicamentosConStockBajoAsync(int cantidadMinima = 10)
         {
             return await _context.Medicamentos
-                .Include(m => m.CodLoteMedicamentoNavigation)
-                .Where(m => m.CodLoteMedicamentoNavigation.Cantidad < cantidadMinima)
+                .Join(_context.StockMedicamentos,
+                    medicamento => medicamento.CodMedicamento,
+                    stock => stock.CodMedicamento,
+                    (medicamento, stock) => new { medicamento, stock })
+                .Where(ms => ms.stock.Cantidad < cantidadMinima)
                 .CountAsync();
         }
     }

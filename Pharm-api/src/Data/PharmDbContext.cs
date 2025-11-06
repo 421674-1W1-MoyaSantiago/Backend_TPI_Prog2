@@ -52,6 +52,8 @@ namespace Pharm_api.Data
 
         public virtual DbSet<Sucursale> Sucursales { get; set; }
 
+        public virtual DbSet<StockMedicamento> StockMedicamentos { get; set; }
+
         public virtual DbSet<TiposDescuento> TiposDescuentos { get; set; }
 
         public virtual DbSet<TiposDocumento> TiposDocumentos { get; set; }
@@ -639,6 +641,30 @@ namespace Pharm_api.Data
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("unidadMedida");
+            });
+
+            modelBuilder.Entity<StockMedicamento>(entity =>
+            {
+                entity.HasKey(e => e.CodStockMedicamento).HasName("PK__Stock_Me__A8DCFD02C2F47F8E");
+
+                entity.ToTable("Stock_Medicamentos");
+
+                entity.Property(e => e.CodStockMedicamento).HasColumnName("cod_Stock_Medicamento");
+                entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+                entity.Property(e => e.CodSucursal).HasColumnName("cod_Sucursal");
+                entity.Property(e => e.CodMedicamento).HasColumnName("cod_Medicamento");
+
+                entity.HasOne(d => d.CodSucursalNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.CodSucursal)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Stock_Me__cod_Su__7B5B524B");
+
+                entity.HasOne(d => d.CodMedicamentoNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.CodMedicamento)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Stock_Me__cod_Me__7C4F7684");
             });
 
             modelBuilder.Entity<Usuario>(entity =>

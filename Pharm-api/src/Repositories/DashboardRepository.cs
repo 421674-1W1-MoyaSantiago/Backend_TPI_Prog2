@@ -14,6 +14,18 @@ namespace Pharm_api.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<IngresosXMesDto>> GetIngresosPorMesAnioActual()
+        {
+            return await _context.Database.SqlQuery<IngresosXMesDto>($"""
+                SELECT 
+                	month(fecha) as NroMes,
+                	sum(total) as TotalMes
+                FROM FacturasVenta FV
+                WHERE YEAR(fecha) = YEAR(GETDATE())
+                GROUP BY month(fecha)
+                """).ToListAsync();
+        }
+
         public async Task<IEnumerable<ObraSocialPorcentajeVentasDto>> GetPorcentajeVentasXObraSocialAsync()
         {
             return await _context.Database.SqlQuery<ObraSocialPorcentajeVentasDto>(

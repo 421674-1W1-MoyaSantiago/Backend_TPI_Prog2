@@ -12,9 +12,14 @@ namespace Pharm_api.Services
             _repository = repository;
         }
 
-        public Task<IEnumerable<ObraSocialPorcentajeVentasDto>> GetPorcentajeVentasXObraSocialAsync()
+        public async Task<IEnumerable<IngresosXMesDto>> GetIngresosPorMesAnioActual()
         {
-            return _repository.GetPorcentajeVentasXObraSocialAsync();
+            return await _repository.GetIngresosPorMesAnioActual();
+        }
+
+        public async Task<IEnumerable<ObraSocialPorcentajeVentasDto>> GetPorcentajeVentasXObraSocialAsync()
+        {
+            return await _repository.GetPorcentajeVentasXObraSocialAsync();
         }
     }
 }

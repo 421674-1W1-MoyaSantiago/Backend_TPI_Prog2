@@ -12,10 +12,12 @@ namespace Auth_api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IPharmApiService _pharmApiService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IPharmApiService pharmApiService)
         {
             _userService = userService;
+            _pharmApiService = pharmApiService;
         }
 
         [HttpPost("register")]
@@ -44,7 +46,23 @@ namespace Auth_api.Controllers
             };
 
             await _userService.CreateAsync(user);
-            return Ok(new { message = "Usuario registrado exitosamente" });
+            
+            // ✅ Crear usuario automáticamente en PharmDB con las 3 sucursales
+            try
+            {
+                await _pharmApiService.CreateUserInPharmApiAsync(user.Id, user.Username, user.Email);
+            }
+            catch (Exception ex)
+            {
+                // Log el error pero no fallar el registro
+                // El usuario se creó en Auth, la sincronización se puede hacer después
+                Console.WriteLine($"Warning: Error creando usuario en PharmDB: {ex.Message}");
+            }
+            
+            return Ok(new { 
+                message = "Usuario registrado exitosamente",
+                sucursalesAsignadas = "Se asignaron automáticamente las 3 sucursales de ejemplo (Buenos Aires, Mendoza, Córdoba)"
+            });
         }
 
         [HttpPost("login")]

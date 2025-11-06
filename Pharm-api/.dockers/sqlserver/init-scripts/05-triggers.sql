@@ -149,14 +149,14 @@ BEGIN
     -- Si se creó un usuario nuevo, asignar sucursales por defecto
     IF @UserCreated = 1
     BEGIN
-        -- Asignar sucursales por defecto (1 y 2) al nuevo usuario
+        -- Asignar sucursales por defecto (1, 2 y 3) al nuevo usuario
         INSERT INTO Grupsucursales (cod_sucursal, cod_usuario, activo)
         SELECT cod_sucursal, @UserId, 1
-        FROM (VALUES (1), (2)) AS DefaultSucursales(cod_sucursal)
+        FROM (VALUES (1), (2), (3)) AS DefaultSucursales(cod_sucursal)
         WHERE EXISTS (SELECT 1 FROM Sucursales WHERE cod_Sucursal = DefaultSucursales.cod_sucursal)
           AND NOT EXISTS (SELECT 1 FROM Grupsucursales WHERE cod_usuario = @UserId AND cod_sucursal = DefaultSucursales.cod_sucursal);
         
-        PRINT 'Sucursales por defecto asignadas al usuario: ' + @Username + ' (Sucursales 1 y 2)';
+        PRINT 'Sucursales por defecto asignadas al usuario: ' + @Username + ' (Sucursales 1, 2 y 3)';
     END
 END;
 GO

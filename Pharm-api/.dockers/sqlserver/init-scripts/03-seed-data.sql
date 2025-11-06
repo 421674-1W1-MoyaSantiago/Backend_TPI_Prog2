@@ -175,7 +175,28 @@ INSERT INTO Lotes_Medicamentos (fecha_Elaboracion, fecha_Vencimiento, cantidad) 
 ('2024-03-12', '2025-07-12', 80),
 ('2024-01-08', '2026-12-08', 245),
 ('2024-02-14', '2025-03-14', 55),
-('2024-03-28', '2026-06-28', 195);
+('2024-03-28', '2026-06-28', 195),
+-- Lotes adicionales para medicamentos de testing
+('2024-01-15', '2026-01-15', 150),
+('2024-02-20', '2025-11-20', 180),
+('2024-03-10', '2026-04-10', 120),
+('2024-01-25', '2025-09-25', 200),
+('2024-02-28', '2026-07-28', 90),
+('2024-03-15', '2025-12-15', 160),
+('2024-01-30', '2026-05-30', 130),
+('2024-02-10', '2025-08-10', 175),
+('2024-03-20', '2026-09-20', 110),
+('2024-01-12', '2025-06-12', 145),
+('2024-02-25', '2026-10-25', 125),
+('2024-03-05', '2025-07-05', 185),
+('2024-01-18', '2026-11-18', 95),
+('2024-02-15', '2025-04-15', 155),
+('2024-03-22', '2026-12-22', 140),
+('2024-01-08', '2025-05-08', 115),
+('2024-02-12', '2026-08-12', 170),
+('2024-03-25', '2025-10-25', 100),
+('2024-01-20', '2026-06-20', 190),
+('2024-02-18', '2025-09-18', 135);
 
 -- Medicamentos de ejemplo - EXPANDIDO con medicamentos argentinos comunes
 INSERT INTO Medicamentos (cod_barra, descripcion, requiere_receta, venta_libre, precio_unitario, dosis, posologia, cod_lote_medicamento, codLaboratorio, cod_tipo_presentacion, cod_unidad_medida, cod_tipo_medicamento) VALUES
@@ -215,7 +236,28 @@ INSERT INTO Medicamentos (cod_barra, descripcion, requiere_receta, venta_libre, 
 ('7790299012345', 'Calcio + Vitamina D', 0, 1, 920.00, 1, 'Tomar 1 comprimido por día', 28, 7, 1, 5, 4),
 -- Antidiabéticos
 ('7790333456789', 'Metformina 850mg', 1, 0, 420.00, 850, 'Tomar 1 comprimido cada 12 horas', 29, 12, 1, 1, 2),
-('7790344567890', 'Glibenclamida 5mg', 1, 0, 380.00, 5, 'Tomar 1 comprimido antes del desayuno', 30, 13, 1, 1, 2);
+('7790344567890', 'Glibenclamida 5mg', 1, 0, 380.00, 5, 'Tomar 1 comprimido antes del desayuno', 30, 13, 1, 1, 2),
+-- Medicamentos adicionales para testing de endpoints
+('7790400111111', 'Clonazepam 2mg', 1, 0, 680.00, 2, 'Tomar 1 comprimido por noche', 4, 4, 1, 1, 3),
+('7790400222222', 'Diclofenac 75mg', 0, 1, 520.00, 75, 'Tomar 1 comprimido cada 8 horas', 5, 5, 1, 1, 3),
+('7790400333333', 'Ketorolac 10mg', 1, 0, 780.00, 10, 'Tomar 1 comprimido cada 6 horas', 6, 6, 1, 1, 3),
+('7790400444444', 'Nimesulida 100mg', 0, 1, 420.00, 100, 'Tomar 1 comprimido cada 12 horas', 7, 7, 1, 1, 3),
+('7790400555555', 'Azitromicina 500mg', 1, 0, 950.00, 500, 'Tomar 1 comprimido por día por 3 días', 8, 8, 2, 1, 2),
+('7790400666666', 'Claritromicina 500mg', 1, 0, 1150.00, 500, 'Tomar 1 comprimido cada 12 horas', 9, 9, 2, 1, 2),
+('7790400777777', 'Ciprofloxacina 500mg', 1, 0, 880.00, 500, 'Tomar 1 comprimido cada 12 horas', 10, 10, 2, 1, 2),
+('7790400888888', 'Fluconazol 150mg', 1, 0, 320.00, 150, 'Tomar 1 cápsula dosis única', 11, 11, 2, 1, 2),
+('7790400999999', 'Montelukast 10mg', 1, 0, 1250.00, 10, 'Tomar 1 comprimido por noche', 12, 12, 1, 1, 7),
+('7790401000000', 'Budesonida 200mcg', 1, 0, 1450.00, 200, '2 inhalaciones cada 12 horas', 13, 13, 7, 1, 7),
+('7790401111111', 'Prednisona 20mg', 1, 0, 380.00, 20, 'Tomar según indicación médica', 14, 14, 1, 1, 3),
+('7790401222222', 'Dexametasona 4mg', 1, 0, 280.00, 4, 'Tomar según indicación médica', 15, 15, 1, 1, 3),
+('7790401333333', 'Furosemida 40mg', 1, 0, 320.00, 40, 'Tomar 1 comprimido en ayunas', 16, 16, 1, 1, 6),
+('7790401444444', 'Espironolactona 25mg', 1, 0, 450.00, 25, 'Tomar 1 comprimido por día', 17, 17, 1, 1, 6),
+('7790401555555', 'Captopril 25mg', 1, 0, 290.00, 25, 'Tomar 1 comprimido cada 8 horas', 18, 18, 1, 1, 6),
+('7790401666666', 'Carvedilol 6.25mg', 1, 0, 520.00, 6.25, 'Tomar 1 comprimido cada 12 horas', 19, 19, 1, 1, 6),
+('7790401777777', 'Simvastatina 20mg', 1, 0, 380.00, 20, 'Tomar 1 comprimido por noche', 20, 20, 1, 1, 6),
+('7790401888888', 'Atorvastatina 40mg', 1, 0, 680.00, 40, 'Tomar 1 comprimido por noche', 21, 21, 1, 1, 6),
+('7790401999999', 'Fenobarbital 100mg', 1, 0, 180.00, 100, 'Tomar según indicación médica', 22, 22, 1, 1, 3),
+('7790402000000', 'Fenitoína 100mg', 1, 0, 240.00, 100, 'Tomar según indicación médica', 23, 23, 2, 1, 3);
 
 -- Artículos de ejemplo - EXPANDIDO con productos de farmacia realistas
 INSERT INTO Articulos (cod_barra, descripcion, precioUnitario, cod_Proveedor, cod_Categoria_Articulo) VALUES
@@ -308,12 +350,75 @@ INSERT INTO Stock_Articulos (cantidad, codSucursal, codArticulo) VALUES
 (20, 2, 3), -- Perfume en Norte La Plata
 (25, 1, 4); -- Termómetro en Central CABA
 
--- Stock de medicamentos
+-- Stock de medicamentos - EXPANDIDO para testing de endpoints
 INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
-(100, 1, 1), -- Medicamento1 en Central CABA
-(75, 1, 2),  -- Medicamento2 en Central CABA
-(150, 2, 3), -- Medicamento3 en Norte La Plata
-(80, 1, 3);  -- Paracetamol en Central CABA
+-- Stock normal (mayor a 10)
+(150, 1, 1), -- Medicamento1 en Central CABA
+(120, 1, 2), -- Medicamento2 en Central CABA  
+(200, 2, 3), -- Medicamento3 en Norte La Plata
+(180, 1, 4), -- Tafirol en Central CABA
+(90, 2, 5),  -- Actron en Norte La Plata
+(110, 1, 6), -- Bayaspirina en Central CABA
+(95, 2, 7),  -- Mejoral en Norte La Plata
+(160, 1, 8), -- Ibupirac en Central CABA
+(75, 2, 9),  -- Amoxidal en Norte La Plata
+(135, 1, 10), -- Clavulin en Central CABA
+(85, 2, 11), -- Eritromicina en Norte La Plata
+(100, 1, 12), -- Cefalexina en Central CABA
+(45, 2, 13), -- Buscapina en Norte La Plata
+(65, 1, 14), -- Mylanta en Central CABA
+(80, 2, 15), -- Omeprazol en Norte La Plata
+(120, 1, 16), -- Ranitidina en Central CABA
+(90, 2, 17), -- Enalapril en Norte La Plata
+(110, 1, 18), -- Losartan en Central CABA
+(85, 2, 19), -- Amlodipina en Norte La Plata
+(95, 1, 20), -- Atenolol en Central CABA
+
+-- Stock BAJO (menor a 10) para testing del endpoint stock-bajo
+(8, 1, 21),  -- Salbutamol - STOCK BAJO
+(5, 2, 22),  -- Loratadina - STOCK BAJO
+(3, 1, 23),  -- Cetirizina - STOCK BAJO
+(9, 2, 24),  -- Ambroxol - STOCK BAJO
+(2, 1, 25),  -- Vitamina C - STOCK BAJO
+(7, 2, 26),  -- Complejo B - STOCK BAJO
+(4, 1, 27),  -- Hierro + Ácido Fólico - STOCK BAJO
+(6, 2, 28),  -- Calcio + Vitamina D - STOCK BAJO
+(1, 1, 29),  -- Metformina - STOCK CRÍTICO
+(9, 2, 30),  -- Glibenclamida - STOCK BAJO
+
+-- Medicamentos nuevos - algunos con stock normal, otros bajo
+(8, 1, 31),  -- Clonazepam - STOCK BAJO
+(45, 2, 32), -- Diclofenac - STOCK NORMAL
+(5, 1, 33),  -- Ketorolac - STOCK BAJO
+(35, 2, 34), -- Nimesulida - STOCK NORMAL
+(7, 1, 35),  -- Azitromicina - STOCK BAJO
+(55, 2, 36), -- Claritromicina - STOCK NORMAL
+(3, 1, 37),  -- Ciprofloxacina - STOCK BAJO
+(25, 2, 38), -- Fluconazol - STOCK NORMAL
+(6, 1, 39),  -- Montelukast - STOCK BAJO
+(40, 2, 40), -- Budesonida - STOCK NORMAL
+(9, 1, 41),  -- Prednisona - STOCK BAJO
+(30, 2, 42), -- Dexametasona - STOCK NORMAL
+(4, 1, 43),  -- Furosemida - STOCK BAJO
+(50, 2, 44), -- Espironolactona - STOCK NORMAL
+(8, 1, 45),  -- Captopril - STOCK BAJO
+(35, 2, 46), -- Carvedilol - STOCK NORMAL
+(2, 1, 47),  -- Simvastatina - STOCK CRÍTICO
+(60, 2, 48), -- Atorvastatina - STOCK NORMAL
+(5, 1, 49),  -- Fenobarbital - STOCK BAJO
+(25, 2, 50), -- Fenitoína - STOCK NORMAL
+
+-- Stock en sucursal 3 (Córdoba) para algunos medicamentos
+(15, 3, 1),  -- Medicamento1 en Córdoba
+(8, 3, 2),   -- Medicamento2 - STOCK BAJO en Córdoba
+(25, 3, 4),  -- Tafirol en Córdoba
+(6, 3, 5),   -- Actron - STOCK BAJO en Córdoba
+(40, 3, 10), -- Clavulin en Córdoba
+(3, 3, 21),  -- Salbutamol - STOCK CRÍTICO en Córdoba
+(7, 3, 25),  -- Vitamina C - STOCK BAJO en Córdoba
+(1, 3, 29),  -- Metformina - STOCK CRÍTICO en Córdoba
+(9, 3, 31),  -- Clonazepam - STOCK BAJO en Córdoba
+(4, 3, 37); -- Ciprofloxacina - STOCK BAJO en Córdoba
 
 -- Recetas de ejemplo
 INSERT INTO Recetas (nomMedico, apeMedico, matricula, fecha, diagnostico, codigo, estado, codObraSocial, codCliente, codTipoReceta) VALUES

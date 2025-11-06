@@ -5,7 +5,7 @@ using Pharm_api.Models;
 
 namespace Pharm_api.Repositories
 {
-    public class DashboardRepository
+    public class DashboardRepository : IDashboardRepository
     {
         private readonly PharmDbContext _context;
 
@@ -14,7 +14,7 @@ namespace Pharm_api.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<ObraSocialPorcentajeVentasDto>> GetObraSociaPorcentajeVentasAsync()
+        public async Task<IEnumerable<ObraSocialPorcentajeVentasDto>> GetPorcentajeVentasXObraSocialAsync()
         {
             return await _context.Database.SqlQuery<ObraSocialPorcentajeVentasDto>(
                 $"""
@@ -27,8 +27,8 @@ namespace Pharm_api.Repositories
                 WHERE year(FV.fecha) = year(getdate())
                 GROUP BY OS.razonSocial
                 ORDER BY Porcentaje DESC
-                """).ToListAsync();
-                
+                """)
+                .ToListAsync();
         }
     }
 }

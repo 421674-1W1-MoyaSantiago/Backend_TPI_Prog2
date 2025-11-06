@@ -41,22 +41,6 @@ public class UsuariosController : ControllerBase
         }
     }
 
-
-    [HttpPost("{userId}/sucursales")]
-    public async Task<ActionResult> AsignarSucursales(string userId, AsignarSucursalesDto dto)
-    {
-        try
-        {
-            await _usuarioService.AsignarSucursalesAsync(userId, dto.Sucursales);
-            return Ok(new { Mensaje = "Sucursales asignadas correctamente" });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Error al asignar sucursales: {ex.Message}");
-        }
-    }
-
-
     [HttpGet("{userId}/sucursales")]
     public async Task<ActionResult> GetSucursalesUsuario(string userId)
     {

@@ -29,7 +29,7 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var medicamentos = await _medicamentoService.GetAllMedicamentosByUsuarioAsync(userId.Value);
+                var medicamentos = await _medicamentoService.GetAllMedicamentosAsync();
                 return Ok(medicamentos);
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var medicamento = await _medicamentoService.GetMedicamentoByIdAsync(id, userId.Value);
+                var medicamento = await _medicamentoService.GetMedicamentoByIdAsync(id);
                 if (medicamento == null)
                     return NotFound($"Medicamento con ID {id} no encontrado");
 
@@ -70,7 +70,7 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var medicamentos = await _medicamentoService.GetMedicamentosByLaboratorioAsync(laboratorioId, userId.Value);
+                var medicamentos = await _medicamentoService.GetMedicamentosByLaboratorioAsync(laboratorioId);
                 return Ok(medicamentos);
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var medicamentos = await _medicamentoService.GetMedicamentosByTipoAsync(tipoMedicamentoId, userId.Value);
+                var medicamentos = await _medicamentoService.GetMedicamentosByTipoAsync(tipoMedicamentoId);
                 return Ok(medicamentos);
             }
             catch (Exception ex)
@@ -113,7 +113,7 @@ namespace Pharm_api.Controllers
                     return BadRequest("La descripción de búsqueda es requerida");
                 }
 
-                var medicamentos = await _medicamentoService.SearchMedicamentosByDescripcionAsync(descripcion, userId.Value);
+                var medicamentos = await _medicamentoService.SearchMedicamentosByDescripcionAsync(descripcion);
                 return Ok(medicamentos);
             }
             catch (Exception ex)
@@ -132,7 +132,7 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var medicamentos = await _medicamentoService.GetMedicamentosConStockBajoAsync(cantidadMinima, userId.Value);
+                var medicamentos = await _medicamentoService.GetMedicamentosConStockBajoAsync(cantidadMinima);
                 return Ok(medicamentos);
             }
             catch (Exception ex)
@@ -151,7 +151,7 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var count = await _medicamentoService.GetCountMedicamentosConStockBajoAsync(cantidadMinima, userId.Value);
+                var count = await _medicamentoService.GetCountMedicamentosConStockBajoAsync(cantidadMinima);
                 return Ok(new { 
                     CantidadMedicamentos = count, 
                     CantidadMinima = cantidadMinima,
@@ -177,10 +177,7 @@ namespace Pharm_api.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var medicamento = await _medicamentoService.CreateMedicamentoAsync(createDto, userId.Value);
-                if (medicamento == null)
-                    return BadRequest("No se pudo crear el medicamento o no tienes acceso a la sucursal especificada");
-
+                var medicamento = await _medicamentoService.CreateMedicamentoAsync(createDto);
                 return CreatedAtAction(nameof(GetMedicamento), new { id = medicamento.CodMedicamento }, medicamento);
             }
             catch (InvalidOperationException ex)
@@ -206,9 +203,9 @@ namespace Pharm_api.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                var medicamento = await _medicamentoService.UpdateMedicamentoAsync(id, updateDto, userId.Value);
+                var medicamento = await _medicamentoService.UpdateMedicamentoAsync(id, updateDto);
                 if (medicamento == null)
-                    return NotFound($"Medicamento con ID {id} no encontrado o no tienes acceso");
+                    return NotFound($"Medicamento con ID {id} no encontrado");
 
                 return Ok(medicamento);
             }
@@ -232,9 +229,9 @@ namespace Pharm_api.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                var deleted = await _medicamentoService.DeleteMedicamentoAsync(id, userId.Value);
+                var deleted = await _medicamentoService.DeleteMedicamentoAsync(id);
                 if (!deleted)
-                    return NotFound($"Medicamento con ID {id} no encontrado o no tienes acceso");
+                    return NotFound($"Medicamento con ID {id} no encontrado");
 
                 return NoContent();
             }

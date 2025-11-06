@@ -76,7 +76,8 @@ INSERT INTO Tipos_Medicamento (descripcion) VALUES
 ('Antiinflamatorio'),
 ('Antialérgico'),
 ('Vitaminas'),
-('Cardiovascular');
+('Cardiovascular'),
+('Respiratorio');
 
 INSERT INTO Categorias_Articulos (categoria) VALUES
 ('Higiene Personal'),
@@ -290,15 +291,15 @@ VALUES
 
 -- Descuentos de ejemplo
 INSERT INTO Descuentos (Fecha_Descuento, cod_localidad, cod_medicamento, porcentaje_descuento, cod_tipo_descuento) VALUES
-(GETDATE(), 1, 1, 15.00, 1), -- Descuento OSDE para Ibuprofeno en CABA
-(GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Amoxicilina en La Plata
-(GETDATE(), 1, 3, 10.00, 2); -- Descuento por promoción para Paracetamol
+(GETDATE(), 1, 1, 15.00, 1), -- Descuento OSDE para Medicamento1 en CABA
+(GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento2 en La Plata
+(GETDATE(), 1, 3, 10.00, 2); -- Descuento por promoción para Medicamento3
 
 -- Coberturas de ejemplo (DESPUÉS de clientes, obras sociales y descuentos)
 INSERT INTO Coberturas (fechaInicio, fechaFin, cod_Localidad, cod_cliente, cod_Obra_Social, cod_descuento) VALUES
 ('2024-01-01', '2024-12-31', 1, 1, 1, 1), -- Ana con OSDE en CABA
 ('2024-01-01', '2024-12-31', 2, 2, 2, 2), -- Roberto con Swiss Medical en La Plata
-('2024-01-01', '2024-12-31', 1, 3, 3, 3); -- Laura con Galeno en CABA
+('2024-01-01', '2024-12-31', 1, 3, 3, 1); -- Laura con Galeno en CABA (usando descuento 1)
 
 -- Stock de artículos
 INSERT INTO Stock_Articulos (cantidad, codSucursal, codArticulo) VALUES
@@ -309,9 +310,9 @@ INSERT INTO Stock_Articulos (cantidad, codSucursal, codArticulo) VALUES
 
 -- Stock de medicamentos
 INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
-(100, 1, 1), -- Ibuprofeno en Central CABA
-(75, 1, 2),  -- Amoxicilina en Central CABA
-(150, 2, 3), -- Paracetamol en Norte La Plata
+(100, 1, 1), -- Medicamento1 en Central CABA
+(75, 1, 2),  -- Medicamento2 en Central CABA
+(150, 2, 3), -- Medicamento3 en Norte La Plata
 (80, 1, 3);  -- Paracetamol en Central CABA
 
 -- Recetas de ejemplo
@@ -321,8 +322,8 @@ INSERT INTO Recetas (nomMedico, apeMedico, matricula, fecha, diagnostico, codigo
 
 -- Detalles de recetas
 INSERT INTO Detalles_Receta (cantidad, codMedicamento, cod_Receta) VALUES
-(1, 2, 1), -- Amoxicilina para receta 1
-(2, 1, 2); -- Ibuprofeno para receta 2
+(1, 2, 1), -- Medicamento2 para receta 1
+(2, 1, 2); -- Medicamento1 para receta 2
 
 -- Autorizaciones
 INSERT INTO Autorizaciones (codigo, estado, fechaAutorizacion, codObraSocial, codReceta) VALUES
@@ -336,8 +337,8 @@ INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) V
 
 -- Detalles facturas compra medicamentos
 INSERT INTO DetallesFacturaCompraMedicamento (cantidad, precioUnitario, codFacturaCompra, codMedicamento) VALUES
-(100, 120.00, 1, 1), -- Compra Ibuprofeno
-(50, 180.00, 2, 2);  -- Compra Amoxicilina
+(100, 120.00, 1, 1), -- Compra Medicamento1
+(50, 180.00, 2, 2);  -- Compra Medicamento2
 
 -- Detalles facturas compra artículos
 INSERT INTO DetallesFacturaCompraArticulo (cantidad, precioUnitario, codFacturaCompra, codArticulo) VALUES
@@ -349,12 +350,6 @@ INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
 ('Laboratorios Bagó', '30-12345678-9', '011-4000-1000'),
 ('Roemmers SA', '30-87654321-2', '011-4000-2000'),
 ('Laboratorios Phoenix', '30-11223344-5', '011-4000-3000');
-
--- Laboratorios de ejemplo
-INSERT INTO Laboratorios (descripcion, cod_Proveedor) VALUES
-('Bagó Argentina', 1),
-('Roemmers Labs', 2),
-('Phoenix Pharma', 3);
 
 -- *** NOTA: Los usuarios ya fueron insertados al principio del script ***
 -- *** El trigger automáticamente asignará el admin (ID=1) a cada nueva sucursal ***
@@ -371,10 +366,10 @@ VALUES
 -- Detalles de medicamentos para las facturas
 INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta)
 VALUES 
-(2, 150.00, 1, 1, 1), -- Ibuprofeno con cobertura en factura 1
-(1, 200.00, 2, 2, 1), -- Amoxicilina con cobertura en factura 1
-(3, 120.00, NULL, 3, 2), -- Paracetamol sin cobertura en factura 2
-(1, 150.00, 3, 1, 3); -- Ibuprofeno con cobertura en factura 3
+(2, 150.00, 1, 1, 1), -- Medicamento1 con cobertura en factura 1
+(1, 200.00, 2, 2, 1), -- Medicamento2 con cobertura en factura 1
+(3, 120.00, NULL, 3, 2), -- Medicamento3 sin cobertura en factura 2
+(1, 150.00, 1, 1, 3); -- Medicamento1 con cobertura en factura 3
 
 -- Detalles de artículos para las facturas
 INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo)

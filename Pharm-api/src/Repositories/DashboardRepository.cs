@@ -26,6 +26,7 @@ namespace Pharm_api.Repositories
                 JOIN Obras_Sociales OS ON OS.cod_Obra_Social = C.cod_Obra_Social
                 WHERE year(FV.fecha) = year(getdate())
                 GROUP BY OS.razonSocial
+                ORDER BY Porcentaje DESC
                 """).ToListAsync();
                 
         }

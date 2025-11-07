@@ -506,3 +506,88 @@ PRINT 'Base de datos PharmDB lista para usar';
 PRINT 'Usuario admin tiene acceso a todas las sucursales (1, 2, 3)';
 PRINT 'Usuario usuario1 tiene acceso limitado a sucursales (1, 2)';
 GO
+
+-- =============================================
+-- Stored Procedure: sp_UpdateUserFromToken
+-- Descripción: Crea usuario y asigna las 3 sucursales automáticamente
+-- =============================================
+
+CREATE OR ALTER PROCEDURE sp_UpdateUserFromToken
+    @UserId INT,
+    @Username NVARCHAR(255),
+    @Email NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        
+        PRINT 'Iniciando sp_UpdateUserFromToken para usuario: ' + @Username;
+        
+        -- Verificar si el usuario ya existe
+        IF NOT EXISTS (SELECT 1 FROM Usuario WHERE Cod_Usuario = @UserId)
+        BEGIN
+            -- Crear el usuario
+            INSERT INTO Usuario (Cod_Usuario, Username, Email)
+            VALUES (@UserId, @Username, @Email);
+            
+            PRINT 'Usuario creado: ' + @Username;
+        END
+        ELSE
+        BEGIN
+            -- Actualizar datos del usuario existente
+            UPDATE Usuario 
+            SET Username = @Username, Email = @Email
+            WHERE Cod_Usuario = @UserId;
+            
+            PRINT 'Usuario actualizado: ' + @Username;
+        END
+        
+        -- Asignar las 3 sucursales automáticamente
+        -- Verificar y crear asignaciones que no existan
+        
+        -- Sucursal 1 (Buenos Aires)
+        IF NOT EXISTS (SELECT 1 FROM Grupsucursales WHERE cod_usuario = @UserId AND cod_sucursal = 1)
+        BEGIN
+            INSERT INTO Grupsucursales (cod_usuario, cod_sucursal, activo)
+            VALUES (@UserId, 1, 1);
+            PRINT 'Asignada sucursal 1 (Buenos Aires)';
+        END
+        
+        -- Sucursal 2 (Mendoza) 
+        IF NOT EXISTS (SELECT 1 FROM Grupsucursales WHERE cod_usuario = @UserId AND cod_sucursal = 2)
+        BEGIN
+            INSERT INTO Grupsucursales (cod_usuario, cod_sucursal, activo)
+            VALUES (@UserId, 2, 1);
+            PRINT 'Asignada sucursal 2 (Mendoza)';
+        END
+        
+        -- Sucursal 3 (Córdoba)
+        IF NOT EXISTS (SELECT 1 FROM Grupsucursales WHERE cod_usuario = @UserId AND cod_sucursal = 3)
+        BEGIN
+            INSERT INTO Grupsucursales (cod_usuario, cod_sucursal, activo)
+            VALUES (@UserId, 3, 1);
+            PRINT 'Asignada sucursal 3 (Córdoba)';
+        END
+        
+        COMMIT TRANSACTION;
+        
+        PRINT 'Usuario ' + @Username + ' configurado exitosamente con 3 sucursales';
+        
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        
+        PRINT 'Error en sp_UpdateUserFromToken: ' + @ErrorMessage;
+        RAISERROR(@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+GO
+
+PRINT 'Stored procedure sp_UpdateUserFromToken creado exitosamente';
+GO

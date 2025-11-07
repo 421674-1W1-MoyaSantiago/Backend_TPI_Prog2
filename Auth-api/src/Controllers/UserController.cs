@@ -48,21 +48,51 @@ namespace Auth_api.Controllers
             await _userService.CreateAsync(user);
             
             // ✅ Crear usuario automáticamente en PharmDB con las 3 sucursales
+            bool pharmUserCreated = false;
             try
             {
-                await _pharmApiService.CreateUserInPharmApiAsync(user.Id, user.Username, user.Email);
+                Console.WriteLine($"[DEBUG] Iniciando creación de usuario en PharmDB: {user.Username} (ID: {user.Id})");
+                pharmUserCreated = await _pharmApiService.CreateUserInPharmApiAsync(user.Id, user.Username, user.Email);
+                Console.WriteLine($"[DEBUG] Resultado creación PharmDB: {pharmUserCreated}");
             }
             catch (Exception ex)
             {
                 // Log el error pero no fallar el registro
-                // El usuario se creó en Auth, la sincronización se puede hacer después
-                Console.WriteLine($"Warning: Error creando usuario en PharmDB: {ex.Message}");
+                Console.WriteLine($"[ERROR] Error creando usuario en PharmDB: {ex.Message}");
+                Console.WriteLine($"[ERROR] Stack trace: {ex.StackTrace}");
+                pharmUserCreated = false;
             }
             
             return Ok(new { 
                 message = "Usuario registrado exitosamente",
-                sucursalesAsignadas = "Se asignaron automáticamente las 3 sucursales de ejemplo (Buenos Aires, Mendoza, Córdoba)"
+                sucursalesAsignadas = pharmUserCreated ? 
+                    "Se asignaron automáticamente las 3 sucursales de ejemplo (Buenos Aires, Mendoza, Córdoba)" :
+                    "ADVERTENCIA: Error al asignar sucursales automáticamente",
+                pharmDbSync = pharmUserCreated ? "OK" : "ERROR"
             });
+        }
+
+
+        [HttpPost("test-pharm-connection")]
+        public async Task<IActionResult> TestPharmConnection()
+        {
+            try
+            {
+                var testResult = await _pharmApiService.CreateUserInPharmApiAsync(999, "test_connection", "test@test.com");
+                return Ok(new { 
+                    connectionTest = testResult ? "SUCCESS" : "FAILED",
+                    message = testResult ? "Conexión a PharmDB exitosa" : "Error en conexión a PharmDB",
+                    testUser = "test_connection (ID: 999)"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { 
+                    connectionTest = "ERROR",
+                    message = $"Error en test de conexión: {ex.Message}",
+                    stackTrace = ex.StackTrace
+                });
+            }
         }
 
         [HttpPost("login")]

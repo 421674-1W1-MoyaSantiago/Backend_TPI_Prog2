@@ -100,17 +100,17 @@ INSERT INTO Tipos_Receta (tipo) VALUES
 
 -- Obras sociales de ejemplo
 INSERT INTO Obras_Sociales (razonSocial, nroTel, email) VALUES
-('ObraSocial1 Ejemplo', '011-5555-0001', 'contacto@obrasocial1.ejemplo.com'),
-('ObraSocial2 Ejemplo', '011-5555-0002', 'info@obrasocial2.ejemplo.com'),
-('ObraSocial3 Ejemplo', '011-5555-0003', 'atencion@obrasocial3.ejemplo.com'),
-('ObraSocial4 Ejemplo', '011-5555-0004', 'consultas@obrasocial4.ejemplo.com');
+('MET Medicina Privada', '011-4321-0000', 'contacto@met.medicinaprivada.com.ar'),
+('Medife', '011-4332-0001', 'info@medife.com.ar'),
+('OSDE', '011-4343-0002', 'atencion@osde.com.ar'),
+('Swiss Medical', '011-4354-0003', 'consultas@swissmedical.com.ar');
 
 -- Sucursales de ejemplo
 INSERT INTO Sucursales (nom_Sucursal, nro_Tel, calle, altura, email, horarioApertura, horarioCierre, cod_Localidad)
 VALUES 
-('Sucursal Centro Ejemplo', '011-1111-0001', 'Av. Principal', 1000, 'centro@farmacia.ejemplo.com', '08:00:00', '22:00:00', 1),
-('Sucursal Norte Ejemplo', '0221-2222-0002', 'Calle Norte', 500, 'norte@farmacia.ejemplo.com', '08:30:00', '21:30:00', 2),
-('Sucursal Sur Ejemplo', '0351-3333-0003', 'Av. Sur', 750, 'sur@farmacia.ejemplo.com', '09:00:00', '21:00:00', 4);
+('Sucursal Nueva Cordoba', '011-1111-0001', 'Av. Hipólito Yrigoyen', 312, 'nvacba@farmacia.com', '08:00:00', '22:00:00', 1),
+('Sucursal Cerro De Las Rosas', '0221-2222-0002', 'Av. Rafael Núñez', 4235, 'cerro@farmacia.com', '08:30:00', '21:30:00', 2),
+('Sucursal Jardin', '0351-3333-0003', 'Bv Elias Yofre', 756, 'jardin@farmacia.com', '09:00:00', '21:00:00', 4);
 
 -- Proveedores de ejemplo
 INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
@@ -120,9 +120,9 @@ INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
 
 -- Laboratorios de ejemplo - EXPANDIDO para simular farmacia real
 INSERT INTO Laboratorios (descripcion, cod_Proveedor) VALUES
-('Laboratorio1 Ejemplo', 1),
-('Laboratorio2 Ejemplo', 2),
-('Laboratorio3 Ejemplo', 3),
+('Leti Argentina', 1),
+('Sidus', 2),
+('Bristol‑Myers Squibb Argentina', 3),
 ('Bayer Argentina', 1),
 ('Roemmers', 2),
 ('Bagó', 3),
@@ -134,15 +134,15 @@ INSERT INTO Laboratorios (descripcion, cod_Proveedor) VALUES
 ('Sanofi Argentina', 3),
 ('GlaxoSmithKline', 1),
 ('Merck Sharp & Dohme', 2),
-('Laboratorios Phoenix', 3),
-('Laboratorios Elea', 1),
-('Laboratorios Richmond', 2),
-('Laboratorios Andrómaco', 3),
-('Laboratorios Casasco', 1),
-('Laboratorios Bernabó', 2),
-('Laboratorios Montpellier', 3),
-('Laboratorios Raffo', 1),
-('Laboratorios Rontag', 2);
+('Phoenix', 3),
+('Elea', 1),
+('Richmond', 2),
+('Andrómaco', 3),
+('Casasco', 1),
+('Bernabó', 2),
+('Montpellier', 3),
+('Raffo', 1),
+('Rontag', 2);
 
 -- Lotes de medicamentos de ejemplo - EXPANDIDO con fechas variadas
 INSERT INTO Lotes_Medicamentos (fecha_Elaboracion, fecha_Vencimiento, cantidad) VALUES
@@ -200,9 +200,9 @@ INSERT INTO Lotes_Medicamentos (fecha_Elaboracion, fecha_Vencimiento, cantidad) 
 
 -- Medicamentos de ejemplo - EXPANDIDO con medicamentos argentinos comunes
 INSERT INTO Medicamentos (cod_barra, descripcion, requiere_receta, venta_libre, precio_unitario, dosis, posologia, cod_lote_medicamento, codLaboratorio, cod_tipo_presentacion, cod_unidad_medida, cod_tipo_medicamento) VALUES
-('7801111111111', 'Medicamento1 Ejemplo 400mg', 0, 1, 150.00, 400, 'Tomar 1 cada 8 horas', 1, 1, 1, 1, 3),
-('7801111111112', 'Medicamento2 Ejemplo 500mg', 1, 0, 200.00, 500, 'Tomar 1 cada 12 horas por 7 días', 2, 2, 2, 1, 2),
-('7801111111113', 'Medicamento3 Ejemplo 500mg', 0, 1, 120.00, 500, 'Tomar 1 cada 6 horas', 3, 3, 1, 1, 1),
+('7790500000001', 'Meloxicam 15mg', 1, 0, 1200.00, 15, 'Tomar 1 comprimido por día', 41, 21, 1, 1, 3),
+('7790500000002', 'Celecoxib 200mg', 1, 0, 3500.00, 200, 'Tomar 1 cápsula por día', 42, 22, 1, 1, 3),
+('7790500000003', 'Metronidazol 500mg', 1, 0, 900.00, 500, 'Tomar 1 comprimido cada 8 horas por 7 días', 43, 23, 1, 1, 2),
 -- Analgésicos comunes
 ('7790011234567', 'Tafirol 500mg', 0, 1, 450.00, 500, 'Tomar 1 comprimido cada 6-8 horas', 4, 7, 1, 1, 1),
 ('7790022345678', 'Actron 400mg', 0, 1, 620.00, 400, 'Tomar 1 comprimido cada 8 horas', 5, 4, 1, 1, 3),
@@ -261,10 +261,10 @@ INSERT INTO Medicamentos (cod_barra, descripcion, requiere_receta, venta_libre, 
 
 -- Artículos de ejemplo - EXPANDIDO con productos de farmacia realistas
 INSERT INTO Articulos (cod_barra, descripcion, precioUnitario, cod_Proveedor, cod_Categoria_Articulo) VALUES
-('7801111110001', 'Producto1 Ejemplo 400ml', 350.00, 1, 1),
-('7801111110002', 'Producto2 Ejemplo 200ml', 280.00, 2, 2),
-('7801111110003', 'Producto3 Ejemplo 100ml', 1200.00, 3, 3),
-('7801111110004', 'Producto4 Ejemplo Digital', 450.00, 1, 4),
+('7801111110001', 'Head & Shoulders Anticaspa 400ml', 850.00, 1, 1),
+('7801111110002', 'Pantene Reparación Intensa Acondicionador 400ml', 780.00, 2, 1),
+('7801111110003', 'Colgate Total Protección 90g', 420.00, 3, 1),
+('7801111110004', 'Nivea Crema Hidratante Facial 50ml', 1250.00, 1, 2),
 -- Higiene Personal
 ('7790500123456', 'Shampoo Anticaspa Head & Shoulders 400ml', 750.00, 1, 1),
 ('7790511234567', 'Acondicionador Pantene Reparación 400ml', 680.00, 1, 1),
@@ -321,21 +321,21 @@ INSERT INTO Articulos (cod_barra, descripcion, precioUnitario, cod_Proveedor, co
 INSERT INTO Empleados (nom_Empleado, ape_Empleado, nro_Tel, calle, altura, email, fechaIngreso, codTipoEmpleado, codTipoDocumento, codSucursal)
 VALUES 
 ('Admin', 'Administrador', '011-1111-1111', 'Av. Admin', 100, 'admin@farmacia.ejemplo.com', '2024-01-15', 4, 1, 1),
-('Empleado1', 'Apellido1', '011-2222-2222', 'Calle Ejemplo', 200, 'empleado1@farmacia.ejemplo.com', '2024-02-01', 2, 1, 1),
-('Empleado2', 'Apellido2', '0221-3333-3333', 'Av. Muestra', 300, 'empleado2@farmacia.ejemplo.com', '2024-03-01', 1, 1, 2);
+('Miguel', 'Rojas', '011-2222-2222', 'Calle Ejemplo', 200, 'rmiguel@farmacia.ejemplo.com', '2024-02-01', 2, 1, 1),
+('Claudio', 'Eleuterio', '0221-3333-3333', 'Av. Muestra', 300, 'eclaudio@farmacia.ejemplo.com', '2024-03-01', 1, 1, 2);
 
 -- Clientes de ejemplo (NECESARIOS ANTES que las coberturas)
 INSERT INTO Clientes (nomCliente, apeCliente, nroDoc, nroTel, calle, altura, email, cod_Tipo_Documento, cod_Obra_Social)
 VALUES
-('Cliente1', 'Apellido1', '12345678', '011-9999-1111', 'Av. Cliente', 1000, 'cliente1@email.ejemplo.com', 1, 1),
-('Cliente2', 'Apellido2', '87654321', '011-9999-2222', 'Calle Cliente', 2000, 'cliente2@email.ejemplo.com', 1, 2),
-('Cliente3', 'Apellido3', '11223344', '0221-9999-3333', 'Av. Muestra', 3000, 'cliente3@email.ejemplo.com', 1, 3);
+('Tomas', 'Carrizo', '3514347346', '011-9999-1111', 'Av. Bv San Juan', 356, 'cliente1@email.ejemplo.com', 1, 1),
+('Roberto', 'Gomez', '114567379', '011-9999-2222', 'Francisco de Quevedo', 2036, 'cliente2@email.ejemplo.com', 1, 2),
+('Laura', 'Martinez', '3541395715', '0221-9999-3333', 'Av. Lopez y Planes', 3038, 'cliente3@email.ejemplo.com', 1, 3);
 
 -- Descuentos de ejemplo
 INSERT INTO Descuentos (Fecha_Descuento, cod_localidad, cod_medicamento, porcentaje_descuento, cod_tipo_descuento) VALUES
-(GETDATE(), 1, 1, 15.00, 1), -- Descuento OSDE para Medicamento1 en CABA
-(GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento2 en La Plata
-(GETDATE(), 1, 3, 10.00, 2); -- Descuento por promoción para Medicamento3
+(GETDATE(), 1, 1, 15.00, 1), -- Descuento OSDE para Medicamento cod. 1 en CABA
+(GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento cod. 2 en La Plata
+(GETDATE(), 1, 3, 10.00, 2); -- Descuento por promoción para Medicamento cod. 3
 
 -- Coberturas de ejemplo (DESPUÉS de clientes, obras sociales y descuentos)
 INSERT INTO Coberturas (fechaInicio, fechaFin, cod_Localidad, cod_cliente, cod_Obra_Social, cod_descuento) VALUES
@@ -422,7 +422,7 @@ INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
 
 -- Recetas de ejemplo
 INSERT INTO Recetas (nomMedico, apeMedico, matricula, fecha, diagnostico, codigo, estado, codObraSocial, codCliente, codTipoReceta) VALUES
-('Dr. Carlos', 'Médico', 'MP12345', GETDATE(), 'Dolor de cabeza', 12345, 'Activa', 1, 1, 1),
+('Dr. Carlos', 'Menem', 'MP12345', GETDATE(), 'Dolor de cabeza', 12345, 'Activa', 1, 1, 1),
 ('Dra. María', 'González', 'MP67890', GETDATE(), 'Infección respiratoria', 67890, 'Activa', 2, 2, 1);
 
 -- Detalles de recetas

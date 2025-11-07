@@ -73,41 +73,43 @@ namespace Pharm_api.Repositories
         {
             var detalles = new List<DetalleFacturaBaseDto>();
 
-            // Obtener detalles de medicamentos
-            var detallesMedicamento = await _context.DetallesFacturaVentasMedicamento
+            // Obtener detalles de medicamentos (incluye entidades completas)
+            var detallesMedicamentoEntities = await _context.DetallesFacturaVentasMedicamento
                 .Where(d => d.codFacturaVenta == codFacturaVenta)
                 .Include(d => d.Medicamento)
                     .ThenInclude(m => m.CodTipoPresentacionNavigation)
                 .Include(d => d.Cobertura)
                     .ThenInclude(c => c.CodObraSocialNavigation)
-                .Select(d => new DetalleMedicamentoFacturaDto
-                {
-                    CodigoDetalle = d.cod_DetFacVentaM,
-                    Cantidad = d.cantidad,
-                    PrecioUnitario = d.precioUnitario,
-                    CodMedicamento = d.codMedicamento,
-                    NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
-                    Concentracion = null, // Agregar cuando esté en el modelo
-                    Presentacion = d.Medicamento != null && d.Medicamento.CodTipoPresentacionNavigation != null ? 
-                        d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null,
-                    CodCobertura = d.codCobertura,
-                    NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? 
-                        d.Cobertura.CodObraSocialNavigation.RazonSocial : null
-                }).ToListAsync();
+                .ToListAsync();
 
-            // Obtener detalles de artículos
-            var detallesArticulo = await _context.DetallesFacturaVentasArticulo
+            var detallesMedicamento = detallesMedicamentoEntities.Select(d => new DetalleMedicamentoFacturaDto
+            {
+                CodigoDetalle = d.cod_DetFacVentaM,
+                Cantidad = d.cantidad,
+                PrecioUnitario = d.precioUnitario,
+                CodMedicamento = d.codMedicamento,
+                NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
+                Concentracion = null, // Agregar cuando esté en el modelo
+                Presentacion = d.Medicamento != null && d.Medicamento.CodTipoPresentacionNavigation != null ? d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null,
+                CodCobertura = d.codCobertura,
+                NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? d.Cobertura.CodObraSocialNavigation.RazonSocial : null
+            }).ToList();
+
+            // Obtener detalles de artículos (incluye entidades completas)
+            var detallesArticuloEntities = await _context.DetallesFacturaVentasArticulo
                 .Where(d => d.codFacturaVenta == codFacturaVenta)
                 .Include(d => d.Articulo)
-                .Select(d => new DetalleArticuloFacturaDto
-                {
-                    CodigoDetalle = d.cod_DetFacVentaA,
-                    Cantidad = d.cantidad,
-                    PrecioUnitario = d.precioUnitario,
-                    CodArticulo = d.codArticulo,
-                    NombreArticulo = d.Articulo.Descripcion,
-                    Marca = null // Agregar cuando esté en el modelo
-                }).ToListAsync();
+                .ToListAsync();
+
+            var detallesArticulo = detallesArticuloEntities.Select(d => new DetalleArticuloFacturaDto
+            {
+                CodigoDetalle = d.cod_DetFacVentaA,
+                Cantidad = d.cantidad,
+                PrecioUnitario = d.precioUnitario,
+                CodArticulo = d.codArticulo,
+                NombreArticulo = d.Articulo != null ? d.Articulo.Descripcion : string.Empty,
+                Marca = null // Agregar cuando esté en el modelo
+            }).ToList();
 
             detalles.AddRange(detallesMedicamento);
             detalles.AddRange(detallesArticulo);

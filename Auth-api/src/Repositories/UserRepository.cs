@@ -62,6 +62,14 @@ namespace Auth_api.Repositories
             return await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users
+                .Where(u => u.IsActive)
+                .OrderBy(u => u.Username)
+                .ToListAsync();
+        }
     }
 
 }

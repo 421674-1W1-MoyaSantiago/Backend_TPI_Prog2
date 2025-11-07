@@ -12,5 +12,6 @@ namespace Auth_api.Services
         Task<LoginResponseDto> LoginAsync(string username, string password);
         Task RestoreAsync(int id);
         Task<User?> GetByIdIncludeDeletedAsync(int id);
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }

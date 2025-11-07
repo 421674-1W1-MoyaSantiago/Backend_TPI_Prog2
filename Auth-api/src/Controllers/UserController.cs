@@ -72,29 +72,6 @@ namespace Auth_api.Controllers
             });
         }
 
-
-        [HttpPost("test-pharm-connection")]
-        public async Task<IActionResult> TestPharmConnection()
-        {
-            try
-            {
-                var testResult = await _pharmApiService.CreateUserInPharmApiAsync(999, "test_connection", "test@test.com");
-                return Ok(new { 
-                    connectionTest = testResult ? "SUCCESS" : "FAILED",
-                    message = testResult ? "Conexión a PharmDB exitosa" : "Error en conexión a PharmDB",
-                    testUser = "test_connection (ID: 999)"
-                });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new { 
-                    connectionTest = "ERROR",
-                    message = $"Error en test de conexión: {ex.Message}",
-                    stackTrace = ex.StackTrace
-                });
-            }
-        }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
@@ -192,6 +169,63 @@ namespace Auth_api.Controllers
                 },
                 timestamp = DateTime.UtcNow
             });
+        }
+
+        [HttpGet("all")]
+        [Authorize]
+        public async Task<ActionResult<object>> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userService.GetAllUsersAsync();
+                return Ok(new {
+                    success = true,
+                    totalUsers = users.Count(),
+                    users = users.Select(u => new {
+                        id = u.Id,
+                        username = u.Username,
+                        email = u.Email,
+                        isActive = u.IsActive,
+                        createdAt = u.CreatedAt,
+                        updatedAt = u.UpdatedAt,
+                        status = u.IsActive ? "Active" : "Inactive"
+                    }),
+                    message = $"Se encontraron {users.Count()} usuarios en AuthDB"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new {
+                    success = false,
+                    message = $"Error al obtener usuarios: {ex.Message}",
+                    error = ex.ToString()
+                });
+            }
+        }
+
+        [HttpGet("all/simple")]
+        public async Task<ActionResult<object>> GetAllUsersSimple()
+        {
+            try
+            {
+                var users = await _userService.GetAllUsersAsync();
+                return Ok(new {
+                    totalUsers = users.Count(),
+                    users = users.Select(u => new {
+                        id = u.Id,
+                        username = u.Username,
+                        email = u.Email,
+                        isActive = u.IsActive
+                    })
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new {
+                    success = false,
+                    message = $"Error al obtener usuarios: {ex.Message}"
+                });
+            }
         }
 
         [HttpGet("health")]

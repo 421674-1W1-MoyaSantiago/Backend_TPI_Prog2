@@ -19,16 +19,6 @@ public class AsignarSucursalesDto
     public List<int> Sucursales { get; set; } = new List<int>();
 }
 
-public class UserSyncResponseDto
-{
-    public bool Success { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public int? UsuarioId { get; set; }
-    public string? Username { get; set; }
-    public List<string> SucursalesAsignadas { get; set; } = new List<string>();
-    public string? Error { get; set; }
-}
-
 public class UsuarioSucursalDto
 {
     public int CodSucursal { get; set; }

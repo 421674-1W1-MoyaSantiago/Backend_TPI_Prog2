@@ -80,7 +80,7 @@ namespace Pharm_api.Data
                 entity.Property(e => e.cod_DetFacVentaM).HasColumnName("cod_DetFacVentaM");
                 entity.Property(e => e.codFacturaVenta).HasColumnName("codFacturaVenta");
                 entity.Property(e => e.cantidad).HasColumnName("cantidad");
-                entity.Property(e => e.precioUnitario).HasColumnName("precioUnitario");
+                entity.Property(e => e.precioUnitario).HasColumnName("precioUnitario").HasPrecision(18, 2);
                 entity.Property(e => e.codCobertura).HasColumnName("codCobertura");
                 entity.Property(e => e.codMedicamento).HasColumnName("codMedicamento");
                 entity.HasOne(d => d.FacturaVenta)
@@ -100,7 +100,7 @@ namespace Pharm_api.Data
                 entity.Property(e => e.cod_DetFacVentaA).HasColumnName("cod_DetFacVentaA");
                 entity.Property(e => e.codFacturaVenta).HasColumnName("codFacturaVenta");
                 entity.Property(e => e.cantidad).HasColumnName("cantidad");
-                entity.Property(e => e.precioUnitario).HasColumnName("precioUnitario");
+                entity.Property(e => e.precioUnitario).HasColumnName("precioUnitario").HasPrecision(18, 2);
                 entity.Property(e => e.codArticulo).HasColumnName("codArticulo");
                 entity.HasOne(d => d.FacturaVenta)
                     .WithMany()

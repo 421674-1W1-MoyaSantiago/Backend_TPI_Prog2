@@ -3,6 +3,6 @@
     public class IngresosXMesDto
     {
         public int NroMes {  get; set; }
-        public float TotalMes { get; set; }
+        public decimal TotalMes { get; set; }
     }
 }

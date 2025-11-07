@@ -3,6 +3,6 @@
     public class ObraSocialPorcentajeVentasDto
     {
         public string? NomObraSocial {  get; set; }
-        public float? Porcentaje {  get; set; }
+        public decimal? Porcentaje {  get; set; }
     }
 }

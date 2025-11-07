@@ -228,6 +228,103 @@ namespace Auth_api.Controllers
             }
         }
 
+        [HttpPost("sync/{userId}")]
+        [Authorize]
+        public async Task<ActionResult<object>> SyncUserToPharm(int userId)
+        {
+            try
+            {
+                var user = await _userService.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound(new {
+                        success = false,
+                        message = "Usuario no encontrado en Auth-api"
+                    });
+                }
+
+                var syncSuccess = await _pharmApiService.CreateUserInPharmApiAsync(user.Id, user.Username, user.Email);
+
+                return Ok(new {
+                    success = syncSuccess,
+                    message = syncSuccess 
+                        ? $"Usuario {user.Username} sincronizado exitosamente en Pharm-api"
+                        : $"Error al sincronizar usuario {user.Username} en Pharm-api",
+                    user = new {
+                        id = user.Id,
+                        username = user.Username,
+                        email = user.Email
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new {
+                    success = false,
+                    message = $"Error al sincronizar usuario: {ex.Message}"
+                });
+            }
+        }
+
+        [HttpPost("sync-all")]
+        [Authorize]
+        public async Task<ActionResult<object>> SyncAllUsersToPharm()
+        {
+            try
+            {
+                var users = await _userService.GetAllUsersAsync();
+                var results = new List<object>();
+                int successCount = 0;
+                int failureCount = 0;
+
+                foreach (var user in users)
+                {
+                    try
+                    {
+                        var syncSuccess = await _pharmApiService.CreateUserInPharmApiAsync(user.Id, user.Username, user.Email);
+                        
+                        results.Add(new {
+                            userId = user.Id,
+                            username = user.Username,
+                            success = syncSuccess,
+                            message = syncSuccess ? "Sincronizado" : "Error al sincronizar"
+                        });
+
+                        if (syncSuccess) successCount++;
+                        else failureCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        results.Add(new {
+                            userId = user.Id,
+                            username = user.Username,
+                            success = false,
+                            message = $"Exception: {ex.Message}"
+                        });
+                        failureCount++;
+                    }
+                }
+
+                return Ok(new {
+                    success = true,
+                    totalUsers = users.Count(),
+                    syncResults = new {
+                        successful = successCount,
+                        failed = failureCount
+                    },
+                    details = results,
+                    message = $"Proceso completado: {successCount} exitosos, {failureCount} fallidos"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new {
+                    success = false,
+                    message = $"Error al sincronizar usuarios: {ex.Message}"
+                });
+            }
+        }
+
         [HttpGet("health")]
         public IActionResult Health()
         {

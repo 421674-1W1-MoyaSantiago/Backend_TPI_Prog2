@@ -34,6 +34,9 @@ echo "Ejecutando scripts de inicialización..."
 # Insertar datos iniciales (opcional)
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/03-seed-data.sql -C
 
+# Crear procedimientos almacenados
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/04-procedures.sql -C
+
 echo "Configuración completada. SQL Server listo para recibir conexiones."
 
 # Mantener el contenedor corriendo

@@ -25,7 +25,6 @@ namespace Pharm_api.Repositories
         {
             var usuario = new Usuario
             {
-                CodUsuario = userId,
                 Username = username,
                 Email = email
             };

@@ -68,6 +68,3 @@ namespace Auth_api.Services
         }
     }
 }
-        }
-    }
-}

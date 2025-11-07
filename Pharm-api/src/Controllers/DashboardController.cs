@@ -37,6 +37,7 @@ namespace Pharm_api.Controllers
         {
             try
             {
+                Console.WriteLine("lol");
                 IEnumerable<IngresosXMesDto> ingresos = await _dashboardService.GetIngresosPorMesAnioActual();
                 return Ok(ingresos);
             }

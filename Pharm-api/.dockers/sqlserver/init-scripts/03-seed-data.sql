@@ -463,9 +463,17 @@ INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
 -- Facturas de ejemplo para testing
 INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total)
 VALUES 
-(GETDATE(), 1, 1, 1, 1, 1500.00),
-(GETDATE(), 2, 2, 1, 2, 850.00),
-(GETDATE(), 3, 3, 2, 3, 2200.00);
+(DATEADD(DAY, -7, GETDATE()), 1, 1, 1, 1, 1500.00), -- hace una semana
+(GETDATE(), 2, 2, 1, 2, 850.00), -- hoy
+(DATEADD(DAY, 7, GETDATE()), 3, 3, 2, 3, 2200.00); -- dentro de una semana
+
+-- Facturas adicionales para testeo de fechas entre hace una semana y dentro de una semana
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, -5, GETDATE()), 1, 2, 1, 1, 1200.00); -- hace 5 días
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, -3, GETDATE()), 2, 3, 2, 2, 950.00); -- hace 3 días
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, -1, GETDATE()), 3, 1, 3, 3, 1750.00); -- ayer
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, 1, GETDATE()), 1, 3, 1, 2, 1100.00); -- mañana
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, 3, GETDATE()), 2, 1, 2, 1, 1350.00); -- en 3 días
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, 5, GETDATE()), 3, 2, 3, 2, 2000.00); -- en 5 días
 
 -- AHORA SÍ: Detalles de facturas (después de crear las facturas)
 -- Detalles de medicamentos para las facturas
@@ -476,6 +484,20 @@ VALUES
 (3, 120.00, NULL, 3, 2), -- Medicamento3 sin cobertura en factura 2
 (1, 150.00, 1, 1, 3); -- Medicamento1 con cobertura en factura 3
 
+-- Detalles para facturas nuevas (IDs: 4 a 9)
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 200.00, 2, 2, 4); -- Amoxidal en factura 4
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 120.00, NULL, 3, 4); -- Medicamento3 sin cobertura en factura 4
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 450.00, 1, 4, 5); -- Tafirol en factura 5
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 620.00, NULL, 5, 5); -- Actron sin cobertura en factura 5
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 890.00, 2, 6, 6); -- Amoxidal en factura 6
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 1150.00, NULL, 7, 6); -- Clavulin sin cobertura en factura 6
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 480.00, 1, 8, 7); -- Eritromicina en factura 7
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 520.00, NULL, 9, 7); -- Cefalexina sin cobertura en factura 7
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 680.00, 2, 10, 8); -- Buscapina en factura 8
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 850.00, NULL, 11, 8); -- Mylanta sin cobertura en factura 8
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 1200.00, 1, 12, 9); -- Omeprazol en factura 9
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 1750.00, NULL, 13, 9); -- Ranitidina sin cobertura en factura 9
+
 -- Detalles de artículos para las facturas
 INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo)
 VALUES 
@@ -483,6 +505,14 @@ VALUES
 (2, 280.00, 2, 2), -- Crema en factura 2
 (1, 1200.00, 3, 3), -- Perfume en factura 3
 (1, 450.00, 3, 4); -- Termómetro en factura 3
+
+-- Detalles de artículos para facturas nuevas (IDs: 4 a 9)
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 350.00, 4, 1); -- Shampoo en factura 4
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (2, 280.00, 5, 2); -- Crema en factura 5
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 1200.00, 6, 3); -- Perfume en factura 6
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 450.00, 7, 4); -- Termómetro en factura 7
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (2, 950.00, 8, 5); -- Jabón en factura 8
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 1850.00, 9, 6); -- Protector solar en factura 9
 
 -- Reintegros de ejemplo
 INSERT INTO Reintegros (fechaEmision, fechaReembolso, estado, cod_Cobertura, cod_ObraSocial, cod_Receta, cod_DetFacVentaM) VALUES

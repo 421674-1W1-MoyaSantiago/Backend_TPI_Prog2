@@ -80,5 +80,10 @@ namespace Auth_api.Services
         {
             return await _userRepository.GetByIdIncludeDeletedAsync(id);
         }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllUsersAsync();
+        }
     }
 }

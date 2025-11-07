@@ -1,15 +1,16 @@
-using Microsoft.Data.SqlClient;
+using System.Text;
+using System.Text.Json;
 
 namespace Auth_api.Services
 {
     public class PharmApiService : IPharmApiService
     {
-        private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
         private readonly ILogger<PharmApiService> _logger;
 
-        public PharmApiService(IConfiguration configuration, ILogger<PharmApiService> logger)
+        public PharmApiService(HttpClient httpClient, ILogger<PharmApiService> logger)
         {
-            _configuration = configuration;
+            _httpClient = httpClient;
             _logger = logger;
         }
 
@@ -17,51 +18,56 @@ namespace Auth_api.Services
         {
             try
             {
-                // Obtener la connection string de PharmDB
-                var pharmConnectionString = _configuration.GetConnectionString("PharmDatabase");
-                
-                _logger.LogInformation($"[DEBUG] Iniciando creación usuario: {username} (ID: {userId})");
-                _logger.LogInformation($"[DEBUG] Email: {email}");
-                
-                if (string.IsNullOrEmpty(pharmConnectionString))
-                {
-                    _logger.LogWarning("[ERROR] PharmDatabase connection string no está configurada");
-                    Console.WriteLine("[ERROR] PharmDatabase connection string no está configurada");
-                    return false;
-                }
-                
-                _logger.LogInformation($"[DEBUG] Connection string encontrada: {pharmConnectionString.Substring(0, 50)}...");
+                _logger.LogInformation($"[HTTP] Notificando a Pharm-api sobre nuevo usuario: {username} (ID: {userId})");
 
-                using var connection = new SqlConnection(pharmConnectionString);
-                
-                _logger.LogInformation("[DEBUG] Abriendo conexión a PharmDB...");
-                await connection.OpenAsync();
-                _logger.LogInformation("[DEBUG] Conexión abierta exitosamente");
-
-                using var command = new SqlCommand("sp_UpdateUserFromToken", connection)
+                var payload = new
                 {
-                    CommandType = System.Data.CommandType.StoredProcedure
+                    UserId = userId,
+                    Username = username,
+                    Email = email
                 };
 
-                command.Parameters.AddWithValue("@UserId", userId);
-                command.Parameters.AddWithValue("@Username", username);
-                command.Parameters.AddWithValue("@Email", email);
+                var json = JsonSerializer.Serialize(payload);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                _logger.LogInformation($"[DEBUG] Ejecutando stored procedure con parámetros: UserId={userId}, Username={username}, Email={email}");
-                
-                await command.ExecuteNonQueryAsync();
-                
-                _logger.LogInformation($"[SUCCESS] Usuario {username} creado exitosamente en PharmDB con sucursales asignadas");
-                Console.WriteLine($"[SUCCESS] Usuario {username} creado exitosamente en PharmDB");
-                return true;
+                _logger.LogInformation($"[HTTP] Enviando POST a /api/sync/user-from-auth");
+                _logger.LogInformation($"[HTTP] Payload: {json}");
+
+                var response = await _httpClient.PostAsync("/api/sync/user-from-auth", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogInformation($"[HTTP] SUCCESS: Usuario {username} creado en Pharm-api");
+                    _logger.LogInformation($"[HTTP] Response: {responseContent}");
+                    return true;
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    _logger.LogWarning($"[HTTP] ERROR: Pharm-api respondió {response.StatusCode}");
+                    _logger.LogWarning($"[HTTP] Error response: {errorContent}");
+                    return false;
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                _logger.LogError(httpEx, $"[HTTP] Error de conexión con Pharm-api: {httpEx.Message}");
+                return false;
+            }
+            catch (TaskCanceledException timeoutEx)
+            {
+                _logger.LogError(timeoutEx, $"[HTTP] Timeout al conectar con Pharm-api: {timeoutEx.Message}");
+                return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"[ERROR] Error creando usuario {username} en PharmDB: {ex.Message}");
-                Console.WriteLine($"[ERROR] Error creando usuario {username} en PharmDB: {ex.Message}");
-                Console.WriteLine($"[ERROR] Stack trace: {ex.StackTrace}");
+                _logger.LogError(ex, $"[HTTP] Error inesperado al notificar Pharm-api: {ex.Message}");
                 return false;
             }
+        }
+    }
+}
         }
     }
 }

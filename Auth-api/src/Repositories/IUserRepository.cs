@@ -10,5 +10,6 @@ namespace Auth_api.Repositories
         Task SoftDeleteAsync(int id);
         Task RestoreAsync(int id);
         Task<User?> GetByIdIncludeDeletedAsync(int id);
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }

@@ -19,6 +19,14 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPharmApiService, PharmApiService>();
 
+// Configuración HttpClient para comunicación con Pharm-api
+builder.Services.AddHttpClient<IPharmApiService, PharmApiService>(client =>
+{
+    var pharmApiUrl = builder.Configuration["PharmApi:BaseUrl"] ?? "https://localhost:3000";
+    client.BaseAddress = new Uri(pharmApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 // Configuración JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured");
 var key = Encoding.ASCII.GetBytes(jwtKey);

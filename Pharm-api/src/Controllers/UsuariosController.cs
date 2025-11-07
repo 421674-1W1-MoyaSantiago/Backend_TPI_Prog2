@@ -41,6 +41,46 @@ public class UsuariosController : ControllerBase
         }
     }
 
+    [HttpPost("create-from-auth")]
+    public async Task<ActionResult> CreateUserFromAuthNotification([FromBody] CreateUserFromAuthDto dto)
+    {
+        try
+        {
+            // Redirigir al nuevo SyncController que maneja esto mejor
+            // Este endpoint se mantiene por compatibilidad pero delegamos la lógica
+            var syncService = HttpContext.RequestServices.GetRequiredService<IUserSyncService>();
+            var result = await syncService.CreateUserFromAuthAsync(dto);
+
+            if (result.Success)
+            {
+                return Ok(new { 
+                    success = result.Success,
+                    message = result.Message,
+                    userId = result.UserId,
+                    username = result.Username,
+                    sucursalesAsignadas = result.SucursalesAsignadas,
+                    totalSucursales = result.TotalSucursales
+                });
+            }
+            else
+            {
+                return StatusCode(500, new {
+                    success = result.Success,
+                    message = result.Message,
+                    error = "Error en sincronización"
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new {
+                success = false,
+                message = $"Error al crear usuario desde Auth-api: {ex.Message}",
+                error = ex.ToString()
+            });
+        }
+    }
+
 
     [HttpPost("{userId}/sucursales")]
     public async Task<ActionResult> AsignarSucursales(string userId, AsignarSucursalesDto dto)

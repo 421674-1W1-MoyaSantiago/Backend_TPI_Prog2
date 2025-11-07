@@ -1,12 +1,9 @@
-using Pharm_api.Middleware;
-
+// MiddlewareExtensions left intentionally minimal after refactor.
+// Auto-create user middleware was removed in favor of explicit HTTP flows.
 namespace Pharm_api.Extensions
 {
     public static class MiddlewareExtensions
     {
-        public static IApplicationBuilder UseAutoCreateUser(this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<AutoCreateUserMiddleware>();
-        }
+        // No middleware extension methods currently.
     }
 }

@@ -4,6 +4,14 @@ public class CreateUsuarioDto
 {
     public string Username { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public int? CodUsuario { get; set; } // Para sincronización con Auth-api
+}
+
+public class CreateUserFromAuthDto
+{
+    public int UserId { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 public class AsignarSucursalesDto

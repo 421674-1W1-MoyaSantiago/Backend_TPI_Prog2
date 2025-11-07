@@ -5,7 +5,6 @@ using System.Text;
 using Pharm_api.Data;
 using Pharm_api.Repositories;
 using Pharm_api.Services;
-using Pharm_api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +22,11 @@ builder.Services.AddScoped<IMedicamentoRepository, MedicamentoRepository>();
 builder.Services.AddScoped<IMedicamentoService, MedicamentoService>();
 builder.Services.AddScoped<ISucursalRepository, SucursalRepository>();
 builder.Services.AddScoped<ISucursalService, SucursalService>();
-builder.Services.AddScoped<IDashboardRepository, IDashboardRepository>();
-builder.Services.AddScoped<IDashboardService, IDashboardService>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+// User Sync Services (nuevo patrón simple)
+builder.Services.AddScoped<IUserSyncRepository, UserSyncRepository>();
+builder.Services.AddScoped<IUserSyncService, UserSyncService>();
 
 // Configuración JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key not configured");
@@ -75,7 +77,6 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
-app.UseAutoCreateUser(); // Middleware para auto-crear usuarios
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

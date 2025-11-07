@@ -23,6 +23,7 @@ builder.Services.AddScoped<IPharmApiService, PharmApiService>();
 builder.Services.AddHttpClient<IPharmApiService, PharmApiService>(client =>
 {
     var pharmApiUrl = builder.Configuration["PharmApi:BaseUrl"] ?? "https://localhost:3000";
+    Console.WriteLine($"[CONFIG] PharmApi BaseUrl: {pharmApiUrl}");
     client.BaseAddress = new Uri(pharmApiUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
 });

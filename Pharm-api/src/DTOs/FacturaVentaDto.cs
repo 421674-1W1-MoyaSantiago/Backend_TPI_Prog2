@@ -34,15 +34,19 @@ namespace Pharm_api.DTOs
     // DTOs antiguos para compatibilidad (se pueden eliminar después)
     public class DetalleMedicamentoDto
     {
-        public int CodDetFacVentaM { get; set; }
-        public int Cantidad { get; set; }
-        public decimal PrecioUnitario { get; set; }
-        public int? CodCobertura { get; set; }
-        public string? NombreCobertura { get; set; }
-        public int CodMedicamento { get; set; }
-        public string NombreMedicamento { get; set; } = string.Empty;
-        public string? Concentracion { get; set; }
-        public string? Presentacion { get; set; }
+    public int CodDetFacVentaM { get; set; }
+    public int Cantidad { get; set; }
+    public decimal PrecioUnitario { get; set; }
+    public int? CodCobertura { get; set; }
+    public string? NombreCobertura { get; set; }
+    public int CodMedicamento { get; set; }
+    public string NombreMedicamento { get; set; } = string.Empty;
+    public string? Laboratorio { get; set; }
+    public string? Lote { get; set; }
+    public string? Tipo { get; set; }
+    public string? Presentacion { get; set; }
+    public string? UnidadMedida { get; set; }
+    public string? Concentracion { get; set; }
     }
 
     public class DetalleArticuloDto

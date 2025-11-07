@@ -25,6 +25,12 @@ namespace Pharm_api.Repositories
                     .ThenInclude(m => m.CodTipoMedicamentoNavigation)
                 .Include(d => d.Medicamento)
                     .ThenInclude(m => m.CodTipoPresentacionNavigation)
+                .Include(d => d.Medicamento)
+                    .ThenInclude(m => m.CodLaboratorioNavigation)
+                .Include(d => d.Medicamento)
+                    .ThenInclude(m => m.CodLoteMedicamentoNavigation)
+                .Include(d => d.Medicamento)
+                    .ThenInclude(m => m.CodUnidadMedidaNavigation)
                 .Include(d => d.Cobertura)
                     .ThenInclude(c => c.CodObraSocialNavigation)
                 .Select(d => new DetalleMedicamentoDto
@@ -36,9 +42,12 @@ namespace Pharm_api.Repositories
                     NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? d.Cobertura.CodObraSocialNavigation.RazonSocial : null,
                     CodMedicamento = d.codMedicamento,
                     NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
-                    Concentracion = null, // Por ahora null hasta agregar al modelo
-                    Presentacion = d.Medicamento != null && d.Medicamento.CodTipoPresentacionNavigation != null ? 
-                        d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null
+                    Laboratorio = d.Medicamento?.CodLaboratorioNavigation?.Descripcion,
+                    Lote = d.Medicamento?.CodLoteMedicamentoNavigation != null ? $"Lote {d.Medicamento.CodLoteMedicamentoNavigation.CodLoteMedicamento} - Vence: {d.Medicamento.CodLoteMedicamentoNavigation.FechaVencimiento:dd/MM/yyyy}" : null,
+                    Tipo = d.Medicamento?.CodTipoMedicamentoNavigation?.Descripcion,
+                    Presentacion = d.Medicamento?.CodTipoPresentacionNavigation?.Descripcion,
+                    UnidadMedida = d.Medicamento?.CodUnidadMedidaNavigation?.UnidadMedida,
+                    Concentracion = null // Si tienes campo de concentración, aquí lo puedes mapear
                 }).ToListAsync();
         }
 

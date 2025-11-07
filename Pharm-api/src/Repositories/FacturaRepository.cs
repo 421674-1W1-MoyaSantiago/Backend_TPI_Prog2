@@ -19,7 +19,7 @@ namespace Pharm_api.Repositories
 
         public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int codFacturaVenta)
         {
-            return await _context.DetallesFacturaVentasMedicamento
+            var detalles = await _context.DetallesFacturaVentasMedicamento
                 .Where(d => d.codFacturaVenta == codFacturaVenta)
                 .Include(d => d.Medicamento)
                     .ThenInclude(m => m.CodTipoMedicamentoNavigation)
@@ -33,22 +33,24 @@ namespace Pharm_api.Repositories
                     .ThenInclude(m => m.CodUnidadMedidaNavigation)
                 .Include(d => d.Cobertura)
                     .ThenInclude(c => c.CodObraSocialNavigation)
-                .Select(d => new DetalleMedicamentoDto
-                {
-                    CodDetFacVentaM = d.cod_DetFacVentaM,
-                    Cantidad = d.cantidad,
-                    PrecioUnitario = d.precioUnitario,
-                    CodCobertura = d.codCobertura,
-                    NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? d.Cobertura.CodObraSocialNavigation.RazonSocial : null,
-                    CodMedicamento = d.codMedicamento,
-                    NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
-                    Laboratorio = d.Medicamento?.CodLaboratorioNavigation?.Descripcion,
-                    Lote = d.Medicamento?.CodLoteMedicamentoNavigation != null ? $"Lote {d.Medicamento.CodLoteMedicamentoNavigation.CodLoteMedicamento} - Vence: {d.Medicamento.CodLoteMedicamentoNavigation.FechaVencimiento:dd/MM/yyyy}" : null,
-                    Tipo = d.Medicamento?.CodTipoMedicamentoNavigation?.Descripcion,
-                    Presentacion = d.Medicamento?.CodTipoPresentacionNavigation?.Descripcion,
-                    UnidadMedida = d.Medicamento?.CodUnidadMedidaNavigation?.UnidadMedida,
-                    Concentracion = null // Si tienes campo de concentración, aquí lo puedes mapear
-                }).ToListAsync();
+                .ToListAsync();
+
+            return detalles.Select(d => new DetalleMedicamentoDto
+            {
+                CodDetFacVentaM = d.cod_DetFacVentaM,
+                Cantidad = d.cantidad,
+                PrecioUnitario = d.precioUnitario,
+                CodCobertura = d.codCobertura,
+                NombreCobertura = d.Cobertura != null && d.Cobertura.CodObraSocialNavigation != null ? d.Cobertura.CodObraSocialNavigation.RazonSocial : null,
+                CodMedicamento = d.codMedicamento,
+                NombreMedicamento = d.Medicamento != null ? d.Medicamento.Descripcion : string.Empty,
+                Laboratorio = d.Medicamento != null && d.Medicamento.CodLaboratorioNavigation != null ? d.Medicamento.CodLaboratorioNavigation.Descripcion : null,
+                Lote = d.Medicamento != null && d.Medicamento.CodLoteMedicamentoNavigation != null ? $"Lote {d.Medicamento.CodLoteMedicamentoNavigation.CodLoteMedicamento} - Vence: {d.Medicamento.CodLoteMedicamentoNavigation.FechaVencimiento:dd/MM/yyyy}" : null,
+                Tipo = d.Medicamento != null && d.Medicamento.CodTipoMedicamentoNavigation != null ? d.Medicamento.CodTipoMedicamentoNavigation.Descripcion : null,
+                Presentacion = d.Medicamento != null && d.Medicamento.CodTipoPresentacionNavigation != null ? d.Medicamento.CodTipoPresentacionNavigation.Descripcion : null,
+                UnidadMedida = d.Medicamento != null && d.Medicamento.CodUnidadMedidaNavigation != null ? d.Medicamento.CodUnidadMedidaNavigation.UnidadMedida : null,
+                Concentracion = null // Si tienes campo de concentración, aquí lo puedes mapear
+            }).ToList();
         }
 
         public async Task<List<DetalleArticuloDto>> GetDetallesArticuloAsync(int codFacturaVenta)

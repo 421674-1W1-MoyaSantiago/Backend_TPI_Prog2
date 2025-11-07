@@ -137,9 +137,39 @@ public class UsuariosController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsuarios()
+    public async Task<ActionResult<object>> GetAllUsuarios()
     {
-        var usuarios = await _usuarioService.GetAllUsuariosAsync();
-        return Ok(usuarios);
+        try
+        {
+            var usuarios = await _usuarioService.GetAllUsuariosAsync();
+            return Ok(new {
+                success = true,
+                totalUsuarios = usuarios.Count(),
+                usuarios = usuarios,
+                mensaje = $"Se encontraron {usuarios.Count()} usuarios en PharmDB"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new {
+                success = false,
+                message = $"Error al obtener usuarios: {ex.Message}",
+                error = ex.ToString()
+            });
+        }
+    }
+
+    [HttpGet("simple")]
+    public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsuariosSimple()
+    {
+        try
+        {
+            var usuarios = await _usuarioService.GetAllUsuariosAsync();
+            return Ok(usuarios);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error al obtener usuarios: {ex.Message}");
+        }
     }
 }

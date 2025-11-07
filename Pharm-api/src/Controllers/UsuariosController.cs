@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pharm_api.DTOs;
 using Pharm_api.Models;
 using Pharm_api.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharm_api.Controllers;
 
@@ -172,4 +173,19 @@ public class UsuariosController : ControllerBase
             return StatusCode(500, $"Error al obtener usuarios: {ex.Message}");
         }
     }
+
+[Authorize]
+[HttpGet("me")]
+public async Task<ActionResult<object>> GetCurrentUser()
+{
+    var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+    var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+    return Ok(new {
+        UserId = userId,
+        Username = username,
+        Email = email
+    });
+}
 }

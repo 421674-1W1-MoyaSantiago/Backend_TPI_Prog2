@@ -236,5 +236,10 @@ namespace Pharm_api.Services
 
             return true;
         }
+
+        public async Task<IEnumerable<MedicamentoDto>> GetBySucursalAsync(int codSucursal)
+        {
+            return await _repository.GetBySucursalAsync(codSucursal);
+        }
     }
 }

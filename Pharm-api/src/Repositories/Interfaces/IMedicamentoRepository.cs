@@ -14,7 +14,8 @@ namespace Pharm_api.Repositories
         Task<IEnumerable<MedicamentoDto>> GetByLaboratorioAsync(int laboratorioId);
         Task<IEnumerable<MedicamentoDto>> GetByTipoMedicamentoAsync(int tipoMedicamentoId);
         Task<IEnumerable<MedicamentoDto>> SearchByDescripcionAsync(string descripcion);
-        Task<IEnumerable<MedicamentoDto>> GetMedicamentosConStockBajoAsync(int cantidadMinima = 10);
-        Task<int> GetCountMedicamentosConStockBajoAsync(int cantidadMinima = 10);
+    Task<IEnumerable<MedicamentoDto>> GetMedicamentosConStockBajoAsync(int cantidadMinima = 10);
+    Task<int> GetCountMedicamentosConStockBajoAsync(int cantidadMinima = 10);
+    Task<IEnumerable<MedicamentoDto>> GetBySucursalAsync(int codSucursal);
     }
 }

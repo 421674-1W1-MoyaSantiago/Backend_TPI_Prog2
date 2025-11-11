@@ -109,5 +109,15 @@ namespace Pharm_api.Services
         {
             return await _repository.GetDetallesUnificadosAsync(facturaId);
         }
+
+        public async Task<List<FormaPagoDto>> GetFormasPagoAsync()
+        {
+            IEnumerable<FormasPago> formasPago = await _repository.GetFormasPagoAsync();
+            return formasPago.Select(fp => new FormaPagoDto
+            {
+                CodMetodoPago = fp.CodFormaPago,
+                FormaPago = fp.Metodo
+            }).ToList();
+        }
     }
 }

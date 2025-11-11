@@ -17,5 +17,6 @@ namespace Pharm_api.Repositories
             IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null,
             IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null
         );
+        Task<IEnumerable<FormasPago>> GetFormasPagoAsync();
     }
 }

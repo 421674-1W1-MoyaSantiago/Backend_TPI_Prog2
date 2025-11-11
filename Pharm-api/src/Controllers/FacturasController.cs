@@ -92,5 +92,19 @@ namespace Pharm_api.Controllers
             return Ok(new { FacturaId = facturaId, Detalles = detalles });
         }
 
+        [Authorize]
+        [HttpGet("formas-pago")]
+        public async Task<ActionResult<List<FormaPagoDto>>> GetFormasPagoAsync()
+        {
+            try
+            {
+                List<FormaPagoDto> formasPago = await _facturaService.GetFormasPagoAsync();
+                return Ok(formasPago);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
+            }
+        }
     }
 }

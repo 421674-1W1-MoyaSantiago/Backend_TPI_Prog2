@@ -228,5 +228,10 @@ namespace Pharm_api.Repositories
             if (await _context.SaveChangesAsync() == 0) 
             { return false; } else { return true; }
         }
+
+        public async Task<IEnumerable<FormasPago>> GetFormasPagoAsync()
+        {
+            return await _context.FormasPagos.ToListAsync();
+        }
     }
 }

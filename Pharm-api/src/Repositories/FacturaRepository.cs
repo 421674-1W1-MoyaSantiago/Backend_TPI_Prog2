@@ -4,6 +4,7 @@ using Pharm_api.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Pharm_api.Repositories
 {
@@ -163,17 +164,69 @@ namespace Pharm_api.Repositories
                 .ToListAsync();
         }
 
-        // Insertar factura solo si el usuario tiene acceso a la sucursal
-        public async Task<bool> CreateFacturaForUsuarioAsync(FacturasVentum factura, int usuarioId)
+        public async Task<bool> CreateFacturaForUsuarioAsync
+            (FacturasVentum factura, int usuarioId,
+            IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null,
+            IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null)
         {
+            // Insertar factura solo si el usuario tiene acceso a la sucursal
             var tieneAcceso = await _context.Grupsucursales
                 .AnyAsync(gs => gs.CodUsuario == usuarioId && gs.CodSucursal == factura.CodSucursal && gs.Activo);
             if (!tieneAcceso)
                 return false;
 
-            _context.FacturasVenta.Add(factura);
-            await _context.SaveChangesAsync();
-            return true;
+            // Guardar la nueva factura creada y obtener el id generado
+            EntityEntry<FacturasVentum> nuevaFactura = await _context.FacturasVenta.AddAsync(factura);
+            if (await _context.SaveChangesAsync() == 0) { return false; }
+            int nuevaFacturaId = nuevaFactura.Entity.CodFacturaVenta;
+
+            decimal totalFactura = 0; // Acumulador para calcular el total de la factura
+
+            if (detalleArticulos != null)
+            {
+                foreach (var detalle in detalleArticulos)
+                {
+                    // iterar cada detalle, obtener el precio de la db, asignar el id de factura y guardar
+                    var precioArt = await _context.Articulos
+                        .AsNoTracking()
+                        .Where(a => a.CodArticulo == detalle.codArticulo)
+                        .Select(a => (decimal?)a.PrecioUnitario) // nullable para detectar no-encontrado
+                        .FirstOrDefaultAsync();
+
+                    if (precioArt == null) continue; // si no existe el artículo, saltar
+
+                    detalle.codFacturaVenta = nuevaFacturaId;
+                    detalle.precioUnitario = precioArt.Value;
+                    totalFactura += detalle.precioUnitario * detalle.cantidad; 
+                    await _context.DetallesFacturaVentasArticulo.AddAsync(detalle);
+                }
+            }
+
+            if (detalleMedicamentos != null)
+            {
+                foreach (var detalle in detalleMedicamentos)
+                {
+                    // iterar cada detalle, obtener el precio de la db, asignar el id de factura y guardar
+                    var precioMed = await _context.Medicamentos
+                        .AsNoTracking()
+                        .Where(a => a.CodMedicamento == detalle.codMedicamento)
+                        .Select(a => (decimal?)a.PrecioUnitario) // nullable para detectar no-encontrado
+                        .FirstOrDefaultAsync();
+
+                    if (precioMed == null) continue; // si no existe el medicamento, saltar
+                    detalle.codFacturaVenta = nuevaFacturaId;
+                    detalle.precioUnitario = precioMed.Value;
+                    totalFactura += detalle.precioUnitario * detalle.cantidad;
+                    await _context.DetallesFacturaVentasMedicamento.AddAsync(detalle);
+                }
+            }
+
+            // Actualizar el total de la factura
+            factura.Total = totalFactura;
+            _context.FacturasVenta.Update(factura);
+
+            if (await _context.SaveChangesAsync() == 0) 
+            { return false; } else { return true; }
         }
     }
 }

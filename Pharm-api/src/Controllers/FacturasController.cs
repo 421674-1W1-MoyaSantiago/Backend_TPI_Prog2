@@ -49,15 +49,31 @@ namespace Pharm_api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateFactura(CreateFacturaVentaDto createDto)
         {
-            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized();
+            try
+            {
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return Unauthorized();
 
-            int userId = int.Parse(userIdClaim.Value);
-            var ok = await _facturaService.CreateFacturaForUsuarioAsync(createDto, userId);
-            if (!ok)
-                return Forbid("No tienes acceso a la sucursal indicada");
-            return Ok(new { Mensaje = "Factura creada exitosamente" });
+                int userId = int.Parse(userIdClaim.Value);
+                var ok = await _facturaService.CreateFacturaForUsuarioAsync(createDto, userId);
+                if (!ok)
+                    return BadRequest("No se pudo crear la factura");
+                return Ok(new { Mensaje = "Factura creada exitosamente" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Forbid(ex.Message);
+            }
+
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
+            }
         }
 
         // Endpoint de debug para verificar medicamentos en BD

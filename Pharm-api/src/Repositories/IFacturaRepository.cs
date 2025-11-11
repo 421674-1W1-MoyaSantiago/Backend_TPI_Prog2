@@ -12,6 +12,10 @@ namespace Pharm_api.Repositories
         Task<List<DetalleFacturaBaseDto>> GetDetallesUnificadosAsync(int codFacturaVenta);
         Task<FacturaVentaDto?> GetFacturaConDetallesAsync(int codFacturaVenta);
         Task<IEnumerable<FacturasVentum>> GetFacturasByUsuarioAsync(int usuarioId);
-        Task<bool> CreateFacturaForUsuarioAsync(FacturasVentum factura, int usuarioId);
+        Task<bool> CreateFacturaForUsuarioAsync(
+            FacturasVentum factura, int usuarioId,
+            IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null,
+            IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null
+        );
     }
 }

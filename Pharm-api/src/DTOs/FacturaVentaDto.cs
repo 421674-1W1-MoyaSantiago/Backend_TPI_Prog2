@@ -89,7 +89,21 @@ namespace Pharm_api.DTOs
         public int CodCliente { get; set; }
         public int CodSucursal { get; set; }
         public int CodFormaPago { get; set; }
-        public decimal Total { get; set; }
+        public IEnumerable<CrearDetalleArticuloDto>? DetalleArticulos { get; set; }
+        public IEnumerable<CrearDetalleMedicamentoDto>? DetalleMedicamentos { get; set; }
+    }
+
+    public class CrearDetalleMedicamentoDto
+    {
+        public int CodMedicamento { get; set; }
+        public int? CodCobertura { get; set; }
+        public int Cantidad { get; set; }
+    }
+
+    public class CrearDetalleArticuloDto
+    {
+        public int CodArticulo { get; set; }
+        public int Cantidad { get; set; }
     }
 
     public class FacturaVentaQueryDto

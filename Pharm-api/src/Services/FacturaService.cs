@@ -1,8 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Pharm_api.DTOs;
 using Pharm_api.Models;
 using Pharm_api.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Pharm_api.DTOs;
 
 namespace Pharm_api.Services
 {
@@ -52,13 +53,51 @@ namespace Pharm_api.Services
 
         public async Task<bool> CreateFacturaForUsuarioAsync(CreateFacturaVentaDto createDto, int usuarioId)
         {
+            if (createDto.DetalleArticulos == null && createDto.DetalleMedicamentos == null)
+            {
+                throw new ArgumentException("La factura debe contener al menos un detalle de artículo o medicamento.");
+            }
+
             var factura = new FacturasVentum
             {
                 // Mapear propiedades desde createDto
-                CodSucursal = createDto.CodSucursal,
-                // ...otras propiedades...
+                CodFormaPago = createDto.CodFormaPago,
+                CodSucursal  = createDto.CodSucursal,
+                CodEmpleado  = createDto.CodEmpleado,
+                CodCliente   = createDto.CodCliente,
+                Fecha        = DateTime.Now
             };
-            return await _repository.CreateFacturaForUsuarioAsync(factura, usuarioId);
+
+            List<DetallesFacturaVentasArticulo>? detallesArticulos = null;
+            if (createDto.DetalleArticulos != null && createDto.DetalleArticulos.Any())
+            {
+                detallesArticulos = new List<DetallesFacturaVentasArticulo>();
+                foreach (var detalle in createDto.DetalleArticulos)
+                {
+                    detallesArticulos.Add(new DetallesFacturaVentasArticulo
+                    {
+                        codArticulo = detalle.CodArticulo,
+                        cantidad = detalle.Cantidad
+                    });
+                }
+            }
+
+            List<DetallesFacturaVentasMedicamento>? detallesMedicamentos = null;
+            if (createDto.DetalleMedicamentos != null && createDto.DetalleMedicamentos.Any())
+            {
+                detallesMedicamentos = new List<DetallesFacturaVentasMedicamento>();
+                foreach (var detalle in createDto.DetalleMedicamentos)
+                {
+                    detallesMedicamentos.Add(new DetallesFacturaVentasMedicamento
+                    {
+                        codMedicamento = detalle.CodMedicamento,
+                        codCobertura = detalle.CodCobertura,
+                        cantidad = detalle.Cantidad
+                    });
+                }
+            }
+
+            return await _repository.CreateFacturaForUsuarioAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
         }
 
         public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId)

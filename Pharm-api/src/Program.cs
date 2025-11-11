@@ -5,6 +5,10 @@ using System.Text;
 using Pharm_api.Data;
 using Pharm_api.Repositories;
 using Pharm_api.Services;
+using Pharm_api.Repositories.Interfaces;
+using Pharm_api.Repositories.Implementations;
+using Pharm_api.Services.Interfaces;
+using Pharm_api.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +28,8 @@ builder.Services.AddScoped<ISucursalRepository, SucursalRepository>();
 builder.Services.AddScoped<ISucursalService, SucursalService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 // User Sync Services (nuevo patrón simple)
 builder.Services.AddScoped<IUserSyncRepository, UserSyncRepository>();
 builder.Services.AddScoped<IUserSyncService, UserSyncService>();

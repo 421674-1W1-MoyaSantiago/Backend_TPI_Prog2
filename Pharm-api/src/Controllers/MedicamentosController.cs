@@ -244,5 +244,12 @@ namespace Pharm_api.Controllers
                 return StatusCode(500, $"Error al eliminar medicamento: {ex.Message}");
             }
         }
+
+        [HttpGet("sucursal/{codSucursal}")]
+        public async Task<ActionResult<IEnumerable<MedicamentoDto>>> GetMedicamentosPorSucursal(int codSucursal)
+        {
+            var medicamentos = await _medicamentoService.GetBySucursalAsync(codSucursal);
+            return Ok(medicamentos);
+        }
     }
 }

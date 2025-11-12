@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<PharmDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IArticuloRepository, ArticuloRepository>();
+builder.Services.AddScoped<IArticuloService, ArticuloService>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -32,6 +34,8 @@ builder.Services.AddScoped<IInformesRepository, InformesRepository>();
 builder.Services.AddScoped<IInformesService, InformesService>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<ICoberturaRepository, CoberturaRepository>();
+builder.Services.AddScoped<ICoberturaService, CoberturaService>();
 // User Sync Services (nuevo patrón simple)
 builder.Services.AddScoped<IUserSyncRepository, UserSyncRepository>();
 builder.Services.AddScoped<IUserSyncService, UserSyncService>();
@@ -75,7 +79,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
 var app = builder.Build();
 

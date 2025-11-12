@@ -114,9 +114,9 @@ VALUES
 
 -- Proveedores de ejemplo
 INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
-('Proveedor1 Ejemplo SA', '30-11111111-1', '011-4000-1001'),
-('Proveedor2 Ejemplo SA', '30-22222222-2', '011-4000-2002'),
-('Proveedor3 Ejemplo SA', '30-33333333-3', '011-4000-3003');
+('Farmacéutica Del Plata SA', '30-11111111-1', '011-4000-1001'),
+('Distribuidora Medicinal Argentina SRL', '30-22222222-2', '011-4000-2002'),
+('Grupo Farmacológico Central SA', '30-33333333-3', '011-4000-3003');
 
 -- Laboratorios de ejemplo - EXPANDIDO para simular farmacia real
 INSERT INTO Laboratorios (descripcion, cod_Proveedor) VALUES
@@ -322,7 +322,10 @@ INSERT INTO Empleados (nom_Empleado, ape_Empleado, nro_Tel, calle, altura, email
 VALUES 
 ('Admin', 'Administrador', '011-1111-1111', 'Av. Admin', 100, 'admin@farmacia.ejemplo.com', '2024-01-15', 4, 1, 1),
 ('Miguel', 'Rojas', '011-2222-2222', 'Calle Ejemplo', 200, 'rmiguel@farmacia.ejemplo.com', '2024-02-01', 2, 1, 1),
-('Claudio', 'Eleuterio', '0221-3333-3333', 'Av. Muestra', 300, 'eclaudio@farmacia.ejemplo.com', '2024-03-01', 1, 1, 2);
+('Claudio', 'Eleuterio', '0221-3333-3333', 'Av. Muestra', 300, 'eclaudio@farmacia.ejemplo.com', '2024-03-01', 1, 1, 2),
+('Sofia', 'Martinez', '0221-4444-4444', 'Calle Córdoba', 456, 'smartinez@farmacia.ejemplo.com', '2024-04-10', 5, 1, 2),
+('Ricardo', 'Fernandez', '0351-5555-5555', 'Av. Colón', 789, 'rfernandez@farmacia.ejemplo.com', '2024-05-20', 1, 1, 3),
+('Lucia', 'Garcia', '0351-6666-6666', 'Bv. San Juan', 1234, 'lgarcia@farmacia.ejemplo.com', '2024-06-15', 3, 1, 3);
 
 -- Clientes de ejemplo (NECESARIOS ANTES que las coberturas)
 INSERT INTO Clientes (nomCliente, apeCliente, nroDoc, nroTel, calle, altura, email, cod_Tipo_Documento, cod_Obra_Social)
@@ -353,20 +356,82 @@ VALUES
 INSERT INTO Descuentos (Fecha_Descuento, cod_localidad, cod_medicamento, porcentaje_descuento, cod_tipo_descuento) VALUES
 (GETDATE(), 1, 1, 15.00, 1), -- Descuento OSDE para Medicamento cod. 1 en CABA
 (GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento cod. 2 en La Plata
-(GETDATE(), 1, 3, 10.00, 2); -- Descuento por promoción para Medicamento cod. 3
+(GETDATE(), 1, 3, 10.00, 2), -- Descuento por promoción para Medicamento cod. 3
+(GETDATE(), 1, 5, 25.00, 2), -- Descuento por Promoción para Actron en CABA
+(GETDATE(), 2, 10, 18.00, 1), -- Descuento por Obra Social para Clavulin en La Plata
+(GETDATE(), 2, 15, 22.00, 4), -- Descuento Cliente Frecuente para Omeprazol en La Plata
+(GETDATE(), 4, 4, 35.00, 2), -- Descuento por Promoción para Tafirol en Córdoba Capital
+(GETDATE(), 4, 12, 40.00, 3), -- Descuento por Volumen para Cefalexina en Córdoba Capital
+(GETDATE(), 4, 18, 28.00, 1); -- Descuento por Obra Social para Losartan en Córdoba Capital
 
 -- Coberturas de ejemplo (DESPUÉS de clientes, obras sociales y descuentos)
 INSERT INTO Coberturas (fechaInicio, fechaFin, cod_Localidad, cod_cliente, cod_Obra_Social, cod_descuento) VALUES
 ('2024-01-01', '2024-12-31', 1, 1, 1, 1), -- Ana con OSDE en CABA
 ('2024-01-01', '2024-12-31', 2, 2, 2, 2), -- Roberto con Swiss Medical en La Plata
-('2024-01-01', '2024-12-31', 1, 3, 3, 1); -- Laura con Galeno en CABA (usando descuento 1)
+('2024-01-01', '2024-12-31', 1, 3, 3, 1), -- Laura con Galeno en CABA (usando descuento 1)
+('2025-01-01', '2025-12-31', 1, 4, 1, 4), -- María González con MET en CABA
+('2025-01-01', '2025-12-31', 4, 5, 2, 7), -- Juan Pérez con Medife en Córdoba Capital
+('2025-02-01', '2025-12-31', 2, 6, 3, 5), -- Carolina Fernández con OSDE en La Plata
+('2025-01-15', '2025-12-31', 1, 7, 4, 4), -- Diego López con Swiss Medical en CABA
+('2025-03-01', '2025-12-31', 4, 8, 1, 8), -- Valeria Rodríguez con MET en Córdoba Capital
+('2025-01-01', '2025-06-30', 2, 10, 3, 6), -- Lucía Ramírez con OSDE en La Plata
+('2025-02-15', '2025-12-31', 4, 12, 1, 9); -- Florencia Morales con MET en Córdoba Capital
 
 -- Stock de artículos
 INSERT INTO Stock_Articulos (cantidad, codSucursal, codArticulo) VALUES
-(50, 1, 1), -- Shampoo en Central CABA
-(30, 1, 2), -- Crema en Central CABA
-(20, 2, 3), -- Perfume en Norte La Plata
-(25, 1, 4); -- Termómetro en Central CABA
+-- Stock para todos los artículos distribuidos entre las 3 sucursales
+(80, 1, 1), (70, 2, 1), -- Head & Shoulders Anticaspa 400ml
+(90, 1, 2), (60, 3, 2), -- Pantene Reparación Intensa Acondicionador 400ml
+(100, 2, 3), (50, 1, 3), -- Colgate Total Protección 90g
+(120, 3, 4), -- Nivea Crema Hidratante Facial 50ml
+(150, 1, 5), (80, 2, 5), -- Shampoo Anticaspa Head & Shoulders 400ml
+(110, 2, 6), (90, 3, 6), -- Acondicionador Pantene Reparación 400ml
+(140, 1, 7), (70, 3, 7), -- Jabón Líquido Dove 250ml
+(130, 2, 8), (60, 1, 8), -- Desodorante Rexona Aerosol 150ml
+(200, 3, 9), (100, 1, 9), -- Crema Dental Colgate Total 90g
+(90, 1, 10), (80, 2, 10), -- Enjuague Bucal Listerine 500ml
+(70, 2, 11), (60, 3, 11), -- Cepillo de Dientes Oral-B
+(160, 1, 12), (90, 3, 12), -- Papel Higiénico Elite x4
+(110, 2, 13), (70, 1, 13), -- Toallas Femeninas Always x16
+(80, 3, 14), (50, 2, 14), -- Crema Hidratante Nivea 200ml
+(60, 1, 15), (40, 3, 15), -- Protector Solar Eucerin FPS 60
+(90, 2, 16), (50, 1, 16), -- Base de Maquillaje Maybelline
+(70, 1, 17), (40, 3, 17), -- Labial Revlon Color Rosa
+(80, 2, 18), (50, 1, 18), -- Rimmel Máscara de Pestañas
+(60, 3, 19), (30, 2, 19), -- Crema Antiarrugas Olay 50ml
+(50, 1, 20), (40, 2, 20), -- Perfume Antonio Banderas 100ml
+(40, 2, 21), (30, 3, 21), -- Perfume Paco Rabanne 80ml
+(100, 1, 22), (70, 2, 22), -- Colonia Agua de Rosas 500ml
+(120, 2, 23), (80, 3, 23), -- Desodorante Roll-On Nivea 50ml
+(150, 1, 24), (100, 2, 24), -- Pañales Pampers M x30
+(110, 3, 25), (80, 1, 25), -- Shampoo Johnson Baby 400ml
+(90, 2, 26), (60, 3, 26), -- Crema Pañalitis Bepanthen 100g
+(130, 1, 27), (90, 2, 27), -- Toallitas Húmedas Huggies x80
+(100, 2, 28), (70, 3, 28), -- Aceite Johnson Baby 200ml
+(80, 1, 29), (50, 2, 29), -- Mamaderas Chicco 260ml
+(90, 3, 30), (60, 1, 30), -- Chupetes MAM x2
+(50, 1, 31), (40, 2, 31), -- Termómetro Digital
+(30, 2, 32), (20, 3, 32), -- Tensiómetro Digital Brazo
+(40, 3, 33), (30, 1, 33), -- Glucómetro One Touch + 25 tiras
+(50, 1, 34), (30, 2, 34), -- Nebulizador Ultrasonico
+(200, 2, 35), (150, 3, 35), -- Jeringas Descartables 5ml x10
+(180, 1, 36), (120, 2, 36), -- Gasas Estériles 10x10 x25
+(250, 2, 37), (200, 3, 37), -- Alcohol en Gel 250ml
+(300, 1, 38), (200, 2, 38), -- Barbijos Quirúrgicos x50
+(140, 3, 39), (100, 1, 39), -- Vendas Elásticas 10cm
+(220, 2, 40), (180, 3, 40), -- Curitas Adhesivas x40
+(190, 1, 41), (140, 2, 41), -- Algodón Hidrófilo 100g
+(150, 2, 42), (110, 3, 42), -- Agua Oxigenada 10vol 250ml
+(170, 3, 43), (130, 1, 43), -- Alcohol Etílico 70° 250ml
+(120, 1, 44), (90, 2, 44), -- Iodopovidona Solución 120ml
+(70, 2, 45), (50, 3, 45), -- Omega 3 en Cápsulas x60
+(80, 1, 46), (60, 2, 46), -- Magnesio + B6 x30
+(90, 3, 47), (60, 1, 47), -- Probióticos en Cápsulas x30
+(70, 2, 48), (50, 3, 48), -- Coenzima Q10 x60
+(100, 1, 49), (80, 3, 49), -- Shampoo en sucursal 1 y 3 adicional
+(110, 2, 50), (90, 1, 50), -- Crema en sucursal 2 y 1 adicional
+(130, 3, 51), (100, 2, 51), -- Perfume en sucursal 3 y 2 adicional
+(140, 1, 52), (110, 3, 52); -- Termómetro en sucursal 1 y 3 adicional
 
 -- Stock de medicamentos - EXPANDIDO para testing de endpoints
 INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
@@ -441,17 +506,56 @@ INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
 -- Recetas de ejemplo
 INSERT INTO Recetas (nomMedico, apeMedico, matricula, fecha, diagnostico, codigo, estado, codObraSocial, codCliente, codTipoReceta) VALUES
 ('Dr. Carlos', 'Menem', 'MP12345', GETDATE(), 'Dolor de cabeza', 12345, 'Activa', 1, 1, 1),
-('Dra. María', 'González', 'MP67890', GETDATE(), 'Infección respiratoria', 67890, 'Activa', 2, 2, 1);
+('Dra. María', 'González', 'MP67890', GETDATE(), 'Infección respiratoria', 67890, 'Activa', 2, 2, 1),
+('Dr. Roberto', 'Silva', 'MP23456', '2025-01-15', 'Hipertensión arterial', 23456, 'Activa', 1, 3, 1),
+('Dra. Laura', 'Fernandez', 'MP34567', '2025-02-10', 'Dolor muscular', 34567, 'Pendiente', 3, 4, 1),
+('Dr. Martín', 'Rodríguez', 'MP45678', '2025-02-28', 'Alergia estacional', 45678, 'Activa', 2, 5, 1),
+('Dra. Patricia', 'Lopez', 'MP56789', '2025-03-15', 'Infección urinaria', 56789, 'Cancelada', 4, 6, 1),
+('Dr. Diego', 'Martinez', 'MP67891', '2025-04-05', 'Gastritis', 67891, 'Activa', 1, 7, 2),
+('Dra. Ana', 'Torres', 'MP78912', '2025-05-12', 'Diabetes tipo 2', 78912, 'Activa', 3, 8, 1),
+('Dr. Javier', 'Gomez', 'MP89123', '2025-06-20', 'Bronquitis', 89123, 'Pendiente', 2, 9, 1),
+('Dra. Claudia', 'Ramirez', 'MP91234', '2025-07-08', 'Dolor de garganta', 91234, 'Activa', 1, 10, 1),
+('Dr. Fernando', 'Castro', 'MP12347', '2025-08-14', 'Migraña crónica', 12347, 'Activa', 4, 11, 1),
+('Dra. Silvia', 'Morales', 'MP23458', '2025-09-25', 'Artritis', 23458, 'Pendiente', 2, 12, 2),
+('Dr. Pablo', 'Herrera', 'MP34569', '2025-10-10', 'Rinitis alérgica', 34569, 'Activa', 3, 13, 1),
+('Dra. Monica', 'Vega', 'MP45670', '2025-11-01', 'Faringitis', 45670, 'Cancelada', 1, 14, 1),
+('Dr. Gustavo', 'Diaz', 'MP56781', '2025-11-11', 'Asma bronquial', 56781, 'Activa', 2, 15, 2);
 
 -- Detalles de recetas
 INSERT INTO Detalles_Receta (cantidad, codMedicamento, cod_Receta) VALUES
 (1, 2, 1), -- Medicamento2 para receta 1
-(2, 1, 2); -- Medicamento1 para receta 2
+(2, 1, 2), -- Medicamento1 para receta 2
+(1, 18, 3), -- Losartan para receta 3 (Hipertensión)
+(2, 8, 4), -- Ibupirac para receta 4 (Dolor muscular)
+(1, 22, 5), -- Loratadina para receta 5 (Alergia)
+(2, 10, 6), -- Clavulin para receta 6 (Infección urinaria)
+(1, 15, 7), -- Omeprazol para receta 7 (Gastritis)
+(2, 29, 8), -- Metformina para receta 8 (Diabetes)
+(1, 24, 9), -- Ambroxol para receta 9 (Bronquitis)
+(2, 11, 10), -- Eritromicina para receta 10 (Dolor de garganta)
+(1, 5, 11), -- Actron para receta 11 (Migraña)
+(2, 32, 12), -- Diclofenac para receta 12 (Artritis)
+(1, 23, 13), -- Cetirizina para receta 13 (Rinitis alérgica)
+(2, 12, 14), -- Cefalexina para receta 14 (Faringitis)
+(1, 21, 15); -- Salbutamol para receta 15 (Asma)
 
 -- Autorizaciones
 INSERT INTO Autorizaciones (codigo, estado, fechaAutorizacion, codObraSocial, codReceta) VALUES
 (100001, 'Autorizada', GETDATE(), 1, 1),
-(100002, 'Autorizada', GETDATE(), 2, 2);
+(100002, 'Autorizada', GETDATE(), 2, 2),
+(100003, 'Autorizada', '2025-01-15', 1, 3),
+(100004, 'Pendiente', '2025-02-10', 3, 4),
+(100005, 'Autorizada', '2025-02-28', 2, 5),
+(100006, 'Rechazada', '2025-03-15', 4, 6),
+(100007, 'Autorizada', '2025-04-05', 1, 7),
+(100008, 'Autorizada', '2025-05-12', 3, 8),
+(100009, 'Pendiente', '2025-06-20', 2, 9),
+(100010, 'Autorizada', '2025-07-08', 1, 10),
+(100011, 'Autorizada', '2025-08-14', 4, 11),
+(100012, 'Pendiente', '2025-09-25', 2, 12),
+(100013, 'Autorizada', '2025-10-10', 3, 13),
+(100014, 'Rechazada', '2025-11-01', 1, 14),
+(100015, 'Autorizada', '2025-11-11', 2, 15);
 
 -- Facturas de compra
 INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) VALUES

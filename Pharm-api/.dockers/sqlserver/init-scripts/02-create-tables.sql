@@ -99,7 +99,7 @@ CREATE TABLE Empleados (
 );
 
 CREATE TABLE Proveedores (
-    cod_Proveedor INT PRIMARY KEsY IDENTITY(1,1),
+    cod_Proveedor INT PRIMARY KEY IDENTITY(1,1),
     razon_Social VARCHAR(255) NOT NULL,
     cuit VARCHAR(255),
     nro_Tel VARCHAR(255)

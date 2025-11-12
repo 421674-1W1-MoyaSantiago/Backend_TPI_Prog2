@@ -8,7 +8,6 @@ namespace Pharm_api.Models
         public int CodCategoriaArticulo { get; set; }
 
         public string Categoria { get; set; } = null!;
-        public string Descripcion { get; set; }
     }
 }
 

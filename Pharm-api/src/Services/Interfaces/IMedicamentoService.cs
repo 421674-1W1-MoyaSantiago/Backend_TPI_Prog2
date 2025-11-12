@@ -16,6 +16,5 @@ namespace Pharm_api.Services
         Task<int> GetCountMedicamentosConStockBajoAsync(int cantidadMinima = 10);
         Task<bool> ValidateMedicamentoDataAsync(CreateMedicamentoDto createDto);
         Task<bool> ValidateMedicamentoDataAsync(UpdateMedicamentoDto updateDto);
-        Task<IEnumerable<MedicamentoDto>> GetBySucursalAsync(int codSucursal);
     }
 }

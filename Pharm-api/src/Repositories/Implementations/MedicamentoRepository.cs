@@ -48,40 +48,6 @@ namespace Pharm_api.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<MedicamentoDto>> GetBySucursalAsync(int codSucursal)
-        {
-            return await _context.Medicamentos
-                .Join(_context.StockMedicamentos,
-                    medicamento => medicamento.CodMedicamento,
-                    stock => stock.CodMedicamento,
-                    (medicamento, stock) => new { medicamento, stock })
-                .Where(ms => ms.stock.CodSucursal == codSucursal && ms.stock.Cantidad > 0)
-                .Select(ms => new MedicamentoDto
-                {
-                    CodMedicamento = ms.medicamento.CodMedicamento,
-                    CodBarra = ms.medicamento.CodBarra,
-                    Descripcion = ms.medicamento.Descripcion,
-                    RequiereReceta = ms.medicamento.RequiereReceta,
-                    VentaLibre = ms.medicamento.VentaLibre,
-                    PrecioUnitario = ms.medicamento.PrecioUnitario,
-                    Dosis = ms.medicamento.Dosis,
-                    Posologia = ms.medicamento.Posologia,
-                    CodLoteMedicamento = ms.medicamento.CodLoteMedicamento,
-                    LoteDescripcion = $"Lote {ms.medicamento.CodLoteMedicamento}",
-                    StockDisponible = ms.stock.Cantidad,
-                    FechaVencimiento = ms.medicamento.CodLoteMedicamentoNavigation.FechaVencimiento,
-                    CodLaboratorio = ms.medicamento.CodLaboratorio,
-                    LaboratorioDescripcion = ms.medicamento.CodLaboratorioNavigation.Descripcion,
-                    CodTipoPresentacion = ms.medicamento.CodTipoPresentacion,
-                    TipoPresentacionDescripcion = ms.medicamento.CodTipoPresentacionNavigation.Descripcion,
-                    CodUnidadMedida = ms.medicamento.CodUnidadMedida,
-                    UnidadMedidaDescripcion = ms.medicamento.CodUnidadMedidaNavigation.UnidadMedida,
-                    CodTipoMedicamento = ms.medicamento.CodTipoMedicamento,
-                    TipoMedicamentoDescripcion = ms.medicamento.CodTipoMedicamentoNavigation.Descripcion
-                })
-                .ToListAsync();
-        }
-
         public async Task<MedicamentoDto?> GetByIdAsync(int id)
         {
             return await _context.Medicamentos

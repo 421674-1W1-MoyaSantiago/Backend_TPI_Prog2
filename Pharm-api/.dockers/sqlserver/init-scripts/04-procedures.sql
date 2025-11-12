@@ -9,53 +9,89 @@ CREATE PROCEDURE sp_Ventas_Medicamentos_ObraSocial
 AS
 BEGIN
     BEGIN TRY
+        -- Validaciones
         IF (@FechaInicio IS NULL OR @FechaFin IS NULL)
         BEGIN
-        RAISERROR('Las fechas de inicio y fin son obligatorias.', 16, 1);
-        RETURN;
-    END
+            RAISERROR('Las fechas de inicio y fin son obligatorias.', 16, 1);
+            RETURN;
+        END
+        
         IF (@FechaInicio > @FechaFin)
         BEGIN
-        RAISERROR('La fecha de inicio no puede ser mayor que la fecha de fin.', 16, 1);
-        RETURN;
-    END
-
+            RAISERROR('La fecha de inicio no puede ser mayor que la fecha de fin.', 16, 1);
+            RETURN;
+        END
+        
         SELECT
-        fv.fecha AS 'Fecha Venta',
-        c.nomCliente + SPACE(2) + c.apeCliente AS Cliente,
-        m.descripcion AS Medicamento,
-        dr.cantidad AS 'Cantidad Vendida',
-        r.nomMedico + SPACE(2) + r.apeMedico AS Médico,
-        r.matricula AS Matrícula,
-        os.razonSocial AS 'Obra Social',
-        ISNULL(d.porcentaje_descuento, 0) AS 'Monto Descuento',
-        sm.cantidad AS StockActual
-    FROM FacturasVenta fv
-        LEFT JOIN DetallesFacturaVentasMedicamento dr ON fv.cod_FacturaVenta = dr.codFacturaVenta
-        LEFT JOIN Medicamentos m ON dr.codMedicamento = m.cod_medicamento
-        LEFT JOIN Clientes c ON fv.codCliente = c.cod_Cliente
-        LEFT JOIN Coberturas cob ON dr.codCobertura = cob.cod_Cobertura
-        LEFT JOIN Obras_Sociales os ON cob.cod_Obra_Social = os.cod_Obra_Social
-        LEFT JOIN Descuentos d ON cob.cod_descuento = d.cod_descuento
-        LEFT JOIN Recetas r ON r.codCliente = c.cod_Cliente AND r.codObraSocial = cob.cod_Obra_Social
-        LEFT JOIN Stock_Medicamentos sm ON fv.codSucursal = sm.cod_Sucursal
+            fv.fecha AS FechaVenta,
+            c.nomCliente + SPACE(1) + c.apeCliente AS Cliente,
+            m.descripcion AS Medicamento,
+            dfvm.cantidad AS CantidadVendida,
+            r.nomMedico + SPACE(1) + r.apeMedico AS Medico,
+            r.matricula AS Matricula,
+            ISNULL(os.razonSocial, 'Sin obra social') AS ObraSocial,            
+            ISNULL(d.porcentaje_descuento, 0) AS MontoDescuento,
+            ISNULL(sm.cantidad, 0) AS StockActual,
+            
+            -- Indicador de tipo de venta
+            CASE 
+                WHEN dfvm.codCobertura IS NOT NULL THEN 'Con Cobertura'
+                ELSE 'Venta Libre'
+            END AS TipoVenta
+            
+        FROM FacturasVenta fv
+        INNER JOIN DetallesFacturaVentasMedicamento dfvm 
+            ON fv.cod_FacturaVenta = dfvm.codFacturaVenta
+        INNER JOIN Medicamentos m 
+            ON dfvm.codMedicamento = m.cod_medicamento
+        INNER JOIN Clientes c 
+            ON fv.codCliente = c.cod_Cliente
+            
+        -- Cobertura es OPCIONAL (puede ser NULL para ventas libres)
+        LEFT JOIN Coberturas cob 
+            ON dfvm.codCobertura = cob.cod_Cobertura
+        LEFT JOIN Obras_Sociales os 
+            ON cob.cod_Obra_Social = os.cod_Obra_Social
+        LEFT JOIN Descuentos d 
+            ON cob.cod_descuento = d.cod_descuento
+            
+        -- Stock actual del medicamento en la sucursal
+        LEFT JOIN Stock_Medicamentos sm 
+            ON fv.codSucursal = sm.cod_Sucursal 
             AND m.cod_medicamento = sm.cod_Medicamento
-    WHERE fv.fecha BETWEEN @FechaInicio AND @FechaFin
-        AND (
-               @ObraSocialNombre IS NULL
-        OR os.razonSocial = @ObraSocialNombre
+            
+        -- Receta relacionada con el medicamento vendido (si existe)
+        LEFT JOIN Detalles_Receta dr 
+            ON dr.codMedicamento = m.cod_medicamento
+        LEFT JOIN Recetas r 
+            ON r.cod_Receta = dr.cod_Receta 
+            AND r.codCliente = c.cod_Cliente 
+            AND r.fecha <= fv.fecha
+            AND r.estado = 'Activa'
+            -- Solo relacionar receta si la venta tiene cobertura
+            AND (dfvm.codCobertura IS NULL OR r.codObraSocial = cob.cod_Obra_Social)
+            
+        WHERE fv.fecha BETWEEN @FechaInicio AND @FechaFin
+          -- Filtro por obra social (si se especifica)
+          AND (
+                @ObraSocialNombre IS NULL  -- Todas las ventas
+                OR os.razonSocial = @ObraSocialNombre  -- Obra social especifica
+                OR (@ObraSocialNombre = 'SIN OBRA SOCIAL' AND dfvm.codCobertura IS NULL)  -- Solo ventas libres
           )
-    ORDER BY fv.fecha, Cliente
+          
+        ORDER BY fv.fecha, c.apeCliente, c.nomCliente
+        
     END TRY
     BEGIN CATCH
         DECLARE @ErrMsg NVARCHAR(4000), @ErrSeverity INT, @ErrState INT;
-        SELECT @ErrMsg = ERROR_MESSAGE(),
-        @ErrSeverity = ERROR_SEVERITY(),
-        @ErrState = ERROR_STATE();
+        SELECT @ErrMsg = ERROR_MESSAGE(), 
+               @ErrSeverity = ERROR_SEVERITY(), 
+               @ErrState = ERROR_STATE();
         RAISERROR(@ErrMsg, @ErrSeverity, @ErrState);
     END CATCH
 END
 GO
+
 ------------
 
 IF OBJECT_ID('dbo.sp_TopMedicamentoYVendedorPorEstacion','P') IS NOT NULL
@@ -91,17 +127,17 @@ BEGIN
     END
 
     SELECT TOP 5
-        @Estacion AS Estación,
-        m.descripcion AS 'Medicamento más Vendido',
+        @Estacion AS Estacion,
+        m.descripcion AS MedicamentoMasVendido,
         CONCAT(e.nom_Empleado, ' ', e.ape_Empleado) AS Vendedor,
-        SUM(d.cantidad) AS 'Total Vendido'
+        SUM(d.cantidad) AS TotalVendido
     FROM FacturasVenta fv
     JOIN DetallesFacturaVentasMedicamento d ON fv.cod_FacturaVenta = d.codFacturaVenta
     JOIN Medicamentos m ON d.codMedicamento = m.cod_medicamento
     JOIN Empleados e ON fv.codEmpleado = e.cod_Empleado
     WHERE MONTH(fv.fecha) BETWEEN @MesInicio AND @MesFin
     GROUP BY m.descripcion, e.nom_Empleado, e.ape_Empleado
-    ORDER BY 'Total Vendido' DESC;
+    ORDER BY TotalVendido DESC;
 END;
 GO
 
@@ -115,8 +151,8 @@ CREATE PROCEDURE sp_ComprasSuministrosConAutorizacionObraSocial
 AS
 BEGIN
     SELECT DISTINCT
-                    c.nomCliente + ' ' + c.apeCliente AS 'Nombre del Cliente',
-                    os.razonSocial AS  'Obra Social'
+                    c.nomCliente + ' ' + c.apeCliente AS NombreCliente,
+                    os.razonSocial AS ObraSocial
     FROM FacturasVenta fv
     JOIN Clientes c ON fv.codCliente = c.cod_Cliente
     JOIN DetallesFacturaVentasMedicamento dfvm ON fv.cod_FacturaVenta = dfvm.codFacturaVenta
@@ -130,7 +166,7 @@ BEGIN
         AND YEAR(fv.fecha) = YEAR(GETDATE())
         AND a.estado = 'AUTORIZADA'
     GROUP BY c.nomCliente, c.apeCliente, os.razonSocial
-    ORDER BY 'Obra Social'
+    ORDER BY ObraSocial
 END
 GO
 
@@ -141,30 +177,31 @@ IF OBJECT_ID('dbo.SP_RECETAS_OBRA_SOCIAL_ESTADO','P') IS NOT NULL
 GO
 
 CREATE PROCEDURE SP_RECETAS_OBRA_SOCIAL_ESTADO
-@obra_social VARCHAR(100),
-@estado VARCHAR(30)
+@obra_social VARCHAR(100) = null,
+@estado VARCHAR(30) = null
 AS
 BEGIN
-SELECT apeMedico + ', '+ nomMedico 'Nombre del médico',
-       matricula 'Nro de Matricula',
-       CONVERT(VARCHAR,r.fecha,103) 'Fecha de la receta',
-       diagnostico 'Diagnostico',
-       tr.tipo 'Tipo de Receta',
-       r.estado 'Estado de la Receta',
-       c.apeCliente + ', ' + c.nomCliente 'Nombre del cliente',
-       c.nroDoc 'Nro de Documento del Cliente',
-       os.razonSocial 'Obra Social',
-       a.estado 'Estado de la Autorización'
-FROM Recetas r
-JOIN Tipos_Receta tr ON r.codTipoReceta = tr.cod_Tipo_Receta
-JOIN Clientes c ON c.cod_Cliente = r.codCliente
-JOIN Autorizaciones a ON a.codReceta = r.cod_Receta
-JOIN Obras_Sociales os ON os.cod_Obra_Social = a.codObraSocial
-WHERE os.razonSocial = @obra_social
-AND a.estado = @estado
-ORDER BY [Nro de Documento del Cliente]
+    SELECT apeMedico + SPACE(1) + nomMedico as NombreMedico,
+           matricula as NroMatricula,
+           CONVERT(VARCHAR,r.fecha,103) as FechaReceta,
+           diagnostico as Diagnostico,
+           tr.tipo as TipoReceta,
+           r.estado as EstadoReceta,
+           c.apeCliente + SPACE(1) + c.nomCliente as NombreCliente,
+           c.nroDoc as NroDocumentoCliente,
+           os.razonSocial as ObraSocial,
+           a.estado as EstadoAutorizacion
+    FROM Recetas r
+    JOIN Tipos_Receta tr ON r.codTipoReceta = tr.cod_Tipo_Receta
+    JOIN Clientes c ON c.cod_Cliente = r.codCliente
+    JOIN Autorizaciones a ON a.codReceta = r.cod_Receta
+    JOIN Obras_Sociales os ON os.cod_Obra_Social = a.codObraSocial
+    WHERE (@obra_social IS NULL OR os.razonSocial = @obra_social)
+        AND (@estado IS NULL OR a.estado = @estado)
+    ORDER BY NroDocumentoCliente
 END
 GO
+
 ------------
 
 IF OBJECT_ID('dbo.sp_Consultar_Reintegros_Obras_Sociales','P') IS NOT NULL
@@ -179,6 +216,7 @@ CREATE PROCEDURE sp_Consultar_Reintegros_Obras_Sociales
 AS
 BEGIN
     BEGIN TRY
+        -- Validaciones
         IF (@FechaInicio IS NULL OR @FechaFin IS NULL)
         BEGIN
             RAISERROR('Las fechas de inicio y fin son obligatorias.', 16, 1);
@@ -192,51 +230,81 @@ BEGIN
         END
 
         SELECT 
-            rei.fechaEmision AS 'Fecha Emisión',
-            rei.fechaReembolso AS 'Fecha Reembolso',
-            rei.estado AS 'Estado Reintegro',
-            DATEDIFF(DAY, rei.fechaEmision, ISNULL(rei.fechaReembolso, GETDATE())) AS 'Días Pendiente',
-            os.razonSocial AS 'Obra Social',
-            c.nomCliente + SPACE(2) + c.apeCliente AS 'Cliente',
-            m.descripcion AS 'Medicamento',
-            ISNULL(d.porcentaje_descuento, 0) AS 'Porcentaje Descuento',
-            (dfvm.cantidad * dfvm.precioUnitario) * (ISNULL(d.porcentaje_descuento, 0) / 100) AS 'Monto Descuento',
-            td.descripcion AS 'Tipo Descuento',
-            fv.fecha AS 'Fecha Venta',
-            fv.cod_FacturaVenta AS 'Nro Factura',
-            fp.metodo AS 'Forma de Pago',
-            s.nom_Sucursal AS 'Sucursal',
-            s.calle + SPACE(2) + CAST(s.altura AS VARCHAR) AS 'Dirección Sucursal',
-            e.nom_Empleado + SPACE(2) + e.ape_Empleado AS 'Empleado',
-            l.nom_Localidad AS 'Localidad',
-            p.nom_Provincia AS 'Provincia'
+            -- Datos del Reintegro
+            rei.cod_Reintegros AS CodigoReintegro,
+            rei.fechaEmision AS FechaEmision,
+            rei.fechaReembolso AS FechaReembolso,
+            rei.estado AS EstadoReintegro,
+            DATEDIFF(DAY, rei.fechaEmision, ISNULL(rei.fechaReembolso, GETDATE())) AS DiasTranscurridos,
+
+            -- Datos del Cliente y Obra Social
+            os.razonSocial AS ObraSocial,
+            c.nomCliente + ' ' + c.apeCliente AS Cliente,
+            c.nroDoc AS DniCliente,
+            
+            -- Datos del Medicamento
+            m.descripcion AS Medicamento,
+            m.cod_barra AS CodigoDeBarras,
+            dfvm.cantidad AS CantidadVendida,
+            dfvm.precioUnitario AS PrecioUnitario,
+            
+            -- Cálculos de Descuentos
+            ISNULL(d.porcentaje_descuento, 0) AS PorcentajeDescuento,
+            ISNULL(td.descripcion, 'Sin Descuento') AS TipoDescuento,
+            
+            -- Montos Calculados
+            (dfvm.cantidad * dfvm.precioUnitario) AS SubtotalVenta,
+            (dfvm.cantidad * dfvm.precioUnitario) * (ISNULL(d.porcentaje_descuento, 0) / 100) AS MontoDescuento,
+            (dfvm.cantidad * dfvm.precioUnitario) - 
+                ((dfvm.cantidad * dfvm.precioUnitario) * (ISNULL(d.porcentaje_descuento, 0) / 100)) AS TotalAReintegrar,
+            fv.cod_FacturaVenta AS NroFactura,
+            fv.fecha AS FechaVenta,
+            ISNULL(fp.metodo, 'No especificado') AS FormaDePago,
+            s.nom_Sucursal AS Sucursal,
+            e.nom_Empleado + SPACE(1) + e.ape_Empleado AS Empleado
             
         FROM Reintegros rei
-        JOIN Obras_Sociales os ON rei.cod_ObraSocial = os.cod_Obra_Social
-        JOIN Coberturas cob ON rei.cod_Cobertura = cob.cod_Cobertura
-        JOIN Clientes c ON cob.cod_cliente = c.cod_Cliente
-        JOIN DetallesFacturaVentasMedicamento dfvm ON rei.cod_DetFacVentaM = dfvm.cod_DetFacVentaM
-        JOIN Medicamentos m ON dfvm.codMedicamento = m.cod_medicamento
-        JOIN FacturasVenta fv ON dfvm.codFacturaVenta = fv.cod_FacturaVenta
         
-        LEFT JOIN Descuentos d ON cob.cod_descuento = d.cod_descuento
-        LEFT JOIN Tipos_Descuentos td ON d.cod_tipo_descuento = td.cod_tipo_descuento
-        LEFT JOIN Formas_Pago fp ON fv.codFormaPago = fp.cod_Forma_Pago
-        LEFT JOIN Sucursales s ON fv.codSucursal = s.cod_Sucursal
-        LEFT JOIN Empleados e ON fv.codEmpleado = e.cod_Empleado
-        LEFT JOIN Localidades l ON cob.cod_Localidad = l.cod_Localidad
-        LEFT JOIN Provincias p ON l.cod_Provincia = p.cod_Provincia
-        WHERE rei.fechaEmision BETWEEN @FechaInicio AND @FechaFin
+        -- Relaciones principales (INNER JOIN - obligatorias)
+        INNER JOIN Obras_Sociales os 
+            ON rei.cod_ObraSocial = os.cod_Obra_Social
+        INNER JOIN Coberturas cob 
+            ON rei.cod_Cobertura = cob.cod_Cobertura
+        INNER JOIN Clientes c 
+            ON cob.cod_cliente = c.cod_Cliente
+        INNER JOIN DetallesFacturaVentasMedicamento dfvm 
+            ON rei.cod_DetFacVentaM = dfvm.cod_DetFacVentaM
+        INNER JOIN Medicamentos m 
+            ON dfvm.codMedicamento = m.cod_medicamento
+        INNER JOIN FacturasVenta fv 
+            ON dfvm.codFacturaVenta = fv.cod_FacturaVenta
+        
+        -- Relaciones opcionales (LEFT JOIN)
+        LEFT JOIN Descuentos d 
+            ON cob.cod_descuento = d.cod_descuento
+        LEFT JOIN Tipos_Descuentos td 
+            ON d.cod_tipo_descuento = td.cod_tipo_descuento
+        LEFT JOIN Formas_Pago fp 
+            ON fv.codFormaPago = fp.cod_Forma_Pago
+        LEFT JOIN Sucursales s 
+            ON fv.codSucursal = s.cod_Sucursal
+        LEFT JOIN Empleados e 
+            ON fv.codEmpleado = e.cod_Empleado
+        LEFT JOIN Tipos_Empleados te
+            ON e.codTipoEmpleado = te.cod_tipo_empleado
+            
+        
+        WHERE CONVERT(DATE, rei.fechaEmision) BETWEEN @FechaInicio AND @FechaFin
             AND (@Estado IS NULL OR rei.estado = @Estado)
             AND (@ObraSocialNombre IS NULL OR os.razonSocial = @ObraSocialNombre)
     
         ORDER BY 
             rei.fechaEmision DESC,
-            os.razonSocial,
-            c.apeCliente,
-            c.nomCliente
+            os.razonSocial ASC,
+            c.apeCliente ASC,
+            c.nomCliente ASC
+            
     END TRY
-
     BEGIN CATCH
         DECLARE @ErrMsg NVARCHAR(4000), 
                 @ErrSeverity INT, 
@@ -258,17 +326,23 @@ IF OBJECT_ID('dbo.sp_ReporteVentasPorObraSocial','P') IS NOT NULL
 GO
 
 CREATE PROCEDURE sp_ReporteVentasPorObraSocial
-    @FechaInicio DATE = NULL,
-    @FechaFin DATE = NULL
+    @FechaInicio DATE,
+    @FechaFin DATE
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF @FechaFin IS NULL
-        SET @FechaFin = GETDATE();
-
-    IF @FechaInicio IS NULL
-        SET @FechaInicio = DATEADD(MONTH, -6, @FechaFin);
+    IF (@FechaInicio IS NULL OR @FechaFin IS NULL)
+    BEGIN
+        RAISERROR('Las fechas de inicio y fin son obligatorias.', 16, 1);
+        RETURN;
+    END
+        
+    IF (@FechaInicio > @FechaFin)
+    BEGIN
+        RAISERROR('La fecha de inicio no puede ser mayor que la fecha de fin.', 16, 1);
+        RETURN;
+    END
 
     DECLARE @TotalGeneral DECIMAL(18,2);
 
@@ -283,13 +357,13 @@ BEGIN
     ) AS TotalGeneral;
 
     SELECT 
-        os.razonSocial AS 'Obra Social',
-        COUNT( fv.cod_FacturaVenta) AS 'Cantidad de Ventas',
-        COUNT( DISTINCT c.cod_Cliente) AS 'Clientes Distintos',
-        SUM( ISNULL(dvm.cantidad * dvm.precioUnitario, 0)) AS 'Total Recaudado',
-        ROUND( AVG( ISNULL(dvm.cantidad * dvm.precioUnitario, 0)), 2) AS 'Promedio por Venta',
-        CAST( ROUND( SUM( ISNULL(dvm.cantidad * dvm.precioUnitario, 0)) * 100.0 / @TotalGeneral, 2) AS VARCHAR(10)) + ' %' AS 'Porcentaje del Total Recaudado',
-        ISNULL( COUNT( CASE WHEN r.cod_Reintegros IS NULL THEN 1 END), 0) AS 'Reintegros Pendientes'
+        os.razonSocial AS ObraSocial,
+        COUNT( fv.cod_FacturaVenta) AS CantidadVentas,
+        COUNT( DISTINCT c.cod_Cliente) AS ClientesDistintos,
+        SUM( ISNULL(dvm.cantidad * dvm.precioUnitario, 0)) AS TotalRecaudado,
+        ROUND( AVG( ISNULL(dvm.cantidad * dvm.precioUnitario, 0)), 2) AS PromedioVenta,
+        ROUND( SUM( ISNULL(dvm.cantidad * dvm.precioUnitario, 0)) * 100.0 / @TotalGeneral, 2) AS PorcentajeTotalRecaudado,
+        ISNULL( COUNT( CASE WHEN r.cod_Reintegros IS NULL THEN 1 END), 0) AS ReintegrosPendientes
     FROM FacturasVenta fv
     JOIN Clientes c ON fv.codCliente = c.cod_Cliente
     JOIN Obras_Sociales os ON c.cod_Obra_Social = os.cod_Obra_Social
@@ -299,7 +373,7 @@ BEGIN
            ON dvm.cod_DetFacVentaM = r.cod_DetFacVentaM
     WHERE fv.fecha BETWEEN @FechaInicio AND @FechaFin
     GROUP BY os.razonSocial
-    ORDER BY 'Total Recaudado' DESC;
+    ORDER BY TotalRecaudado DESC;
 END;
 GO
 

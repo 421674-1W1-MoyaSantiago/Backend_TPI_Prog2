@@ -329,7 +329,25 @@ INSERT INTO Clientes (nomCliente, apeCliente, nroDoc, nroTel, calle, altura, ema
 VALUES
 ('Tomas', 'Carrizo', '3514347346', '011-9999-1111', 'Av. Bv San Juan', 356, 'cliente1@email.ejemplo.com', 1, 1),
 ('Roberto', 'Gomez', '114567379', '011-9999-2222', 'Francisco de Quevedo', 2036, 'cliente2@email.ejemplo.com', 1, 2),
-('Laura', 'Martinez', '3541395715', '0221-9999-3333', 'Av. Lopez y Planes', 3038, 'cliente3@email.ejemplo.com', 1, 3);
+('Laura', 'Martinez', '3541395715', '0221-9999-3333', 'Av. Lopez y Planes', 3038, 'cliente3@email.ejemplo.com', 1, 3),
+-- Clientes adicionales para pruebas
+('María', 'González', '25789456', '011-5555-1234', 'Av. Rivadavia', 1250, 'maria.gonzalez@email.com', 1, 1),
+('Juan', 'Pérez', '33456789', '0351-4444-5678', 'San Martín', 789, 'juan.perez@email.com', 1, 2),
+('Carolina', 'Fernández', '28654321', '0221-3333-9876', 'Belgrano', 456, 'carolina.fernandez@email.com', 1, 3),
+('Diego', 'López', '31234567', '011-6666-4321', 'Av. Corrientes', 2100, 'diego.lopez@email.com', 1, 4),
+('Valeria', 'Rodríguez', '29876543', '0351-2222-8765', 'Independencia', 567, 'valeria.rodriguez@email.com', 1, 1),
+('Sebastián', 'Torres', 'AB123456', '011-7777-5432', 'Mitre', 890, 'sebastian.torres@email.com', 2, 2),
+('Lucía', 'Ramírez', '27543210', '0221-1111-6543', 'Av. Libertador', 1500, 'lucia.ramirez@email.com', 1, 3),
+('Matías', 'Silva', '30987654', '011-8888-7654', '9 de Julio', 345, 'matias.silva@email.com', 1, 4),
+('Florencia', 'Morales', '26321098', '0351-5555-2345', 'Colón', 678, 'florencia.morales@email.com', 1, 1),
+('Agustín', 'Castro', '32109876', '0221-6666-3456', 'Sarmiento', 234, 'agustin.castro@email.com', 1, 2),
+('Gabriela', 'Benítez', 'CD789012', '011-9999-8765', 'Av. Belgrano', 1800, 'gabriela.benitez@email.com', 2, 3),
+('Facundo', 'Vega', '28765432', '0351-7777-4567', 'Tucumán', 456, 'facundo.vega@email.com', 1, 4),
+('Natalia', 'Romero', '27890123', '0221-8888-5678', 'Moreno', 123, 'natalia.romero@email.com', 1, 1),
+('Nicolás', 'Díaz', '31456789', '011-2222-9876', 'Av. Santa Fe', 2500, 'nicolas.diaz@email.com', 1, 2),
+('Camila', 'Herrera', '29234567', '0351-3333-6789', 'Entre Ríos', 789, 'camila.herrera@email.com', 1, 3),
+('Federico', 'Medina', '30678901', '0221-4444-7890', 'Córdoba', 567, 'federico.medina@email.com', 1, 4),
+('Victoria', 'Acosta', 'EF456789', '011-5555-8901', 'Av. Cabildo', 3200, 'victoria.acosta@email.com', 2, 1);
 
 -- Descuentos de ejemplo
 INSERT INTO Descuentos (Fecha_Descuento, cod_localidad, cod_medicamento, porcentaje_descuento, cod_tipo_descuento) VALUES

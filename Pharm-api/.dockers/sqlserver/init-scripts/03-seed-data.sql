@@ -354,15 +354,15 @@ VALUES
 
 -- Descuentos de ejemplo
 INSERT INTO Descuentos (Fecha_Descuento, cod_localidad, cod_medicamento, porcentaje_descuento, cod_tipo_descuento) VALUES
-(GETDATE(), 1, 1, 15.00, 1), -- Descuento OSDE para Medicamento cod. 1 en CABA
-(GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento cod. 2 en La Plata
-(GETDATE(), 1, 3, 10.00, 2), -- Descuento por promoción para Medicamento cod. 3
-(GETDATE(), 1, 5, 25.00, 2), -- Descuento por Promoción para Actron en CABA
-(GETDATE(), 2, 10, 18.00, 1), -- Descuento por Obra Social para Clavulin en La Plata
-(GETDATE(), 2, 15, 22.00, 4), -- Descuento Cliente Frecuente para Omeprazol en La Plata
-(GETDATE(), 4, 4, 35.00, 2), -- Descuento por Promoción para Tafirol en Córdoba Capital
-(GETDATE(), 4, 12, 40.00, 3), -- Descuento por Volumen para Cefalexina en Córdoba Capital
-(GETDATE(), 4, 18, 28.00, 1); -- Descuento por Obra Social para Losartan en Córdoba Capital
+('2025-02-15', 1, 1, 15.00, 1), -- Descuento OSDE para Medicamento cod. 1 en CABA
+('2025-03-20', 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento cod. 2 en La Plata
+('2025-01-10', 1, 3, 10.00, 2), -- Descuento por promoción para Medicamento cod. 3
+('2025-04-05', 1, 5, 25.00, 2), -- Descuento por Promoción para Actron en CABA
+('2025-05-12', 2, 10, 18.00, 1), -- Descuento por Obra Social para Clavulin en La Plata
+('2025-06-18', 2, 15, 22.00, 4), -- Descuento Cliente Frecuente para Omeprazol en La Plata
+('2025-07-22', 4, 4, 35.00, 2), -- Descuento por Promoción para Tafirol en Córdoba Capital
+('2025-08-30', 4, 12, 40.00, 3), -- Descuento por Volumen para Cefalexina en Córdoba Capital
+('2025-09-14', 4, 18, 28.00, 1); -- Descuento por Obra Social para Losartan en Córdoba Capital
 
 -- Coberturas de ejemplo (DESPUÉS de clientes, obras sociales y descuentos)
 INSERT INTO Coberturas (fechaInicio, fechaFin, cod_Localidad, cod_cliente, cod_Obra_Social, cod_descuento) VALUES
@@ -505,8 +505,8 @@ INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
 
 -- Recetas de ejemplo
 INSERT INTO Recetas (nomMedico, apeMedico, matricula, fecha, diagnostico, codigo, estado, codObraSocial, codCliente, codTipoReceta) VALUES
-('Dr. Carlos', 'Menem', 'MP12345', GETDATE(), 'Dolor de cabeza', 12345, 'Activa', 1, 1, 1),
-('Dra. María', 'González', 'MP67890', GETDATE(), 'Infección respiratoria', 67890, 'Activa', 2, 2, 1),
+('Dr. Carlos', 'Menem', 'MP12345', '2025-01-05', 'Dolor de cabeza', 12345, 'Activa', 1, 1, 1),
+('Dra. María', 'González', 'MP67890', '2025-01-08', 'Infección respiratoria', 67890, 'Activa', 2, 2, 1),
 ('Dr. Roberto', 'Silva', 'MP23456', '2025-01-15', 'Hipertensión arterial', 23456, 'Activa', 1, 3, 1),
 ('Dra. Laura', 'Fernandez', 'MP34567', '2025-02-10', 'Dolor muscular', 34567, 'Pendiente', 3, 4, 1),
 ('Dr. Martín', 'Rodríguez', 'MP45678', '2025-02-28', 'Alergia estacional', 45678, 'Activa', 2, 5, 1),
@@ -519,7 +519,7 @@ INSERT INTO Recetas (nomMedico, apeMedico, matricula, fecha, diagnostico, codigo
 ('Dra. Silvia', 'Morales', 'MP23458', '2025-09-25', 'Artritis', 23458, 'Pendiente', 2, 12, 2),
 ('Dr. Pablo', 'Herrera', 'MP34569', '2025-10-10', 'Rinitis alérgica', 34569, 'Activa', 3, 13, 1),
 ('Dra. Monica', 'Vega', 'MP45670', '2025-11-01', 'Faringitis', 45670, 'Cancelada', 1, 14, 1),
-('Dr. Gustavo', 'Diaz', 'MP56781', '2025-11-11', 'Asma bronquial', 56781, 'Activa', 2, 15, 2);
+('Dr. Gustavo', 'Diaz', 'MP56781', '2025-11-08', 'Asma bronquial', 56781, 'Activa', 2, 15, 2);
 
 -- Detalles de recetas
 INSERT INTO Detalles_Receta (cantidad, codMedicamento, cod_Receta) VALUES
@@ -541,36 +541,130 @@ INSERT INTO Detalles_Receta (cantidad, codMedicamento, cod_Receta) VALUES
 
 -- Autorizaciones
 INSERT INTO Autorizaciones (codigo, estado, fechaAutorizacion, codObraSocial, codReceta) VALUES
-(100001, 'Autorizada', GETDATE(), 1, 1),
-(100002, 'Autorizada', GETDATE(), 2, 2),
-(100003, 'Autorizada', '2025-01-15', 1, 3),
-(100004, 'Pendiente', '2025-02-10', 3, 4),
-(100005, 'Autorizada', '2025-02-28', 2, 5),
-(100006, 'Rechazada', '2025-03-15', 4, 6),
-(100007, 'Autorizada', '2025-04-05', 1, 7),
-(100008, 'Autorizada', '2025-05-12', 3, 8),
-(100009, 'Pendiente', '2025-06-20', 2, 9),
-(100010, 'Autorizada', '2025-07-08', 1, 10),
-(100011, 'Autorizada', '2025-08-14', 4, 11),
-(100012, 'Pendiente', '2025-09-25', 2, 12),
-(100013, 'Autorizada', '2025-10-10', 3, 13),
-(100014, 'Rechazada', '2025-11-01', 1, 14),
-(100015, 'Autorizada', '2025-11-11', 2, 15);
+(100001, 'Autorizada', '2025-01-06', 1, 1),
+(100002, 'Autorizada', '2025-01-09', 2, 2),
+(100003, 'Autorizada', '2025-01-16', 1, 3),
+(100004, 'Pendiente', '2025-02-11', 3, 4),
+(100005, 'Autorizada', '2025-03-01', 2, 5),
+(100006, 'Rechazada', '2025-03-16', 4, 6),
+(100007, 'Autorizada', '2025-04-06', 1, 7),
+(100008, 'Autorizada', '2025-05-13', 3, 8),
+(100009, 'Pendiente', '2025-06-21', 2, 9),
+(100010, 'Autorizada', '2025-07-09', 1, 10),
+(100011, 'Autorizada', '2025-08-15', 4, 11),
+(100012, 'Pendiente', '2025-09-26', 2, 12),
+(100013, 'Autorizada', '2025-10-11', 3, 13),
+(100014, 'Rechazada', '2025-11-02', 1, 14),
+(100015, 'Autorizada', '2025-11-09', 2, 15);
 
--- Facturas de compra
+-- ====================================================================================================
+-- PASO 1: Facturas de compra basadas en Stock_Medicamentos y Stock_Articulos
+-- ====================================================================================================
+-- Cada fila de stock tiene una factura de compra con la misma sucursal
+-- Empleado aleatorio con codTipoEmpleado entre 1 y 4 (Farmacéutico, Técnico, Administrativo, Gerente)
+-- Fecha aleatoria entre 01/01/2025 y 11/11/2025
+
+-- Facturas de compra para Stock_Medicamentos (60 facturas)
 INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) VALUES
-(GETDATE(), 1, 1, 1), -- Compra a Bagó en Central CABA
-(GETDATE(), 2, 1, 2); -- Compra a Roemmers en Central CABA
+-- Sucursal 1 - Stock_Medicamentos (26 facturas)
+('2025-01-05', 1, 1, 1), ('2025-01-08', 2, 1, 2), ('2025-01-12', 1, 1, 3), ('2025-01-18', 2, 1, 1),
+('2025-01-22', 1, 1, 2), ('2025-01-25', 2, 1, 3), ('2025-02-03', 1, 1, 1), ('2025-02-08', 2, 1, 2),
+('2025-02-15', 1, 1, 3), ('2025-02-20', 2, 1, 1), ('2025-02-25', 1, 1, 2), ('2025-03-02', 2, 1, 3),
+('2025-03-08', 1, 1, 1), ('2025-03-12', 2, 1, 2), ('2025-03-18', 1, 1, 3), ('2025-03-25', 2, 1, 1),
+('2025-04-02', 1, 1, 2), ('2025-04-08', 2, 1, 3), ('2025-04-15', 1, 1, 1), ('2025-04-22', 2, 1, 2),
+('2025-05-05', 1, 1, 3), ('2025-05-10', 2, 1, 1), ('2025-05-18', 1, 1, 2), ('2025-05-25', 2, 1, 3),
+('2025-06-03', 1, 1, 1), ('2025-06-10', 2, 1, 2),
+-- Sucursal 2 - Stock_Medicamentos (24 facturas)
+('2025-01-07', 3, 2, 1), ('2025-01-14', 3, 2, 2), ('2025-01-20', 3, 2, 3), ('2025-01-28', 3, 2, 1),
+('2025-02-05', 3, 2, 2), ('2025-02-12', 3, 2, 3), ('2025-02-18', 3, 2, 1), ('2025-02-24', 3, 2, 2),
+('2025-03-05', 3, 2, 3), ('2025-03-14', 3, 2, 1), ('2025-03-22', 3, 2, 2), ('2025-04-01', 3, 2, 3),
+('2025-04-10', 3, 2, 1), ('2025-04-18', 3, 2, 2), ('2025-05-02', 3, 2, 3), ('2025-05-12', 3, 2, 1),
+('2025-05-22', 3, 2, 2), ('2025-06-05', 3, 2, 3), ('2025-06-15', 3, 2, 1), ('2025-06-28', 3, 2, 2),
+('2025-07-08', 3, 2, 3), ('2025-07-18', 3, 2, 1), ('2025-08-02', 3, 2, 2), ('2025-08-15', 3, 2, 3),
+-- Sucursal 3 - Stock_Medicamentos (10 facturas)
+('2025-01-10', 5, 3, 1), ('2025-01-16', 6, 3, 2), ('2025-02-10', 5, 3, 3), ('2025-03-10', 6, 3, 1),
+('2025-04-12', 5, 3, 2), ('2025-05-15', 6, 3, 3), ('2025-06-20', 5, 3, 1), ('2025-07-18', 6, 3, 2),
+('2025-08-20', 5, 3, 3), ('2025-09-22', 6, 3, 1);
 
--- Detalles facturas compra medicamentos
+-- Facturas de compra para Stock_Articulos (96 facturas)
+INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) VALUES
+-- Sucursal 1 - Stock_Articulos
+('2025-01-06', 1, 1, 1), ('2025-01-09', 2, 1, 1), ('2025-01-13', 1, 1, 1), ('2025-01-17', 2, 1, 1),
+('2025-01-23', 1, 1, 1), ('2025-01-27', 2, 1, 1), ('2025-02-04', 1, 1, 1), ('2025-02-09', 2, 1, 1),
+('2025-02-16', 1, 1, 1), ('2025-02-21', 2, 1, 1), ('2025-02-26', 1, 1, 1), ('2025-03-04', 2, 1, 1),
+('2025-03-10', 1, 1, 1), ('2025-03-15', 2, 1, 1), ('2025-03-20', 1, 1, 1), ('2025-03-26', 2, 1, 1),
+('2025-04-04', 1, 1, 1), ('2025-04-10', 2, 1, 1), ('2025-04-16', 1, 1, 1), ('2025-04-24', 2, 1, 1),
+('2025-05-06', 1, 1, 1), ('2025-05-13', 2, 1, 1), ('2025-05-20', 1, 1, 1), ('2025-05-27', 2, 1, 1),
+('2025-06-04', 1, 1, 1), ('2025-06-12', 2, 1, 1), ('2025-06-20', 1, 1, 1), ('2025-06-27', 2, 1, 1),
+('2025-07-06', 1, 1, 1), ('2025-07-14', 2, 1, 1), ('2025-07-22', 1, 1, 1), ('2025-08-06', 2, 1, 1),
+('2025-08-16', 1, 1, 1), ('2025-08-26', 2, 1, 1), ('2025-09-06', 1, 1, 1), ('2025-09-16', 2, 1, 1),
+('2025-09-26', 1, 1, 1), ('2025-10-06', 2, 1, 1), ('2025-10-16', 1, 1, 1), ('2025-10-26', 2, 1, 1),
+-- Sucursal 2 - Stock_Articulos
+('2025-01-11', 3, 2, 1), ('2025-01-15', 3, 2, 1), ('2025-01-21', 3, 2, 1), ('2025-02-01', 3, 2, 1),
+('2025-02-06', 3, 2, 1), ('2025-02-13', 3, 2, 1), ('2025-02-19', 3, 2, 1), ('2025-02-27', 3, 2, 1),
+('2025-03-06', 3, 2, 1), ('2025-03-16', 3, 2, 1), ('2025-03-24', 3, 2, 1), ('2025-04-03', 3, 2, 1),
+('2025-04-12', 3, 2, 1), ('2025-04-20', 3, 2, 1), ('2025-05-04', 3, 2, 1), ('2025-05-14', 3, 2, 1),
+('2025-05-24', 3, 2, 1), ('2025-06-06', 3, 2, 1), ('2025-06-17', 3, 2, 1), ('2025-07-01', 3, 2, 1),
+('2025-07-10', 3, 2, 1), ('2025-07-24', 3, 2, 1), ('2025-08-08', 3, 2, 1), ('2025-08-18', 3, 2, 1),
+('2025-08-28', 3, 2, 1), ('2025-09-10', 3, 2, 1), ('2025-09-20', 3, 2, 1), ('2025-10-02', 3, 2, 1),
+('2025-10-12', 3, 2, 1), ('2025-10-22', 3, 2, 1), ('2025-11-01', 3, 2, 1), ('2025-11-08', 3, 2, 1),
+-- Sucursal 3 - Stock_Articulos
+('2025-01-19', 5, 3, 1), ('2025-02-02', 6, 3, 1), ('2025-02-11', 5, 3, 1), ('2025-02-22', 6, 3, 1),
+('2025-03-03', 5, 3, 1), ('2025-03-13', 6, 3, 1), ('2025-03-23', 5, 3, 1), ('2025-04-05', 6, 3, 1),
+('2025-04-14', 5, 3, 1), ('2025-04-26', 6, 3, 1), ('2025-05-08', 5, 3, 1), ('2025-05-19', 6, 3, 1),
+('2025-05-29', 5, 3, 1), ('2025-06-09', 6, 3, 1), ('2025-06-22', 5, 3, 1), ('2025-07-03', 6, 3, 1),
+('2025-07-16', 5, 3, 1), ('2025-07-26', 6, 3, 1), ('2025-08-10', 5, 3, 1), ('2025-08-22', 6, 3, 1),
+('2025-09-02', 5, 3, 1), ('2025-09-14', 6, 3, 1), ('2025-09-28', 5, 3, 1), ('2025-10-10', 6, 3, 1);
+
+-- Detalles facturas compra medicamentos (60 detalles)
 INSERT INTO DetallesFacturaCompraMedicamento (cantidad, precioUnitario, codFacturaCompra, codMedicamento) VALUES
-(100, 120.00, 1, 1), -- Compra Medicamento1
-(50, 180.00, 2, 2);  -- Compra Medicamento2
+-- Sucursal 1 medicamentos (40 entries)
+(150, 1200.00, 1, 1), (120, 3500.00, 2, 2), (180, 450.00, 3, 4), (110, 380.00, 4, 6),
+(160, 680.00, 5, 8), (135, 1250.00, 6, 10), (100, 980.00, 7, 12), (65, 520.00, 8, 14),
+(120, 450.00, 9, 16), (110, 850.00, 10, 18), (95, 620.00, 11, 20), (8, 1200.00, 12, 21),
+(3, 520.00, 13, 23), (2, 680.00, 14, 25), (4, 750.00, 15, 27), (1, 420.00, 16, 29),
+(8, 680.00, 17, 31), (5, 780.00, 18, 33), (7, 950.00, 19, 35), (3, 880.00, 20, 37),
+(6, 1250.00, 21, 39), (9, 380.00, 22, 41), (4, 320.00, 23, 43), (8, 290.00, 24, 45),
+(2, 380.00, 25, 47), (5, 180.00, 26, 49), (15, 1200.00, 27, 1), (120, 3500.00, 28, 2),
+(180, 450.00, 29, 4), (110, 380.00, 30, 6), (160, 680.00, 31, 8), (135, 1250.00, 32, 10),
+(100, 980.00, 33, 12), (65, 520.00, 34, 14), (120, 450.00, 35, 16), (110, 850.00, 36, 18),
+(95, 620.00, 37, 20), (8, 1200.00, 38, 21), (3, 520.00, 39, 23), (2, 680.00, 40, 25),
+-- Sucursal 2 medicamentos (20 entries)
+(200, 900.00, 41, 3), (90, 620.00, 42, 5), (95, 520.00, 43, 7), (75, 890.00, 44, 9),
+(85, 1150.00, 45, 11), (45, 680.00, 46, 13), (80, 890.00, 47, 15), (90, 680.00, 48, 17),
+(85, 720.00, 49, 19), (5, 480.00, 50, 22), (9, 380.00, 51, 24), (7, 850.00, 52, 26),
+(6, 920.00, 53, 28), (9, 380.00, 54, 30), (45, 520.00, 55, 32), (35, 420.00, 56, 34),
+(55, 1150.00, 57, 36), (25, 320.00, 58, 38), (40, 1450.00, 59, 40), (30, 280.00, 60, 42);
 
--- Detalles facturas compra artículos
+-- Detalles facturas compra artículos (96 detalles)  
 INSERT INTO DetallesFacturaCompraArticulo (cantidad, precioUnitario, codFacturaCompra, codArticulo) VALUES
-(30, 280.00, 1, 1), -- Compra Shampoo
-(20, 220.00, 2, 2); -- Compra Crema
+-- Sucursal 1 artículos (40 entries)
+(80, 850.00, 61, 1), (90, 780.00, 62, 2), (50, 420.00, 63, 3), (150, 750.00, 64, 5),
+(60, 520.00, 65, 8), (100, 320.00, 66, 9), (90, 650.00, 67, 10), (70, 450.00, 68, 13),
+(60, 1850.00, 69, 15), (50, 1250.00, 70, 16), (70, 850.00, 71, 17), (50, 920.00, 72, 18),
+(50, 3500.00, 73, 20), (100, 1200.00, 74, 22), (80, 1200.00, 75, 25), (60, 520.00, 76, 28),
+(80, 1200.00, 77, 29), (60, 680.00, 78, 30), (50, 1200.00, 79, 31), (30, 2800.00, 80, 33),
+(50, 3200.00, 81, 34), (180, 380.00, 82, 36), (300, 1200.00, 83, 38), (100, 650.00, 84, 39),
+(190, 320.00, 85, 41), (130, 220.00, 86, 43), (120, 450.00, 87, 44), (80, 920.00, 88, 46),
+(60, 1650.00, 89, 47), (100, 750.00, 90, 49), (90, 780.00, 91, 50), (140, 850.00, 92, 52),
+(80, 850.00, 93, 1), (90, 780.00, 94, 2), (50, 420.00, 95, 3), (150, 750.00, 96, 5),
+(60, 520.00, 97, 8), (100, 320.00, 98, 9), (90, 650.00, 99, 10), (70, 450.00, 100, 13),
+-- Sucursal 2 artículos (32 entries)
+(70, 850.00, 101, 1), (100, 420.00, 102, 3), (80, 750.00, 103, 5), (110, 780.00, 104, 6),
+(130, 480.00, 105, 8), (80, 650.00, 106, 10), (70, 280.00, 107, 11), (110, 580.00, 108, 13),
+(50, 950.00, 109, 14), (90, 1250.00, 110, 16), (80, 920.00, 111, 18), (30, 2200.00, 112, 19),
+(40, 3500.00, 113, 20), (40, 4200.00, 114, 21), (70, 1200.00, 115, 22), (120, 380.00, 116, 23),
+(100, 2800.00, 117, 24), (90, 650.00, 118, 26), (100, 520.00, 119, 28), (50, 1200.00, 120, 29),
+(30, 4500.00, 121, 32), (200, 450.00, 122, 35), (120, 380.00, 123, 36), (250, 320.00, 124, 37),
+(200, 1200.00, 125, 38), (220, 280.00, 126, 40), (140, 320.00, 127, 41), (150, 180.00, 128, 42),
+(90, 450.00, 129, 44), (70, 1850.00, 130, 45), (80, 920.00, 131, 46), (110, 780.00, 132, 50),
+-- Sucursal 3 artículos (24 entries)
+(60, 780.00, 133, 2), (120, 1250.00, 134, 4), (90, 780.00, 135, 6), (70, 520.00, 136, 7),
+(200, 320.00, 137, 9), (60, 280.00, 138, 11), (90, 980.00, 139, 26), (70, 520.00, 140, 28),
+(90, 680.00, 141, 30), (20, 4500.00, 142, 32), (40, 2800.00, 143, 33), (150, 450.00, 144, 35),
+(200, 320.00, 145, 37), (100, 650.00, 146, 39), (180, 280.00, 147, 40), (110, 180.00, 148, 42),
+(170, 220.00, 149, 43), (50, 1850.00, 150, 45), (90, 1650.00, 151, 47), (50, 2200.00, 152, 48),
+(80, 750.00, 153, 49), (100, 780.00, 154, 51), (110, 850.00, 155, 52), (60, 780.00, 156, 2);
 
 -- Proveedores de ejemplo (movido aquí para orden lógico)
 INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
@@ -582,64 +676,99 @@ INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
 -- *** El trigger automáticamente asignará el admin (ID=1) a cada nueva sucursal ***
 -- *** Empleados y clientes ya fueron insertados arriba para respetar dependencias ***
 
--- Facturas de ejemplo para testing
+-- ====================================================================================================
+-- PASO 2: Facturas de venta (100 facturas)
+-- ====================================================================================================
+-- Empleado debe tener acceso a la sucursal (codSucursal del empleado debe coincidir)
+-- Cliente aleatorio, forma de pago aleatoria, fecha aleatoria entre 01/01/2025 y 11/11/2025
+-- Total se calculará después de cargar los detalles
+
+-- Empleados por sucursal: Sucursal 1: emp 1,2 | Sucursal 2: emp 3,4 | Sucursal 3: emp 5,6
 INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total)
 VALUES 
-(DATEADD(DAY, -7, GETDATE()), 1, 1, 1, 1, 1500.00), -- hace una semana
-(GETDATE(), 2, 2, 1, 2, 850.00), -- hoy
-(DATEADD(DAY, 7, GETDATE()), 3, 3, 2, 3, 2200.00); -- dentro de una semana
+-- Sucursal 1 (40 facturas)
+('2025-01-02', 1, 1, 1, 1, 1200.00), ('2025-01-05', 2, 2, 1, 2, 850.00), ('2025-01-08', 1, 3, 1, 3, 2200.00),
+('2025-01-11', 2, 4, 1, 1, 1500.00), ('2025-01-14', 1, 5, 1, 2, 950.00), ('2025-01-17', 2, 6, 1, 3, 1750.00),
+('2025-01-20', 1, 7, 1, 4, 1100.00), ('2025-01-23', 2, 8, 1, 1, 1350.00), ('2025-01-26', 1, 9, 1, 2, 2000.00),
+('2025-01-29', 2, 10, 1, 3, 1650.00), ('2025-02-01', 1, 11, 1, 4, 1800.00), ('2025-02-04', 2, 12, 1, 1, 1250.00),
+('2025-02-07', 1, 13, 1, 2, 900.00), ('2025-02-10', 2, 14, 1, 3, 1450.00), ('2025-02-13', 1, 15, 1, 4, 1900.00),
+('2025-02-16', 2, 16, 1, 1, 1050.00), ('2025-02-19', 1, 17, 1, 2, 1300.00), ('2025-02-22', 2, 18, 1, 3, 2100.00),
+('2025-02-25', 1, 19, 1, 4, 1400.00), ('2025-02-28', 2, 20, 1, 1, 1600.00), ('2025-03-03', 1, 1, 1, 2, 1150.00),
+('2025-03-06', 2, 2, 1, 3, 950.00), ('2025-03-09', 1, 3, 1, 4, 1550.00), ('2025-03-12', 2, 4, 1, 1, 1700.00),
+('2025-03-15', 1, 5, 1, 2, 1250.00), ('2025-03-18', 2, 6, 1, 3, 1850.00), ('2025-03-21', 1, 7, 1, 4, 1450.00),
+('2025-03-24', 2, 8, 1, 1, 1200.00), ('2025-03-27', 1, 9, 1, 2, 1650.00), ('2025-03-30', 2, 10, 1, 3, 1950.00),
+('2025-04-02', 1, 11, 1, 4, 1350.00), ('2025-04-05', 2, 12, 1, 1, 1100.00), ('2025-04-08', 1, 13, 1, 2, 1500.00),
+('2025-04-11', 2, 14, 1, 3, 1800.00), ('2025-04-14', 1, 15, 1, 4, 1400.00), ('2025-04-17', 2, 16, 1, 1, 1750.00),
+('2025-04-20', 1, 17, 1, 2, 1250.00), ('2025-04-23', 2, 18, 1, 3, 1600.00), ('2025-04-26', 1, 19, 1, 4, 2000.00),
+('2025-04-29', 2, 20, 1, 1, 1450.00),
+-- Sucursal 2 (40 facturas)
+('2025-05-02', 3, 1, 2, 2, 1300.00), ('2025-05-05', 4, 2, 2, 3, 1150.00), ('2025-05-08', 3, 3, 2, 4, 1700.00),
+('2025-05-11', 4, 4, 2, 1, 1900.00), ('2025-05-14', 3, 5, 2, 2, 1050.00), ('2025-05-17', 4, 6, 2, 3, 1550.00),
+('2025-05-20', 3, 7, 2, 4, 1800.00), ('2025-05-23', 4, 8, 2, 1, 1200.00), ('2025-05-26', 3, 9, 2, 2, 1650.00),
+('2025-05-29', 4, 10, 2, 3, 1950.00), ('2025-06-01', 3, 11, 2, 4, 1400.00), ('2025-06-04', 4, 12, 2, 1, 1100.00),
+('2025-06-07', 3, 13, 2, 2, 1500.00), ('2025-06-10', 4, 14, 2, 3, 1750.00), ('2025-06-13', 3, 15, 2, 4, 1250.00),
+('2025-06-16', 4, 16, 2, 1, 1600.00), ('2025-06-19', 3, 17, 2, 2, 2000.00), ('2025-06-22', 4, 18, 2, 3, 1450.00),
+('2025-06-25', 3, 19, 2, 4, 1300.00), ('2025-06-28', 4, 20, 2, 1, 1850.00), ('2025-07-01', 3, 1, 2, 2, 1150.00),
+('2025-07-04', 4, 2, 2, 3, 950.00), ('2025-07-07', 3, 3, 2, 4, 1550.00), ('2025-07-10', 4, 4, 2, 1, 1700.00),
+('2025-07-13', 3, 5, 2, 2, 1250.00), ('2025-07-16', 4, 6, 2, 3, 1950.00), ('2025-07-19', 3, 7, 2, 4, 1400.00),
+('2025-07-22', 4, 8, 2, 1, 1100.00), ('2025-07-25', 3, 9, 2, 2, 1650.00), ('2025-07-28', 4, 10, 2, 3, 2000.00),
+('2025-07-31', 3, 11, 2, 4, 1350.00), ('2025-08-03', 4, 12, 2, 1, 1500.00), ('2025-08-06', 3, 13, 2, 2, 1800.00),
+('2025-08-09', 4, 14, 2, 3, 1400.00), ('2025-08-12', 3, 15, 2, 4, 1750.00), ('2025-08-15', 4, 16, 2, 1, 1250.00),
+('2025-08-18', 3, 17, 2, 2, 1600.00), ('2025-08-21', 4, 18, 2, 3, 2100.00), ('2025-08-24', 3, 19, 2, 4, 1450.00),
+('2025-08-27', 4, 20, 2, 1, 1300.00),
+-- Sucursal 3 (20 facturas)
+('2025-08-30', 5, 1, 3, 2, 1200.00), ('2025-09-02', 6, 2, 3, 3, 1550.00), ('2025-09-05', 5, 3, 3, 4, 1800.00),
+('2025-09-08', 6, 4, 3, 1, 1350.00), ('2025-09-11', 5, 5, 3, 2, 950.00), ('2025-09-14', 6, 6, 3, 3, 1700.00),
+('2025-09-17', 5, 7, 3, 4, 1900.00), ('2025-09-20', 6, 8, 3, 1, 1050.00), ('2025-09-23', 5, 9, 3, 2, 1650.00),
+('2025-09-26', 6, 10, 3, 3, 2000.00), ('2025-09-29', 5, 11, 3, 4, 1400.00), ('2025-10-02', 6, 12, 3, 1, 1150.00),
+('2025-10-05', 5, 13, 3, 2, 1500.00), ('2025-10-08', 6, 14, 3, 3, 1750.00), ('2025-10-11', 5, 15, 3, 4, 1250.00),
+('2025-10-14', 6, 16, 3, 1, 1850.00), ('2025-10-17', 5, 17, 3, 2, 1450.00), ('2025-10-20', 6, 18, 3, 3, 1300.00),
+('2025-10-23', 5, 19, 3, 4, 1600.00), ('2025-10-26', 6, 20, 3, 1, 2200.00);
 
--- Facturas adicionales para testeo de fechas entre hace una semana y dentro de una semana
-INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, -5, GETDATE()), 1, 2, 1, 1, 1200.00); -- hace 5 días
-INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, -3, GETDATE()), 2, 3, 2, 2, 950.00); -- hace 3 días
-INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, -1, GETDATE()), 3, 1, 3, 3, 1750.00); -- ayer
-INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, 1, GETDATE()), 1, 3, 1, 2, 1100.00); -- mañana
-INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, 3, GETDATE()), 2, 1, 2, 1, 1350.00); -- en 3 días
-INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES (DATEADD(DAY, 5, GETDATE()), 3, 2, 3, 2, 2000.00); -- en 5 días
+-- DetallesFacturaVentasMedicamento (60 ventas de medicamentos)
+-- codCobertura solo si el cliente tiene cobertura
+-- Solo medicamentos con stock en esa sucursal y cantidad <= stock disponible
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES
+-- Sucursal 1 medicamentos (stock disponible: 1,2,4,6,8,10,12,14,16,18,20,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49)
+(2, 1200.00, 1, 1, 1), (1, 3500.00, NULL, 2, 2), (2, 450.00, 1, 4, 3), (1, 450.00, 4, 4, 4),
+(1, 620.00, NULL, 4, 5), (1, 890.00, NULL, 4, 6), (2, 680.00, NULL, 8, 7), (1, 1250.00, NULL, 10, 8),
+(2, 980.00, NULL, 12, 9), (1, 520.00, NULL, 14, 10), (1, 450.00, 4, 16, 11), (2, 850.00, 1, 18, 12),
+(1, 620.00, NULL, 20, 13), (2, 1200.00, NULL, 1, 14), (1, 3500.00, 4, 2, 15), (1, 450.00, 1, 4, 16),
+(1, 380.00, NULL, 6, 17), (2, 680.00, 1, 8, 18), (1, 1250.00, 4, 10, 19), (2, 980.00, 1, 12, 20),
+(1, 520.00, NULL, 14, 21), (1, 450.00, NULL, 16, 22), (2, 850.00, 1, 18, 23), (1, 620.00, 4, 20, 24),
+(1, 1200.00, 1, 1, 25), (2, 3500.00, NULL, 2, 26), (1, 450.00, 4, 4, 27), (1, 380.00, 1, 6, 28),
+(2, 680.00, NULL, 8, 29), (1, 1250.00, 1, 10, 30), (1, 980.00, 4, 12, 31), (2, 520.00, 1, 14, 32),
+(1, 450.00, NULL, 16, 33), (1, 850.00, NULL, 18, 34), (2, 620.00, 4, 20, 35), (1, 1200.00, 1, 1, 36),
+(1, 3500.00, NULL, 2, 37), (2, 450.00, 1, 4, 38), (1, 380.00, 4, 6, 39), (1, 680.00, 1, 8, 40),
+-- Sucursal 2 medicamentos (stock disponible: 3,5,7,9,11,13,15,17,19,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50)
+(2, 900.00, NULL, 3, 41), (1, 620.00, NULL, 5, 42), (1, 520.00, 1, 7, 43), (2, 890.00, NULL, 9, 44),
+(1, 1150.00, NULL, 11, 45), (1, 680.00, 1, 13, 46), (2, 890.00, 4, 15, 47), (1, 680.00, 1, 17, 48),
+(1, 720.00, NULL, 19, 49), (2, 480.00, 1, 22, 50), (1, 380.00, 4, 24, 51), (1, 850.00, 1, 26, 52),
+(2, 920.00, NULL, 28, 53), (1, 380.00, NULL, 30, 54), (1, 520.00, 4, 32, 55), (2, 420.00, 1, 34, 56),
+(1, 1150.00, NULL, 36, 57), (1, 320.00, NULL, 38, 58), (2, 1450.00, 4, 40, 59), (1, 280.00, 1, 42, 60);
 
--- AHORA SÍ: Detalles de facturas (después de crear las facturas)
--- Detalles de medicamentos para las facturas
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta)
-VALUES 
-(2, 150.00, 1, 1, 1), -- Medicamento1 con cobertura en factura 1
-(1, 200.00, 2, 2, 1), -- Medicamento2 con cobertura en factura 1
-(3, 120.00, NULL, 3, 2), -- Medicamento3 sin cobertura en factura 2
-(1, 150.00, 1, 1, 3); -- Medicamento1 con cobertura en factura 3
+-- DetallesFacturaVentasArticulo (40 ventas de artículos)
+-- Solo artículos con stock en esa sucursal y cantidad <= stock disponible
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES
+-- Sucursal 1 artículos (stock disponible: 1,2,3,5,7,8,9,10,13,15,16,17,18,20,22,24,25,27,29,30,31,33,34,36,38,39,41,43,44,46,47,49,50,52)
+(1, 850.00, 1, 1), (2, 780.00, 2, 2), (1, 420.00, 3, 3), (2, 750.00, 4, 5),
+(1, 520.00, 5, 8), (2, 320.00, 6, 9), (1, 650.00, 7, 10), (1, 450.00, 8, 13),
+(2, 1850.00, 9, 15), (1, 1250.00, 10, 16), (1, 850.00, 11, 17), (2, 920.00, 12, 18),
+(1, 3500.00, 13, 20), (1, 1200.00, 14, 22), (2, 2800.00, 15, 24), (1, 1200.00, 16, 25),
+(1, 450.00, 17, 27), (2, 1200.00, 18, 29), (1, 680.00, 19, 30), (1, 1200.00, 20, 31),
+(2, 2800.00, 21, 33), (1, 3200.00, 22, 34), (1, 380.00, 23, 36), (2, 1200.00, 24, 38),
+(1, 650.00, 25, 39), (1, 320.00, 26, 41), (2, 220.00, 27, 43), (1, 450.00, 28, 44),
+-- Sucursal 2 artículos (stock disponible: 1,3,5,6,8,10,11,13,14,16,18,19,20,21,22,23,24,26,28,29,32,35,36,37,38,40,41,42,44,45,46,50,51)
+(1, 920.00, 41, 46), (1, 1650.00, 42, 47), (2, 780.00, 61, 50), (1, 850.00, 62, 51),
+(1, 850.00, 63, 1), (2, 420.00, 64, 3), (1, 750.00, 65, 5), (1, 780.00, 66, 6),
+(2, 480.00, 67, 8), (1, 650.00, 68, 10), (1, 280.00, 69, 11), (2, 580.00, 70, 13),
+-- Sucursal 3 artículos (stock disponible: 2,4,6,7,9,11,14,15,17,19,21,23,25,26,30,32,33,35,37,39,40,42,43,45,47,48,49,51,52)
+(1, 950.00, 81, 14), (1, 1250.00, 82, 16), (2, 920.00, 83, 18), (1, 2200.00, 84, 19);
 
--- Detalles para facturas nuevas (IDs: 4 a 9)
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 200.00, 2, 2, 4); -- Amoxidal en factura 4
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 120.00, NULL, 3, 4); -- Medicamento3 sin cobertura en factura 4
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 450.00, 1, 4, 5); -- Tafirol en factura 5
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 620.00, NULL, 5, 5); -- Actron sin cobertura en factura 5
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 890.00, 2, 6, 6); -- Amoxidal en factura 6
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 1150.00, NULL, 7, 6); -- Clavulin sin cobertura en factura 6
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 480.00, 1, 8, 7); -- Eritromicina en factura 7
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 520.00, NULL, 9, 7); -- Cefalexina sin cobertura en factura 7
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 680.00, 2, 10, 8); -- Buscapina en factura 8
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (2, 850.00, NULL, 11, 8); -- Mylanta sin cobertura en factura 8
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 1200.00, 1, 12, 9); -- Omeprazol en factura 9
-INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES (1, 1750.00, NULL, 13, 9); -- Ranitidina sin cobertura en factura 9
-
--- Detalles de artículos para las facturas
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo)
-VALUES 
-(1, 350.00, 1, 1), -- Shampoo en factura 1
-(2, 280.00, 2, 2), -- Crema en factura 2
-(1, 1200.00, 3, 3), -- Perfume en factura 3
-(1, 450.00, 3, 4); -- Termómetro en factura 3
-
--- Detalles de artículos para facturas nuevas (IDs: 4 a 9)
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 350.00, 4, 1); -- Shampoo en factura 4
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (2, 280.00, 5, 2); -- Crema en factura 5
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 1200.00, 6, 3); -- Perfume en factura 6
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 450.00, 7, 4); -- Termómetro en factura 7
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (2, 950.00, 8, 5); -- Jabón en factura 8
-INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES (1, 1850.00, 9, 6); -- Protector solar en factura 9
-
--- Reintegros de ejemplo
+-- Reintegros con fechas aleatorias entre 01/01/2025 y 11/11/2025
 INSERT INTO Reintegros (fechaEmision, fechaReembolso, estado, cod_Cobertura, cod_ObraSocial, cod_Receta, cod_DetFacVentaM) VALUES
-(GETDATE(), NULL, 'Pendiente', 1, 1, 1, 1), -- Reintegro pendiente para Cliente1
-(GETDATE(), GETDATE(), 'Aprobado', 2, 2, 2, 2); -- Reintegro aprobado para Cliente2
+('2025-01-10', NULL, 'Pendiente', 1, 1, 1, 1), -- Reintegro pendiente
+('2025-02-15', '2025-03-01', 'Aprobado', 1, 1, 1, 3); -- Reintegro aprobado
 
 -- *** ASIGNACIONES DE SUCURSALES A USUARIOS ***
 -- Admin tiene acceso a TODAS las sucursales

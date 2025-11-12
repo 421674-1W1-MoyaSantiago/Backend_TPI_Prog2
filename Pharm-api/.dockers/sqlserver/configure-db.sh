@@ -32,7 +32,7 @@ echo "Ejecutando scripts de inicialización..."
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/02-create-tables.sql -C
 
 # Crear triggers
-/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/05-triggers.sql -C
+# /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/05-triggers.sql -C
 
 # Insertar datos iniciales (opcional)
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/03-seed-data.sql -C

@@ -358,7 +358,6 @@ INSERT INTO Descuentos (Fecha_Descuento, cod_localidad, cod_medicamento, porcent
 (GETDATE(), 2, 2, 20.00, 1), -- Descuento OSDE para Medicamento cod. 2 en La Plata
 (GETDATE(), 1, 3, 10.00, 2), -- Descuento por promoción para Medicamento cod. 3
 (GETDATE(), 1, 5, 25.00, 2), -- Descuento por Promoción para Actron en CABA
-(GETDATE(), 1, 8, 30.00, 3), -- Descuento por Volumen para Ibupirac en CABA
 (GETDATE(), 2, 10, 18.00, 1), -- Descuento por Obra Social para Clavulin en La Plata
 (GETDATE(), 2, 15, 22.00, 4), -- Descuento Cliente Frecuente para Omeprazol en La Plata
 (GETDATE(), 4, 4, 35.00, 2), -- Descuento por Promoción para Tafirol en Córdoba Capital
@@ -371,12 +370,12 @@ INSERT INTO Coberturas (fechaInicio, fechaFin, cod_Localidad, cod_cliente, cod_O
 ('2024-01-01', '2024-12-31', 2, 2, 2, 2), -- Roberto con Swiss Medical en La Plata
 ('2024-01-01', '2024-12-31', 1, 3, 3, 1), -- Laura con Galeno en CABA (usando descuento 1)
 ('2025-01-01', '2025-12-31', 1, 4, 1, 4), -- María González con MET en CABA
-('2025-01-01', '2025-12-31', 4, 5, 2, 8), -- Juan Pérez con Medife en Córdoba Capital
-('2025-02-01', '2025-12-31', 2, 6, 3, 6), -- Carolina Fernández con OSDE en La Plata
-('2025-01-15', '2025-12-31', 1, 7, 4, 5), -- Diego López con Swiss Medical en CABA
-('2025-03-01', '2025-12-31', 4, 8, 1, 9), -- Valeria Rodríguez con MET en Córdoba Capital
-('2025-01-01', '2025-06-30', 2, 10, 3, 7), -- Lucía Ramírez con OSDE en La Plata
-('2025-02-15', '2025-12-31', 4, 12, 1, 10); -- Florencia Morales con MET en Córdoba Capital
+('2025-01-01', '2025-12-31', 4, 5, 2, 7), -- Juan Pérez con Medife en Córdoba Capital
+('2025-02-01', '2025-12-31', 2, 6, 3, 5), -- Carolina Fernández con OSDE en La Plata
+('2025-01-15', '2025-12-31', 1, 7, 4, 4), -- Diego López con Swiss Medical en CABA
+('2025-03-01', '2025-12-31', 4, 8, 1, 8), -- Valeria Rodríguez con MET en Córdoba Capital
+('2025-01-01', '2025-06-30', 2, 10, 3, 6), -- Lucía Ramírez con OSDE en La Plata
+('2025-02-15', '2025-12-31', 4, 12, 1, 9); -- Florencia Morales con MET en Córdoba Capital
 
 -- Stock de artículos
 INSERT INTO Stock_Articulos (cantidad, codSucursal, codArticulo) VALUES

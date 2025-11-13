@@ -76,7 +76,7 @@ BEGIN
           AND (
                 @ObraSocialNombre IS NULL  -- Todas las ventas
                 OR os.razonSocial = @ObraSocialNombre  -- Obra social especifica
-                OR (@ObraSocialNombre = 'SIN OBRA SOCIAL' AND dfvm.codCobertura IS NULL)  -- Solo ventas libres
+                OR (@ObraSocialNombre = 'SIN_OBRA_SOCIAL' AND dfvm.codCobertura IS NULL)  -- Solo ventas libres
           )
           
         ORDER BY fv.fecha, c.apeCliente, c.nomCliente

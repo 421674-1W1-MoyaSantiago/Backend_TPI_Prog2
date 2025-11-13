@@ -25,7 +25,7 @@ namespace Pharm_api.Services
 
         public IEnumerable<string> GetEstadosAutorizaciones()
         {
-            return new List<string>() { "Pendiente", "Autorizada", "Rechazada" };
+            return new List<string>() { "Aprobado", "En Revisión", "Pendiente", "Rechazado" };
         }
 
         public async Task<IEnumerable<TopMedicamentoYVendedorPorEstacionDto>> GetTopMedicamentoYVendedorPorEstacionAsync(string estacion)
@@ -66,7 +66,7 @@ namespace Pharm_api.Services
             // Validar si la obra social existe
             if (!string.IsNullOrEmpty(nombreObraSocial))
             {
-                if (!await _repository.DoObraSocialExists(nombreObraSocial))
+                if (nombreObraSocial != "SIN_OBRA_SOCIAL" && !await _repository.DoObraSocialExists(nombreObraSocial))
                 {
                     throw new InvalidOperationException($"La obra social '{nombreObraSocial}' no existe.");
                 }

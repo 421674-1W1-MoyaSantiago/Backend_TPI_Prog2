@@ -37,6 +37,9 @@ echo "Ejecutando scripts de inicialización..."
 # Crear procedimientos almacenados
 /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/04-procedures.sql -C
 
+# Corregir totales con SP
+/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/07-correct-invoice-totals.sql -C
+
 #  /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P $SA_PASSWORD -d PharmDB -i /opt/mssql-scripts/05-triggers.sql -C
 
 echo "Configuración completada. SQL Server listo para recibir conexiones."

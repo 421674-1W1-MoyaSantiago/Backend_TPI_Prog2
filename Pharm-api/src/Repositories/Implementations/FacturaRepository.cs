@@ -16,7 +16,7 @@ namespace Pharm_api.Repositories
         {
             _context = context;
         }
-       
+
 
         public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int codFacturaVenta)
         {
@@ -69,7 +69,7 @@ namespace Pharm_api.Repositories
                     Marca = null // Por ahora null hasta agregar al modelo
                 }).ToListAsync();
         }
-      
+
         public async Task<List<DetalleFacturaBaseDto>> GetDetallesUnificadosAsync(int codFacturaVenta)
         {
             var detalles = new List<DetalleFacturaBaseDto>();
@@ -148,6 +148,7 @@ namespace Pharm_api.Repositories
                 Detalles = detallesUnificados
             };
         }
+
         public async Task<IEnumerable<FacturasVentum>> GetFacturasByUsuarioAsync(int usuarioId)
         {
             var sucursalIds = await _context.Grupsucursales
@@ -197,7 +198,7 @@ namespace Pharm_api.Repositories
 
                     detalle.codFacturaVenta = nuevaFacturaId;
                     detalle.precioUnitario = precioArt.Value;
-                    totalFactura += detalle.precioUnitario * detalle.cantidad; 
+                    totalFactura += detalle.precioUnitario * detalle.cantidad;
                     await _context.DetallesFacturaVentasArticulo.AddAsync(detalle);
                 }
             }
@@ -225,8 +226,166 @@ namespace Pharm_api.Repositories
             factura.Total = totalFactura;
             _context.FacturasVenta.Update(factura);
 
-            if (await _context.SaveChangesAsync() == 0) 
-            { return false; } else { return true; }
+            if (await _context.SaveChangesAsync() == 0)
+            { return false; }
+            else { return true; }
+        }
+
+        public async Task<bool> EditFacturaForUsuarioAsync(FacturasVentum factura, int usuarioId, IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null, IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null)
+        {
+            // Verificar que la factura existe
+            var facturaExistente = await _context.FacturasVenta.FirstOrDefaultAsync(f => f.CodFacturaVenta == factura.CodFacturaVenta);
+            if (facturaExistente == null)
+                throw new ArgumentException($"No existe una factura con Codigo '{factura.CodFacturaVenta}'.");
+
+            // Verificar que el usuario tiene acceso a la sucursal
+            var tieneAcceso = await _context.Grupsucursales
+                .AnyAsync(gs => gs.CodUsuario == usuarioId && gs.CodSucursal == facturaExistente.CodSucursal && gs.Activo);
+            
+            if (!tieneAcceso)
+                return false;
+                        
+
+            decimal totalFactura = 0; // Acumulador para calcular el total de la factura
+
+
+            // Obtener detalles existentes de artículos
+            var detallesArticulosExistentes = await _context.DetallesFacturaVentasArticulo
+               .Where(d => d.codFacturaVenta == factura.CodFacturaVenta)
+                .ToListAsync();
+
+            if (detalleArticulos != null)
+            {
+                var listaDetalleArticulos = detalleArticulos.ToList();
+
+                // Procesar cada detalle que viene en la request
+                foreach (var detalleNuevo in listaDetalleArticulos)
+                {
+                    // Obtener el precio actual de la base de datos
+                    var precioArt = await _context.Articulos
+                        .AsNoTracking()
+                        .Where(a => a.CodArticulo == detalleNuevo.codArticulo)
+                        .Select(a => (decimal?)a.PrecioUnitario)
+                        .FirstOrDefaultAsync();
+
+                    if (precioArt == null) continue; // Si no existe el artículo, saltar
+
+                    // Buscar si ya existe un detalle con este codArticulo
+                    var detalleExistente = detallesArticulosExistentes.FirstOrDefault(d => d.codArticulo == detalleNuevo.codArticulo);
+
+                    // Si existe, solo actualizar la cantidad
+                    if (detalleExistente != null)
+                    {
+                        detalleExistente.cantidad = detalleNuevo.cantidad;
+                        detalleExistente.precioUnitario = precioArt.Value;
+                        _context.DetallesFacturaVentasArticulo.Update(detalleExistente);
+                        totalFactura += detalleExistente.precioUnitario * detalleExistente.cantidad;
+                    }
+                    else
+                    {
+                        // Si no existe, crear nuevo detalle
+                        detalleNuevo.codFacturaVenta = factura.CodFacturaVenta;
+                        detalleNuevo.precioUnitario = precioArt.Value;
+                        totalFactura += detalleNuevo.precioUnitario * detalleNuevo.cantidad;
+                        await _context.DetallesFacturaVentasArticulo.AddAsync(detalleNuevo);
+                    }
+                }
+
+                // Eliminar detalles que ya no vienen en la request
+                var codigosArticulosNuevos = listaDetalleArticulos.Select(d => d.codArticulo).ToList();
+                var detallesAEliminar = detallesArticulosExistentes
+                    .Where(d => !codigosArticulosNuevos.Contains(d.codArticulo))
+                    .ToList();
+
+                if (detallesAEliminar.Any())
+                {
+                    _context.DetallesFacturaVentasArticulo.RemoveRange(detallesAEliminar);
+                }
+            }
+            else
+            {
+                // Si no vienen detalles de artículos en la request, eliminar todos los existentes
+                if (detallesArticulosExistentes.Any())
+                {
+                    _context.DetallesFacturaVentasArticulo.RemoveRange(detallesArticulosExistentes);
+                }
+            }
+
+            // Obtener detalles existentes de medicamentos
+            var detallesMedicamentosExistentes = await _context.DetallesFacturaVentasMedicamento
+                .Where(d => d.codFacturaVenta == factura.CodFacturaVenta)
+                .ToListAsync();
+
+            if (detalleMedicamentos != null)
+            {
+                var listaDetalleMedicamentos = detalleMedicamentos.ToList();
+
+                // Procesar cada detalle que viene en la request
+                foreach (var detalleNuevo in listaDetalleMedicamentos)
+                {
+                    // Obtener el precio actual de la base de datos
+                    var precioMed = await _context.Medicamentos
+                        .AsNoTracking()
+                        .Where(m => m.CodMedicamento == detalleNuevo.codMedicamento)
+                        .Select(m => (decimal?)m.PrecioUnitario)
+                        .FirstOrDefaultAsync();
+
+                    if (precioMed == null) continue; // Si no existe el medicamento, saltar
+
+                    // Buscar si ya existe un detalle con este codMedicamento
+                    var detalleExistente = detallesMedicamentosExistentes.FirstOrDefault(d => d.codMedicamento == detalleNuevo.codMedicamento);
+
+                    if (detalleExistente != null)
+                    {
+                        // Si existe, actualizar cantidad y cobertura
+                        detalleExistente.cantidad = detalleNuevo.cantidad;
+                        detalleExistente.codCobertura = detalleNuevo.codCobertura;
+                        detalleExistente.precioUnitario = precioMed.Value;
+                        _context.DetallesFacturaVentasMedicamento.Update(detalleExistente);
+                        totalFactura += detalleExistente.precioUnitario * detalleExistente.cantidad;
+                    }
+                    else
+                    {
+                        // Si no existe, crear nuevo detalle
+                        detalleNuevo.codFacturaVenta = factura.CodFacturaVenta;
+                        detalleNuevo.precioUnitario = precioMed.Value;
+                        totalFactura += detalleNuevo.precioUnitario * detalleNuevo.cantidad;
+                        await _context.DetallesFacturaVentasMedicamento.AddAsync(detalleNuevo);
+                    }
+                }
+
+                // Eliminar detalles que ya no vienen en la request
+                var codigosMedicamentosNuevos = listaDetalleMedicamentos.Select(d => d.codMedicamento).ToList();
+                var detallesAEliminar = detallesMedicamentosExistentes
+                    .Where(d => !codigosMedicamentosNuevos.Contains(d.codMedicamento))
+                    .ToList();
+
+                if (detallesAEliminar.Any())
+                {
+                    _context.DetallesFacturaVentasMedicamento.RemoveRange(detallesAEliminar);
+                }
+            }
+            else
+            {
+                // Si no vienen detalles de medicamentos en la request, eliminar todos los existentes
+                if (detallesMedicamentosExistentes.Any())
+                {
+                    _context.DetallesFacturaVentasMedicamento.RemoveRange(detallesMedicamentosExistentes);
+                }
+            }
+
+            // Actualizar los datos de la factura
+            facturaExistente.CodEmpleado = factura.CodEmpleado;
+            facturaExistente.CodCliente = factura.CodCliente;
+            facturaExistente.CodSucursal = factura.CodSucursal;
+            facturaExistente.CodFormaPago = factura.CodFormaPago;
+            //facturaExistente.Fecha = factura.Fecha; 
+            facturaExistente.Total = totalFactura;
+
+            _context.FacturasVenta.Update(facturaExistente);
+
+            // Guardar todos los cambios
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<IEnumerable<FormasPago>> GetFormasPagoAsync()

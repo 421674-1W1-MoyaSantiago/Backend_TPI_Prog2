@@ -76,6 +76,37 @@ namespace Pharm_api.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("{codFacturaVenta}")]
+        public async Task<IActionResult> EditFactura([FromBody] EditFacturaVentaDto editDto, int codFacturaVenta)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return Unauthorized();
+
+                int userId = int.Parse(userIdClaim.Value);
+                var ok = await _facturaService.EditFacturaForUsuarioAsync(editDto, codFacturaVenta, userId);
+                if (!ok)
+                    return BadRequest("No se pudo editar la factura");
+                return Ok(new { Mensaje = "Factura editada exitosamente" });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Forbid(ex.Message);
+            }
+
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
+            }
+        }
+
         // Endpoint de debug para verificar medicamentos en BD
         [HttpGet("debug/medicamentos/{facturaId}")]
         public async Task<ActionResult> DebugMedicamentos(int facturaId)

@@ -17,6 +17,13 @@ namespace Pharm_api.Repositories
             IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null,
             IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null
         );
+
+        Task<bool> EditFacturaForUsuarioAsync(
+            FacturasVentum factura, int usuarioId,
+            IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null,
+            IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null
+        );
+
         Task<IEnumerable<FormasPago>> GetFormasPagoAsync();
     }
 }

@@ -100,6 +100,50 @@ namespace Pharm_api.Services
             return await _repository.CreateFacturaForUsuarioAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
         }
 
+        public async Task<bool> EditFacturaForUsuarioAsync(EditFacturaVentaDto editDto, int codFacturaVenta, int usuarioId)
+        {
+            if (editDto.DetalleArticulos == null && editDto.DetalleMedicamentos == null)
+            {
+                throw new ArgumentException("La factura debe contener al menos un detalle de artículo o medicamento.");
+            }
+
+            var factura = new FacturasVentum
+            {
+                CodFacturaVenta = codFacturaVenta
+            };
+
+            List<DetallesFacturaVentasArticulo>? detallesArticulos = null;
+            if (editDto.DetalleArticulos != null && editDto.DetalleArticulos.Any())
+            {
+                detallesArticulos = new List<DetallesFacturaVentasArticulo>();
+                foreach (var detalle in editDto.DetalleArticulos)
+                {
+                    detallesArticulos.Add(new DetallesFacturaVentasArticulo
+                    {
+                        codArticulo = detalle.CodArticulo,
+                        cantidad = detalle.Cantidad
+                    });
+                }
+            }
+
+            List<DetallesFacturaVentasMedicamento>? detallesMedicamentos = null;
+            if (editDto.DetalleMedicamentos != null && editDto.DetalleMedicamentos.Any())
+            {
+                detallesMedicamentos = new List<DetallesFacturaVentasMedicamento>();
+                foreach (var detalle in editDto.DetalleMedicamentos)
+                {
+                    detallesMedicamentos.Add(new DetallesFacturaVentasMedicamento
+                    {
+                        codMedicamento = detalle.CodMedicamento,
+                        codCobertura = detalle.CodCobertura,
+                        cantidad = detalle.Cantidad
+                    });
+                }
+            }
+
+            return await _repository.EditFacturaForUsuarioAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
+        }
+
         public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId)
         {
             return await _repository.GetDetallesMedicamentoAsync(facturaId);

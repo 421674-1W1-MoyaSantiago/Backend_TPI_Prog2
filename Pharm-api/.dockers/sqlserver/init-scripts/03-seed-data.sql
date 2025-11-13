@@ -427,11 +427,7 @@ INSERT INTO Stock_Articulos (cantidad, codSucursal, codArticulo) VALUES
 (70, 2, 45), (50, 3, 45), -- Omega 3 en Cápsulas x60
 (80, 1, 46), (60, 2, 46), -- Magnesio + B6 x30
 (90, 3, 47), (60, 1, 47), -- Probióticos en Cápsulas x30
-(70, 2, 48), (50, 3, 48), -- Coenzima Q10 x60
-(100, 1, 49), (80, 3, 49), -- Shampoo en sucursal 1 y 3 adicional
-(110, 2, 50), (90, 1, 50), -- Crema en sucursal 2 y 1 adicional
-(130, 3, 51), (100, 2, 51), -- Perfume en sucursal 3 y 2 adicional
-(140, 1, 52), (110, 3, 52); -- Termómetro en sucursal 1 y 3 adicional
+(70, 2, 48), (50, 3, 48); -- Coenzima Q10 x60
 
 -- Stock de medicamentos - EXPANDIDO para testing de endpoints
 INSERT INTO Stock_Medicamentos (cantidad, cod_Sucursal, cod_Medicamento) VALUES
@@ -646,7 +642,7 @@ INSERT INTO DetallesFacturaCompraArticulo (cantidad, precioUnitario, codFacturaC
 (80, 1200.00, 77, 29), (60, 680.00, 78, 30), (50, 1200.00, 79, 31), (30, 2800.00, 80, 33),
 (50, 3200.00, 81, 34), (180, 380.00, 82, 36), (300, 1200.00, 83, 38), (100, 650.00, 84, 39),
 (190, 320.00, 85, 41), (130, 220.00, 86, 43), (120, 450.00, 87, 44), (80, 920.00, 88, 46),
-(60, 1650.00, 89, 47), (100, 750.00, 90, 49), (90, 780.00, 91, 50), (140, 850.00, 92, 52),
+(60, 1650.00, 89, 47), (100, 2200.00, 90, 48), (90, 780.00, 91, 2), (140, 850.00, 92, 1),
 (80, 850.00, 93, 1), (90, 780.00, 94, 2), (50, 420.00, 95, 3), (150, 750.00, 96, 5),
 (60, 520.00, 97, 8), (100, 320.00, 98, 9), (90, 650.00, 99, 10), (70, 450.00, 100, 13),
 -- Sucursal 2 artículos (32 entries)
@@ -657,14 +653,14 @@ INSERT INTO DetallesFacturaCompraArticulo (cantidad, precioUnitario, codFacturaC
 (100, 2800.00, 117, 24), (90, 650.00, 118, 26), (100, 520.00, 119, 28), (50, 1200.00, 120, 29),
 (30, 4500.00, 121, 32), (200, 450.00, 122, 35), (120, 380.00, 123, 36), (250, 320.00, 124, 37),
 (200, 1200.00, 125, 38), (220, 280.00, 126, 40), (140, 320.00, 127, 41), (150, 180.00, 128, 42),
-(90, 450.00, 129, 44), (70, 1850.00, 130, 45), (80, 920.00, 131, 46), (110, 780.00, 132, 50),
+(90, 450.00, 129, 44), (70, 1850.00, 130, 45), (80, 920.00, 131, 46), (110, 780.00, 132, 2),
 -- Sucursal 3 artículos (24 entries)
 (60, 780.00, 133, 2), (120, 1250.00, 134, 4), (90, 780.00, 135, 6), (70, 520.00, 136, 7),
 (200, 320.00, 137, 9), (60, 280.00, 138, 11), (90, 980.00, 139, 26), (70, 520.00, 140, 28),
 (90, 680.00, 141, 30), (20, 4500.00, 142, 32), (40, 2800.00, 143, 33), (150, 450.00, 144, 35),
 (200, 320.00, 145, 37), (100, 650.00, 146, 39), (180, 280.00, 147, 40), (110, 180.00, 148, 42),
 (170, 220.00, 149, 43), (50, 1850.00, 150, 45), (90, 1650.00, 151, 47), (50, 2200.00, 152, 48),
-(80, 750.00, 153, 49), (100, 780.00, 154, 51), (110, 850.00, 155, 52), (60, 780.00, 156, 2);
+(80, 750.00, 153, 5), (100, 780.00, 154, 6), (110, 850.00, 155, 1), (60, 780.00, 156, 2);
 
 -- Proveedores de ejemplo (movido aquí para orden lógico)
 INSERT INTO Proveedores (razon_Social, cuit, nro_Tel) VALUES
@@ -914,8 +910,41 @@ INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaV
 
 -- Reintegros con fechas aleatorias entre 01/01/2025 y 11/11/2025
 INSERT INTO Reintegros (fechaEmision, fechaReembolso, estado, cod_Cobertura, cod_ObraSocial, cod_Receta, cod_DetFacVentaM) VALUES
-('2025-01-10', NULL, 'Pendiente', 1, 1, 1, 1), -- Reintegro pendiente
-('2025-02-15', '2025-03-01', 'Aprobado', 1, 1, 1, 3); -- Reintegro aprobado
+-- Cobertura 1 (Cliente 1, Obra Social 1 - MET)
+('2025-01-10', '2025-01-25', 'Aprobado', 1, 1, 1, 1),    -- Det 1: cod_Cobertura=1, medicamento 35
+('2025-03-15', NULL, 'Pendiente', 1, 1, 1, 21),          -- Det 21: cod_Cobertura=1, medicamento 39
+('2025-03-20', '2025-04-10', 'Aprobado', 1, 1, 1, 22),   -- Det 22: cod_Cobertura=1, medicamento 31
+('2025-09-10', NULL, 'Pendiente', 1, 1, 1, 52),          -- Det 52: cod_Cobertura=1, medicamento 38
+('2025-10-05', '2025-10-20', 'Aprobado', 1, 1, 1, 72),   -- Det 72: cod_Cobertura=1, medicamento 25
+
+-- Cobertura 4 (Cliente 4 - María González, Obra Social 1 - MET)
+('2025-09-20', NULL, 'Pendiente', 4, 1, 11, 74),         -- Det 74: cod_Cobertura=4, medicamento 37
+
+-- Cobertura 5 (Cliente 5 - Juan Pérez, Obra Social 2 - Medife)
+('2025-09-25', '2025-10-08', 'Aprobado', 5, 2, 5, 76),   -- Det 76: cod_Cobertura=5, medicamento 5
+('2025-10-12', NULL, 'En Revisión', 5, 2, 5, 77),        -- Det 77: cod_Cobertura=5, medicamento 25
+
+-- Cobertura 7 (Cliente 7 - Diego López, Obra Social 4 - Swiss Medical)
+('2025-01-28', '2025-02-15', 'Aprobado', 7, 4, 7, 6),    -- Det 6: cod_Cobertura=7, medicamento 35
+('2025-02-05', NULL, 'Rechazado', 7, 4, 7, 7),           -- Det 7: cod_Cobertura=7, medicamento 23
+('2025-04-10', '2025-04-28', 'Aprobado', 7, 4, 7, 25),   -- Det 25: cod_Cobertura=7, medicamento 1
+('2025-04-15', NULL, 'Pendiente', 7, 4, 7, 26),          -- Det 26: cod_Cobertura=7, medicamento 6
+('2025-07-20', '2025-08-05', 'Aprobado', 7, 4, 7, 41),   -- Det 41: cod_Cobertura=7, medicamento 7
+('2025-07-25', NULL, 'En Revisión', 7, 4, 7, 42),        -- Det 42: cod_Cobertura=7, medicamento 36
+('2025-08-05', '2025-08-22', 'Aprobado', 7, 4, 7, 57),   -- Det 57: cod_Cobertura=7, medicamento 17
+
+-- Cobertura 8 (Cliente 8 - Valeria Rodríguez, Obra Social 1 - MET)
+('2025-01-30', '2025-02-18', 'Aprobado', 8, 1, 8, 8),    -- Det 8: cod_Cobertura=8, medicamento 31
+('2025-07-28', NULL, 'Pendiente', 8, 1, 8, 43),          -- Det 43: cod_Cobertura=8, medicamento 15
+('2025-08-02', '2025-08-20', 'Aprobado', 8, 1, 8, 44),   -- Det 44: cod_Cobertura=8, medicamento 38
+
+-- Cobertura 9 (Cliente 10 - Lucía Ramírez, Obra Social 3 - OSDE)
+('2025-03-05', '2025-03-22', 'Aprobado', 9, 3, 10, 30),  -- Det 30: cod_Cobertura=9, medicamento 4
+('2025-08-10', NULL, 'Pendiente', 9, 3, 10, 45),         -- Det 45: cod_Cobertura=9, medicamento 34
+('2025-08-25', '2025-09-12', 'Aprobado', 9, 3, 10, 70),  -- Det 70: cod_Cobertura=9, medicamento 28
+
+-- Cobertura 10 (Cliente 12 - Florencia Morales, Obra Social 1 - MET)
+('2025-04-02', NULL, 'En Revisión', 10, 1, 12, 32);      -- Det 32: cod_Cobertura=10, medicamento 47
 
 -- *** ASIGNACIONES DE SUCURSALES A USUARIOS ***
 -- Admin tiene acceso a TODAS las sucursales

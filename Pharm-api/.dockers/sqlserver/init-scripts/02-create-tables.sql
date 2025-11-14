@@ -93,6 +93,7 @@ CREATE TABLE Empleados (
     codTipoEmpleado INT NOT NULL,
     codTipoDocumento INT NOT NULL,
     codSucursal INT NOT NULL,
+    activo BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (codTipoEmpleado) REFERENCES Tipos_Empleados(cod_tipo_empleado),
     FOREIGN KEY (codTipoDocumento) REFERENCES Tipos_Documento(cod_Tipo_Documento),
     FOREIGN KEY (codSucursal) REFERENCES Sucursales(cod_Sucursal)
@@ -316,6 +317,7 @@ CREATE TABLE FacturasVenta (
     codSucursal INT NOT NULL,
     codFormaPago INT NOT NULL,
     total DECIMAL(18,2) DEFAULT 0,
+    anulada BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (codEmpleado) REFERENCES Empleados(cod_Empleado),
     FOREIGN KEY (codCliente) REFERENCES Clientes(cod_Cliente),
     FOREIGN KEY (codSucursal) REFERENCES Sucursales(cod_Sucursal),
@@ -331,6 +333,7 @@ CREATE TABLE DetallesFacturaVentasMedicamento (
     codCobertura INT NULL,
     codMedicamento INT NOT NULL,
     codFacturaVenta INT NOT NULL,
+    anulada BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (codFacturaVenta) REFERENCES FacturasVenta(cod_FacturaVenta),
     FOREIGN KEY (codCobertura) REFERENCES Coberturas(cod_Cobertura),
     FOREIGN KEY (codMedicamento) REFERENCES Medicamentos(cod_medicamento)
@@ -343,6 +346,7 @@ CREATE TABLE DetallesFacturaVentasArticulo (
     precioUnitario DECIMAL(18,2) NOT NULL,
     codFacturaVenta INT NOT NULL,
     codArticulo INT NOT NULL,
+    anulada BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (codFacturaVenta) REFERENCES FacturasVenta(cod_FacturaVenta),
     FOREIGN KEY (codArticulo) REFERENCES Articulos(cod_Articulo)
 );

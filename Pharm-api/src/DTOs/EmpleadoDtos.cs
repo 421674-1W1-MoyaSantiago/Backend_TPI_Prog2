@@ -18,6 +18,7 @@ namespace Pharm_api.DTOs
         public string TipoDocumento { get; set; } = string.Empty;
         public int CodSucursal { get; set; }
         public string NomSucursal { get; set; } = string.Empty;
+        public bool Activo { get; set; }
     }
 
     public class CreateEmpleadoDto

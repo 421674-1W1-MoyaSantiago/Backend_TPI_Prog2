@@ -51,7 +51,7 @@ namespace Pharm_api.Services
             return result;
         }
 
-        public async Task<bool> CreateFacturaForUsuarioAsync(CreateFacturaVentaDto createDto, int usuarioId)
+        public async Task<bool> CreateFacturaAsync(CreateFacturaVentaDto createDto, int usuarioId)
         {
             if (createDto.DetalleArticulos == null && createDto.DetalleMedicamentos == null)
             {
@@ -97,17 +97,56 @@ namespace Pharm_api.Services
                 }
             }
 
-            return await _repository.CreateFacturaForUsuarioAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
+            return await _repository.CreateFacturaAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
         }
 
-        public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId)
+        public async Task<bool> EditFacturaAsync(EditFacturaVentaDto editDto, int codFacturaVenta, int usuarioId)
         {
-            return await _repository.GetDetallesMedicamentoAsync(facturaId);
+            if (editDto.DetalleArticulos == null && editDto.DetalleMedicamentos == null)
+            {
+                throw new ArgumentException("La factura debe contener al menos un detalle de artículo o medicamento.");
+            }
+
+            var factura = new FacturasVentum
+            {
+                CodFacturaVenta = codFacturaVenta
+            };
+
+            List<DetallesFacturaVentasArticulo>? detallesArticulos = null;
+            if (editDto.DetalleArticulos != null && editDto.DetalleArticulos.Any())
+            {
+                detallesArticulos = new List<DetallesFacturaVentasArticulo>();
+                foreach (var detalle in editDto.DetalleArticulos)
+                {
+                    detallesArticulos.Add(new DetallesFacturaVentasArticulo
+                    {
+                        codArticulo = detalle.CodArticulo,
+                        cantidad = detalle.Cantidad
+                    });
+                }
+            }
+
+            List<DetallesFacturaVentasMedicamento>? detallesMedicamentos = null;
+            if (editDto.DetalleMedicamentos != null && editDto.DetalleMedicamentos.Any())
+            {
+                detallesMedicamentos = new List<DetallesFacturaVentasMedicamento>();
+                foreach (var detalle in editDto.DetalleMedicamentos)
+                {
+                    detallesMedicamentos.Add(new DetallesFacturaVentasMedicamento
+                    {
+                        codMedicamento = detalle.CodMedicamento,
+                        codCobertura = detalle.CodCobertura,
+                        cantidad = detalle.Cantidad
+                    });
+                }
+            }
+
+            return await _repository.EditFacturaAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
         }
 
-        public async Task<List<DetalleFacturaBaseDto>> GetDetallesUnificadosAsync(int facturaId)
+        public async Task<bool> DeleteFacturaAsync(int codFacturaVenta, int usuarioId)
         {
-            return await _repository.GetDetallesUnificadosAsync(facturaId);
+            return await _repository.DeleteFacturaAsync(codFacturaVenta, usuarioId);
         }
 
         public async Task<List<FormaPagoDto>> GetFormasPagoAsync()

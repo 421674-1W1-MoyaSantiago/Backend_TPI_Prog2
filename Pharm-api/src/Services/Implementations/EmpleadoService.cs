@@ -53,15 +53,11 @@ namespace Pharm_api.Services
             // Validaciones de negocio (convertir UpdateDto a CreateDto para reutilizar validación)
             var createDto = new CreateEmpleadoDto
             {
-                NomEmpleado = updateDto.NomEmpleado,
-                ApeEmpleado = updateDto.ApeEmpleado,
                 NroTel = updateDto.NroTel,
                 Calle = updateDto.Calle,
                 Altura = updateDto.Altura,
                 Email = updateDto.Email,
-                FechaIngreso = DateTime.Now, // Se ignora en update
                 CodTipoEmpleado = updateDto.CodTipoEmpleado,
-                CodTipoDocumento = updateDto.CodTipoDocumento,
                 CodSucursal = updateDto.CodSucursal
             };
             

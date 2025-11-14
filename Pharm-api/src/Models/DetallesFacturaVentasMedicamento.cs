@@ -8,7 +8,7 @@ namespace Pharm_api.Models
         public decimal precioUnitario { get; set; }
         public int? codCobertura { get; set; }
         public int codMedicamento { get; set; }
-        
+        public bool Anulada { get; set; } = false;
         public virtual FacturasVentum FacturaVenta { get; set; } = null!;
         public virtual Medicamento Medicamento { get; set; } = null!;
         public virtual Cobertura? Cobertura { get; set; }

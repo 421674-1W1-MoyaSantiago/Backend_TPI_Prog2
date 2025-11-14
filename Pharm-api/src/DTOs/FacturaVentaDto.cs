@@ -93,6 +93,12 @@ namespace Pharm_api.DTOs
         public IEnumerable<CrearDetalleMedicamentoDto>? DetalleMedicamentos { get; set; }
     }
 
+    public class EditFacturaVentaDto
+    {
+        public IEnumerable<CrearDetalleArticuloDto>? DetalleArticulos { get; set; }
+        public IEnumerable<CrearDetalleMedicamentoDto>? DetalleMedicamentos { get; set; }
+    }
+
     public class CrearDetalleMedicamentoDto
     {
         public int CodMedicamento { get; set; }

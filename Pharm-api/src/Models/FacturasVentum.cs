@@ -19,6 +19,8 @@ namespace Pharm_api.Models
 
         public decimal? Total { get; set; }
 
+        public bool Anulada { get; set; } = false;
+
         public virtual Cliente CodClienteNavigation { get; set; } = null!;
 
         public virtual Empleado CodEmpleadoNavigation { get; set; } = null!;

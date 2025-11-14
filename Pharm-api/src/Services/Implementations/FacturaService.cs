@@ -51,7 +51,7 @@ namespace Pharm_api.Services
             return result;
         }
 
-        public async Task<bool> CreateFacturaForUsuarioAsync(CreateFacturaVentaDto createDto, int usuarioId)
+        public async Task<bool> CreateFacturaAsync(CreateFacturaVentaDto createDto, int usuarioId)
         {
             if (createDto.DetalleArticulos == null && createDto.DetalleMedicamentos == null)
             {
@@ -97,10 +97,10 @@ namespace Pharm_api.Services
                 }
             }
 
-            return await _repository.CreateFacturaForUsuarioAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
+            return await _repository.CreateFacturaAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
         }
 
-        public async Task<bool> EditFacturaForUsuarioAsync(EditFacturaVentaDto editDto, int codFacturaVenta, int usuarioId)
+        public async Task<bool> EditFacturaAsync(EditFacturaVentaDto editDto, int codFacturaVenta, int usuarioId)
         {
             if (editDto.DetalleArticulos == null && editDto.DetalleMedicamentos == null)
             {
@@ -141,7 +141,12 @@ namespace Pharm_api.Services
                 }
             }
 
-            return await _repository.EditFacturaForUsuarioAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
+            return await _repository.EditFacturaAsync(factura, usuarioId, detallesArticulos, detallesMedicamentos);
+        }
+
+        public async Task<bool> DeleteFacturaAsync(int codFacturaVenta, int usuarioId)
+        {
+            return await _repository.DeleteFacturaAsync(codFacturaVenta, usuarioId);
         }
 
         public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId)

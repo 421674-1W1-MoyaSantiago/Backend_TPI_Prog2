@@ -317,6 +317,7 @@ CREATE TABLE FacturasVenta (
     codSucursal INT NOT NULL,
     codFormaPago INT NOT NULL,
     total DECIMAL(18,2) DEFAULT 0,
+    anulada BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (codEmpleado) REFERENCES Empleados(cod_Empleado),
     FOREIGN KEY (codCliente) REFERENCES Clientes(cod_Cliente),
     FOREIGN KEY (codSucursal) REFERENCES Sucursales(cod_Sucursal),
@@ -332,6 +333,7 @@ CREATE TABLE DetallesFacturaVentasMedicamento (
     codCobertura INT NULL,
     codMedicamento INT NOT NULL,
     codFacturaVenta INT NOT NULL,
+    anulada BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (codFacturaVenta) REFERENCES FacturasVenta(cod_FacturaVenta),
     FOREIGN KEY (codCobertura) REFERENCES Coberturas(cod_Cobertura),
     FOREIGN KEY (codMedicamento) REFERENCES Medicamentos(cod_medicamento)
@@ -344,6 +346,7 @@ CREATE TABLE DetallesFacturaVentasArticulo (
     precioUnitario DECIMAL(18,2) NOT NULL,
     codFacturaVenta INT NOT NULL,
     codArticulo INT NOT NULL,
+    anulada BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (codFacturaVenta) REFERENCES FacturasVenta(cod_FacturaVenta),
     FOREIGN KEY (codArticulo) REFERENCES Articulos(cod_Articulo)
 );

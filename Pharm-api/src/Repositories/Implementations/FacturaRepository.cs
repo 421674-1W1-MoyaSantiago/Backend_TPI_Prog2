@@ -76,7 +76,7 @@ namespace Pharm_api.Repositories
 
             // Obtener detalles de medicamentos (incluye entidades completas)
             var detallesMedicamentoEntities = await _context.DetallesFacturaVentasMedicamento
-                .Where(d => d.codFacturaVenta == codFacturaVenta)
+                .Where(d => d.codFacturaVenta == codFacturaVenta && !d.Anulada)
                 .Include(d => d.Medicamento)
                     .ThenInclude(m => m.CodTipoPresentacionNavigation)
                 .Include(d => d.Cobertura)
@@ -98,7 +98,7 @@ namespace Pharm_api.Repositories
 
             // Obtener detalles de artículos (incluye entidades completas)
             var detallesArticuloEntities = await _context.DetallesFacturaVentasArticulo
-                .Where(d => d.codFacturaVenta == codFacturaVenta)
+                .Where(d => d.codFacturaVenta == codFacturaVenta && !d.Anulada)
                 .Include(d => d.Articulo)
                 .ToListAsync();
 
@@ -108,8 +108,7 @@ namespace Pharm_api.Repositories
                 Cantidad = d.cantidad,
                 PrecioUnitario = d.precioUnitario,
                 CodArticulo = d.codArticulo,
-                NombreArticulo = d.Articulo != null ? d.Articulo.Descripcion : string.Empty,
-                Marca = null // Agregar cuando esté en el modelo
+                NombreArticulo = d.Articulo != null ? d.Articulo.Descripcion : string.Empty
             }).ToList();
 
             detalles.AddRange(detallesMedicamento);
@@ -125,7 +124,7 @@ namespace Pharm_api.Repositories
                 .Include(f => f.CodClienteNavigation)
                 .Include(f => f.CodSucursalNavigation)
                 .Include(f => f.CodFormaPagoNavigation)
-                .FirstOrDefaultAsync(f => f.CodFacturaVenta == codFacturaVenta);
+                .FirstOrDefaultAsync(f => f.CodFacturaVenta == codFacturaVenta && !f.Anulada);
 
             if (factura == null) return null;
 
@@ -157,7 +156,7 @@ namespace Pharm_api.Repositories
                 .ToListAsync();
 
             return await _context.FacturasVenta
-                .Where(f => sucursalIds.Contains(f.CodSucursal))
+                .Where(f => sucursalIds.Contains(f.CodSucursal) && !f.Anulada)
                 .Include(f => f.CodEmpleadoNavigation)
                 .Include(f => f.CodClienteNavigation)
                 .Include(f => f.CodSucursalNavigation)
@@ -165,7 +164,7 @@ namespace Pharm_api.Repositories
                 .ToListAsync();
         }
 
-        public async Task<bool> CreateFacturaForUsuarioAsync
+        public async Task<bool> CreateFacturaAsync
             (FacturasVentum factura, int usuarioId,
             IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null,
             IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null)
@@ -231,7 +230,7 @@ namespace Pharm_api.Repositories
             else { return true; }
         }
 
-        public async Task<bool> EditFacturaForUsuarioAsync(FacturasVentum factura, int usuarioId, IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null, IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null)
+        public async Task<bool> EditFacturaAsync(FacturasVentum factura, int usuarioId, IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null, IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null)
         {
             // Verificar que la factura existe
             var facturaExistente = await _context.FacturasVenta.FirstOrDefaultAsync(f => f.CodFacturaVenta == factura.CodFacturaVenta);
@@ -291,7 +290,7 @@ namespace Pharm_api.Repositories
                     }
                 }
 
-                // Eliminar detalles que ya no vienen en la request
+                // Anular detalles que ya no vienen en la request
                 var codigosArticulosNuevos = listaDetalleArticulos.Select(d => d.codArticulo).ToList();
                 var detallesAEliminar = detallesArticulosExistentes
                     .Where(d => !codigosArticulosNuevos.Contains(d.codArticulo))
@@ -299,15 +298,23 @@ namespace Pharm_api.Repositories
 
                 if (detallesAEliminar.Any())
                 {
-                    _context.DetallesFacturaVentasArticulo.RemoveRange(detallesAEliminar);
+                    foreach(var detalle in detallesAEliminar)
+                    {
+                        detalle.Anulada = true;
+                        _context.DetallesFacturaVentasArticulo.Update(detalle);
+                    }
                 }
             }
             else
             {
-                // Si no vienen detalles de artículos en la request, eliminar todos los existentes
+                // Si no vienen detalles de artículos en la request, anular todos los existentes
                 if (detallesArticulosExistentes.Any())
                 {
-                    _context.DetallesFacturaVentasArticulo.RemoveRange(detallesArticulosExistentes);
+                    foreach (var detalle in detallesArticulosExistentes)
+                    {
+                        detalle.Anulada = true;
+                        _context.DetallesFacturaVentasArticulo.Update(detalle);
+                    }
                 }
             }
 
@@ -362,7 +369,11 @@ namespace Pharm_api.Repositories
 
                 if (detallesAEliminar.Any())
                 {
-                    _context.DetallesFacturaVentasMedicamento.RemoveRange(detallesAEliminar);
+                    foreach (var detalle in detallesAEliminar)
+                    {
+                        detalle.Anulada = true;
+                        _context.DetallesFacturaVentasMedicamento.Update(detalle);
+                    }
                 }
             }
             else
@@ -370,7 +381,11 @@ namespace Pharm_api.Repositories
                 // Si no vienen detalles de medicamentos en la request, eliminar todos los existentes
                 if (detallesMedicamentosExistentes.Any())
                 {
-                    _context.DetallesFacturaVentasMedicamento.RemoveRange(detallesMedicamentosExistentes);
+                    foreach (var detalle in detallesMedicamentosExistentes)
+                    {
+                        detalle.Anulada = true;
+                        _context.DetallesFacturaVentasMedicamento.Update(detalle);
+                    }
                 }
             }
 
@@ -381,6 +396,43 @@ namespace Pharm_api.Repositories
 
             // Guardar todos los cambios
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DeleteFacturaAsync(int codFacturaVenta, int usuarioId)
+        {
+            // Verificar que la factura existe
+            var facturaExistente = await _context.FacturasVenta.FirstOrDefaultAsync(f => f.CodFacturaVenta == codFacturaVenta);
+            if (facturaExistente == null)
+                throw new ArgumentException($"No existe una factura con Codigo '{codFacturaVenta}'.");
+
+            // Verificar que el usuario tiene acceso a la sucursal
+            var tieneAcceso = await _context.Grupsucursales
+                .AnyAsync(gs => gs.CodUsuario == usuarioId && gs.CodSucursal == facturaExistente.CodSucursal && gs.Activo);
+
+            if (!tieneAcceso)
+                return false;
+
+            // Anular la factura de venta
+            facturaExistente.Anulada = true;
+            _context.FacturasVenta.Update(facturaExistente);
+
+            // Anular los detalles de medicamentos con ese codFactura
+            var detallesMedicamentos = await _context.DetallesFacturaVentasMedicamento.Where(d => d.codFacturaVenta == codFacturaVenta && !d.Anulada).ToListAsync();
+            foreach (var detalle in detallesMedicamentos)
+            {
+                detalle.Anulada = true;
+                _context.DetallesFacturaVentasMedicamento.Update(detalle);
+            }
+
+            // Anular los detalles de articulos con ese codFactura
+            var detallesArticulos = await _context.DetallesFacturaVentasArticulo.Where(d => d.codFacturaVenta == codFacturaVenta && !d.Anulada).ToListAsync();
+            foreach (var detalle in detallesArticulos)
+            {
+                detalle.Anulada = true;
+                _context.DetallesFacturaVentasArticulo.Update(detalle);
+            }
+
+            return (await _context.SaveChangesAsync() > 0);
         }
 
         public async Task<IEnumerable<FormasPago>> GetFormasPagoAsync()

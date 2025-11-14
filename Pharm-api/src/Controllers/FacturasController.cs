@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Pharm_api.DTOs;
 using Pharm_api.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Pharm_api.Controllers
 {
@@ -28,7 +29,7 @@ namespace Pharm_api.Controllers
         {
             var factura = await _facturaService.GetFacturaConDetallesAsync(codFacturaVenta);
             if (factura == null)
-                return NotFound();
+                return NotFound($"No se encontro la factura con Codigo '{codFacturaVenta}'");
             return Ok(factura);
         }
 
@@ -56,7 +57,7 @@ namespace Pharm_api.Controllers
                     return Unauthorized();
 
                 int userId = int.Parse(userIdClaim.Value);
-                var ok = await _facturaService.CreateFacturaForUsuarioAsync(createDto, userId);
+                var ok = await _facturaService.CreateFacturaAsync(createDto, userId);
                 if (!ok)
                     return BadRequest("No se pudo crear la factura");
                 return Ok(new { Mensaje = "Factura creada exitosamente" });
@@ -87,7 +88,7 @@ namespace Pharm_api.Controllers
                     return Unauthorized();
 
                 int userId = int.Parse(userIdClaim.Value);
-                var ok = await _facturaService.EditFacturaForUsuarioAsync(editDto, codFacturaVenta, userId);
+                var ok = await _facturaService.EditFacturaAsync(editDto, codFacturaVenta, userId);
                 if (!ok)
                     return BadRequest("No se pudo editar la factura");
                 return Ok(new { Mensaje = "Factura editada exitosamente" });
@@ -101,6 +102,37 @@ namespace Pharm_api.Controllers
                 return Forbid(ex.Message);
             }
 
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
+            }
+        }
+        
+        [Authorize]
+        [HttpDelete("{codFacturaVenta}")]
+        public async Task<IActionResult> DeleteFactura(int codFacturaVenta) 
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                    return Unauthorized();
+
+                int userId = int.Parse(userIdClaim.Value);
+                bool result = await _facturaService.DeleteFacturaAsync(codFacturaVenta, userId);
+                if (result)
+                    return NoContent();
+                else
+                    return BadRequest();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Forbid(ex.Message);
+            }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");

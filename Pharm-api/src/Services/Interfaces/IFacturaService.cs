@@ -9,8 +9,9 @@ namespace Pharm_api.Services
     {
         Task<FacturaVentaDto?> GetFacturaConDetallesAsync(int codFacturaVenta);
         Task<IEnumerable<FacturaVentaDto>> GetFacturasByUsuarioAsync(int usuarioId);
-        Task<bool> CreateFacturaForUsuarioAsync(CreateFacturaVentaDto createDto, int usuarioId);
-        Task<bool> EditFacturaForUsuarioAsync(EditFacturaVentaDto createDto, int codFacturaVenta, int usuarioId);
+        Task<bool> CreateFacturaAsync(CreateFacturaVentaDto createDto, int usuarioId);
+        Task<bool> EditFacturaAsync(EditFacturaVentaDto createDto, int codFacturaVenta, int usuarioId);
+        Task<bool> DeleteFacturaAsync(int codFacturaVenta, int usuarioId);
         Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId);
         Task<List<DetalleFacturaBaseDto>> GetDetallesUnificadosAsync(int facturaId);
         Task<List<FormaPagoDto>> GetFormasPagoAsync();

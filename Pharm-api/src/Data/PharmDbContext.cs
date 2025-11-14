@@ -83,6 +83,9 @@ namespace Pharm_api.Data
                 entity.Property(e => e.precioUnitario).HasColumnName("precioUnitario").HasPrecision(18, 2);
                 entity.Property(e => e.codCobertura).HasColumnName("codCobertura");
                 entity.Property(e => e.codMedicamento).HasColumnName("codMedicamento");
+                entity.Property(e => e.Anulada)
+                    .HasDefaultValue(false)
+                    .HasColumnName("anulada");
                 entity.HasOne(d => d.FacturaVenta)
                     .WithMany()
                     .HasForeignKey(d => d.codFacturaVenta);
@@ -102,6 +105,9 @@ namespace Pharm_api.Data
                 entity.Property(e => e.cantidad).HasColumnName("cantidad");
                 entity.Property(e => e.precioUnitario).HasColumnName("precioUnitario").HasPrecision(18, 2);
                 entity.Property(e => e.codArticulo).HasColumnName("codArticulo");
+                entity.Property(e => e.Anulada)
+                    .HasDefaultValue(false)
+                    .HasColumnName("anulada");
                 entity.HasOne(d => d.FacturaVenta)
                     .WithMany()
                     .HasForeignKey(d => d.codFacturaVenta);
@@ -302,6 +308,9 @@ namespace Pharm_api.Data
                     .HasDefaultValue(0m)
                     .HasColumnType("decimal(18, 2)")
                     .HasColumnName("total");
+                entity.Property(e => e.Anulada)
+                    .HasDefaultValue(false)
+                    .HasColumnName("anulada");
 
                 entity.HasOne(d => d.CodClienteNavigation).WithMany(p => p.FacturasVenta)
                     .HasForeignKey(d => d.CodCliente)

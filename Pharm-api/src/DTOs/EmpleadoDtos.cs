@@ -58,14 +58,6 @@ namespace Pharm_api.DTOs
 
     public class UpdateEmpleadoDto
     {
-        [Required(ErrorMessage = "El nombre del empleado es requerido")]
-        [StringLength(100, ErrorMessage = "El nombre no puede exceder 100 caracteres")]
-        public string NomEmpleado { get; set; } = string.Empty;
-        
-        [Required(ErrorMessage = "El apellido del empleado es requerido")]
-        [StringLength(100, ErrorMessage = "El apellido no puede exceder 100 caracteres")]
-        public string ApeEmpleado { get; set; } = string.Empty;
-        
         [Phone(ErrorMessage = "Formato de teléfono inválido")]
         public string? NroTel { get; set; }
         
@@ -80,10 +72,7 @@ namespace Pharm_api.DTOs
         
         [Required(ErrorMessage = "El tipo de empleado es requerido")]
         public int CodTipoEmpleado { get; set; }
-        
-        [Required(ErrorMessage = "El tipo de documento es requerido")]
-        public int CodTipoDocumento { get; set; }
-        
+                
         [Required(ErrorMessage = "La sucursal es requerida")]
         public int CodSucursal { get; set; }
     }

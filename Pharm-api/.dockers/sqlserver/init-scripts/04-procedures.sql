@@ -29,7 +29,7 @@ BEGIN
             dfvm.cantidad AS CantidadVendida,
             r.nomMedico + SPACE(1) + r.apeMedico AS Medico,
             r.matricula AS Matricula,
-            ISNULL(os.razonSocial, 'Sin obra social') AS ObraSocial,            
+            ISNULL(os.razonSocial, 'Sin Obra Social') AS ObraSocial,            
             ISNULL(d.porcentaje_descuento, 0) AS MontoDescuento,
             ISNULL(sm.cantidad, 0) AS StockActual,
             
@@ -76,7 +76,7 @@ BEGIN
           AND (
                 @ObraSocialNombre IS NULL  -- Todas las ventas
                 OR os.razonSocial = @ObraSocialNombre  -- Obra social especifica
-                OR (@ObraSocialNombre = 'SIN_OBRA_SOCIAL' AND dfvm.codCobertura IS NULL)  -- Solo ventas libres
+                OR (@ObraSocialNombre = 'Sin Obra Social' AND dfvm.codCobertura IS NULL)  -- Solo ventas libres
           )
           
         ORDER BY fv.fecha, c.apeCliente, c.nomCliente
@@ -398,7 +398,7 @@ BEGIN
 END
 GO
 
-------------
+
 
 IF OBJECT_ID('dbo.sp_IngresosPorMesAnioActual','P') IS NOT NULL
     DROP PROCEDURE dbo.sp_IngresosPorMesAnioActual;

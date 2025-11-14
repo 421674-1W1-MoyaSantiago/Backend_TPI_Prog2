@@ -54,6 +54,8 @@ namespace Pharm_api.Data
 
         public virtual DbSet<StockMedicamento> StockMedicamentos { get; set; }
 
+        public virtual DbSet<StockArticulo> StockArticulos { get; set; }
+
         public virtual DbSet<TiposDescuento> TiposDescuentos { get; set; }
 
         public virtual DbSet<TiposDocumento> TiposDocumentos { get; set; }
@@ -677,6 +679,18 @@ namespace Pharm_api.Data
                     .HasForeignKey(d => d.CodMedicamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Stock_Me__cod_Me__7C4F7684");
+            });
+
+            modelBuilder.Entity<StockArticulo>(entity =>
+            {
+                entity.HasKey(e => e.CodStockArticulo).HasName("PK__Stock_Ar__D4FF542AEF4BEC5D");
+
+                entity.ToTable("Stock_Articulos");
+
+                entity.Property(e => e.CodStockArticulo).HasColumnName("cod_StockArticulo");
+                entity.Property(e => e.Cantidad).HasColumnName("cantidad");
+                entity.Property(e => e.CodArticulo).HasColumnName("codArticulo");
+                entity.Property(e => e.CodSucursal).HasColumnName("codSucursal");
             });
 
             modelBuilder.Entity<Usuario>(entity =>

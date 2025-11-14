@@ -122,59 +122,116 @@ namespace Pharm_api.Repositories
             if (!tieneAcceso)
                 return false;
 
-            // Guardar la nueva factura creada y obtener el id generado
-            EntityEntry<FacturasVentum> nuevaFactura = await _context.FacturasVenta.AddAsync(factura);
-            if (await _context.SaveChangesAsync() == 0) { return false; }
-            int nuevaFacturaId = nuevaFactura.Entity.CodFacturaVenta;
+            // Iniciar una transacción
+            await using var transaction = await _context.Database.BeginTransactionAsync();
 
-            decimal totalFactura = 0; // Acumulador para calcular el total de la factura
-
-            if (detalleArticulos != null)
+            try 
             {
-                foreach (var detalle in detalleArticulos)
+                // Guardar la nueva factura creada y obtener el id generado
+                EntityEntry<FacturasVentum> nuevaFactura = await _context.FacturasVenta.AddAsync(factura);
+                if (await _context.SaveChangesAsync() == 0)
                 {
-                    // iterar cada detalle, obtener el precio de la db, asignar el id de factura y guardar
-                    var precioArt = await _context.Articulos
-                        .AsNoTracking()
-                        .Where(a => a.CodArticulo == detalle.codArticulo)
-                        .Select(a => (decimal?)a.PrecioUnitario) // nullable para detectar no-encontrado
-                        .FirstOrDefaultAsync();
-
-                    if (precioArt == null) continue; // si no existe el artículo, saltar
-
-                    detalle.codFacturaVenta = nuevaFacturaId;
-                    detalle.precioUnitario = precioArt.Value;
-                    totalFactura += detalle.precioUnitario * detalle.cantidad;
-                    await _context.DetallesFacturaVentasArticulo.AddAsync(detalle);
+                    await transaction.RollbackAsync();
+                    return false;
                 }
-            }
+                int nuevaFacturaId = nuevaFactura.Entity.CodFacturaVenta;
 
-            if (detalleMedicamentos != null)
+                decimal totalFactura = 0; // Acumulador para calcular el total de la factura
+
+                if (detalleArticulos != null)
+                {
+                    foreach (var detalle in detalleArticulos)
+                    {
+                        // iterar cada detalle, obtener el precio de la db, asignar el id de factura y guardar
+                        var precioArt = await _context.Articulos
+                            .AsNoTracking()
+                            .Where(a => a.CodArticulo == detalle.codArticulo)
+                            .Select(a => (decimal?)a.PrecioUnitario) // nullable para detectar no-encontrado
+                            .FirstOrDefaultAsync();
+                        if (precioArt == null)
+                        {
+                            throw new ArgumentException($"No existe el artículo con código '{detalle.codArticulo}'.");
+                        }
+
+                        var stockArt = await _context.StockArticulos
+                            .Where(s => s.CodArticulo == detalle.codArticulo && s.CodSucursal == factura.CodSucursal)
+                            .FirstOrDefaultAsync();
+                        if (stockArt == null)
+                        {
+                            throw new ArgumentException($"No existe stock registrado para el artículo con código '{detalle.codArticulo}' en la sucursal N°{factura.CodSucursal}.");
+                        }
+
+                        if (stockArt.Cantidad < detalle.cantidad)
+                        {
+                            throw new InvalidOperationException($"No hay suficiente stock para el artículo con código '{detalle.codArticulo}'. Stock disponible: {stockArt.Cantidad}, cantidad solicitada: {detalle.cantidad}.");
+                        }
+
+                        stockArt.Cantidad -= detalle.cantidad;
+                        _context.StockArticulos.Update(stockArt);
+
+                        detalle.codFacturaVenta = nuevaFacturaId;
+                        detalle.precioUnitario = precioArt.Value;
+                        totalFactura += detalle.precioUnitario * detalle.cantidad;
+                        await _context.DetallesFacturaVentasArticulo.AddAsync(detalle);
+                    }
+                }
+
+                if (detalleMedicamentos != null)
+                {
+                    foreach (var detalle in detalleMedicamentos)
+                    {
+                        // iterar cada detalle, obtener el precio de la db, asignar el id de factura y guardar
+                        var precioMed = await _context.Medicamentos
+                            .AsNoTracking()
+                            .Where(a => a.CodMedicamento == detalle.codMedicamento)
+                            .Select(a => (decimal?)a.PrecioUnitario) // nullable para detectar no-encontrado
+                            .FirstOrDefaultAsync();
+
+                        if (precioMed == null)
+                        {
+                            throw new ArgumentException($"No existe el medicamento con código '{detalle.codMedicamento}'.");
+                        }
+
+                        var stockMed = await _context.StockMedicamentos
+                            .Where(s => s.CodMedicamento == detalle.codMedicamento && s.CodSucursal == factura.CodSucursal)
+                            .FirstOrDefaultAsync();
+                        if (stockMed == null)
+                        {
+                            throw new ArgumentException($"No existe stock registrado para el medicamento con código '{detalle.codMedicamento}'.");
+                        }
+
+                        if (stockMed.Cantidad < detalle.cantidad)
+                        {
+                            throw new ArgumentException($"No hay suficiente stock para el medicamento con código '{detalle.codMedicamento}'. Stock disponible: {stockMed.Cantidad}, cantidad solicitada: {detalle.cantidad}.");
+                        }
+
+                        stockMed.Cantidad -= detalle.cantidad;
+                        _context.StockMedicamentos.Update(stockMed);
+
+                        detalle.codFacturaVenta = nuevaFacturaId;
+                        detalle.precioUnitario = precioMed.Value;
+                        totalFactura += detalle.precioUnitario * detalle.cantidad;
+                        await _context.DetallesFacturaVentasMedicamento.AddAsync(detalle);
+                    }
+                }
+
+                // Actualizar el total de la factura
+                factura.Total = totalFactura;
+                _context.FacturasVenta.Update(factura);
+
+                // Guardar todos los cambios
+                await _context.SaveChangesAsync();
+
+                // Confirmar la transacción si todo salió bien
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
             {
-                foreach (var detalle in detalleMedicamentos)
-                {
-                    // iterar cada detalle, obtener el precio de la db, asignar el id de factura y guardar
-                    var precioMed = await _context.Medicamentos
-                        .AsNoTracking()
-                        .Where(a => a.CodMedicamento == detalle.codMedicamento)
-                        .Select(a => (decimal?)a.PrecioUnitario) // nullable para detectar no-encontrado
-                        .FirstOrDefaultAsync();
-
-                    if (precioMed == null) continue; // si no existe el medicamento, saltar
-                    detalle.codFacturaVenta = nuevaFacturaId;
-                    detalle.precioUnitario = precioMed.Value;
-                    totalFactura += detalle.precioUnitario * detalle.cantidad;
-                    await _context.DetallesFacturaVentasMedicamento.AddAsync(detalle);
-                }
+                // Si hay cualquier error, revertir todos los cambios
+                await transaction.RollbackAsync();
+                throw; 
             }
-
-            // Actualizar el total de la factura
-            factura.Total = totalFactura;
-            _context.FacturasVenta.Update(factura);
-
-            if (await _context.SaveChangesAsync() == 0)
-            { return false; }
-            else { return true; }
         }
 
         public async Task<bool> EditFacturaAsync(FacturasVentum factura, int usuarioId, IEnumerable<DetallesFacturaVentasArticulo>? detalleArticulos = null, IEnumerable<DetallesFacturaVentasMedicamento>? detalleMedicamentos = null)

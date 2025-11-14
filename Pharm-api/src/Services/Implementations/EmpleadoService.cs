@@ -132,6 +132,12 @@ namespace Pharm_api.Services
             {
                 throw new InvalidOperationException("La fecha de ingreso no puede ser futura");
             }
+
+            // Validar fecha de ingreso (no puede ser mas de 100 años)
+            if (createDto.FechaIngreso < DateTime.Now.AddYears(-100))
+            {
+                throw new InvalidOperationException("La fecha de ingreso no puede ser hace mas de 100 años.");
+            }
         }
     }
 }

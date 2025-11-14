@@ -66,11 +66,6 @@ namespace Pharm_api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (InvalidOperationException ex)
-            {
-                return Forbid(ex.Message);
-            }
-
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
@@ -97,11 +92,6 @@ namespace Pharm_api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (InvalidOperationException ex)
-            {
-                return Forbid(ex.Message);
-            }
-
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error interno del servidor");
@@ -128,10 +118,6 @@ namespace Pharm_api.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(ex.Message);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Forbid(ex.Message);
             }
             catch (Exception)
             {

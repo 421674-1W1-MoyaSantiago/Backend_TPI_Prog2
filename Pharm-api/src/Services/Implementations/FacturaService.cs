@@ -74,6 +74,7 @@ namespace Pharm_api.Services
                 detallesArticulos = new List<DetallesFacturaVentasArticulo>();
                 foreach (var detalle in createDto.DetalleArticulos)
                 {
+                    if (detalle.Cantidad <= 0) throw new ArgumentException("La cantidad no puede ser menor o igual a 0.");
                     detallesArticulos.Add(new DetallesFacturaVentasArticulo
                     {
                         codArticulo = detalle.CodArticulo,
@@ -88,6 +89,7 @@ namespace Pharm_api.Services
                 detallesMedicamentos = new List<DetallesFacturaVentasMedicamento>();
                 foreach (var detalle in createDto.DetalleMedicamentos)
                 {
+                    if (detalle.Cantidad <= 0) throw new ArgumentException("La cantidad no puede ser menor o igual a 0.");
                     detallesMedicamentos.Add(new DetallesFacturaVentasMedicamento
                     {
                         codMedicamento = detalle.CodMedicamento,

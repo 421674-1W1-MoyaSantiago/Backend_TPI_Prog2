@@ -105,6 +105,7 @@ INSERT INTO Obras_Sociales (razonSocial, nroTel, email) VALUES
 ('OSDE', '011-4343-0002', 'atencion@osde.com.ar'),
 ('Swiss Medical', '011-4354-0003', 'consultas@swissmedical.com.ar');
 
+
 -- Sucursales de ejemplo
 INSERT INTO Sucursales (nom_Sucursal, nro_Tel, calle, altura, email, horarioApertura, horarioCierre, cod_Localidad)
 VALUES 
@@ -963,3 +964,197 @@ PRINT 'Base de datos PharmDB lista para usar';
 PRINT 'Usuario admin tiene acceso a todas las sucursales (1, 2, 3)';
 PRINT 'Usuario usuario1 tiene acceso limitado a sucursales (1, 2)';
 GO
+
+-- ====================================================================================================
+-- ====================================================================================================
+-- FACTURAS DE ESTA SEMANA Y DE HOY (11-13 NOVIEMBRE 2025) - PARA TESTING
+-- ====================================================================================================
+-- ====================================================================================================
+
+PRINT '==================================================';
+PRINT 'Insertando facturas de esta semana (11-13 Nov 2025)';
+PRINT '==================================================';
+
+-- ====================================================================================================
+-- FACTURAS DE COMPRA - SEMANA ACTUAL (11-13 NOV 2025)
+-- ====================================================================================================
+
+PRINT 'Insertando facturas de compra...';
+
+-- Lunes 11 de Noviembre 2025
+INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) VALUES
+('2025-11-11 09:15:00', 1, 1, 1), -- Factura compra medicamentos Sucursal 1
+('2025-11-11 10:30:00', 3, 2, 2), -- Factura compra artículos Sucursal 2
+('2025-11-11 14:20:00', 5, 3, 3); -- Factura compra medicamentos Sucursal 3
+
+-- Martes 12 de Noviembre 2025
+INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) VALUES
+('2025-11-12 08:45:00', 2, 1, 2), -- Factura compra artículos Sucursal 1
+('2025-11-12 11:00:00', 4, 2, 1), -- Factura compra medicamentos Sucursal 2
+('2025-11-12 15:30:00', 6, 3, 3); -- Factura compra artículos Sucursal 3
+
+-- Miércoles 13 de Noviembre 2025 (HOY)
+INSERT INTO Facturas_Compra (fecha, cod_Empleado, cod_Sucursal, cod_Proveedor) VALUES
+('2025-11-13 09:00:00', 1, 1, 1), -- Factura compra medicamentos Sucursal 1
+('2025-11-13 10:15:00', 3, 2, 2), -- Factura compra artículos Sucursal 2
+('2025-11-13 13:45:00', 5, 3, 1); -- Factura compra medicamentos Sucursal 3
+
+-- Detalles de facturas de compra - MEDICAMENTOS
+INSERT INTO DetallesFacturaCompraMedicamento (cantidad, precioUnitario, codFacturaCompra, codMedicamento) VALUES
+-- Lunes 11 Nov - Sucursal 1
+(50, 450.00, 157, 4),   -- Tafirol
+(30, 620.00, 157, 5),   -- Actron
+(40, 680.00, 157, 8),   -- Ibupirac
+-- Lunes 11 Nov - Sucursal 3
+(25, 1200.00, 159, 1),  -- Meloxicam
+(20, 900.00, 159, 3),   -- Metronidazol
+-- Martes 12 Nov - Sucursal 2
+(35, 890.00, 161, 9),   -- Amoxidal
+(45, 980.00, 161, 12),  -- Cefalexina
+(30, 890.00, 161, 15),  -- Omeprazol
+-- Miércoles 13 Nov (HOY) - Sucursal 1
+(60, 680.00, 163, 31),  -- Clonazepam
+(40, 420.00, 163, 34),  -- Nimesulida
+(50, 850.00, 163, 18),  -- Losartan
+-- Miércoles 13 Nov (HOY) - Sucursal 3
+(30, 450.00, 165, 4),   -- Tafirol
+(25, 380.00, 165, 6);   -- Bayaspirina
+
+-- Detalles de facturas de compra - ARTÍCULOS
+INSERT INTO DetallesFacturaCompraArticulo (cantidad, precioUnitario, codFacturaCompra, codArticulo) VALUES
+-- Lunes 11 Nov - Sucursal 2
+(100, 320.00, 158, 9),   -- Crema Dental Colgate
+(80, 450.00, 158, 12),   -- Papel Higiénico
+(60, 380.00, 158, 36),   -- Gasas Estériles
+-- Martes 12 Nov - Sucursal 1
+(90, 850.00, 160, 1),    -- Head & Shoulders
+(70, 520.00, 160, 7),    -- Jabón Líquido Dove
+(50, 650.00, 160, 10),   -- Enjuague Bucal Listerine
+-- Martes 12 Nov - Sucursal 3
+(40, 2800.00, 162, 24),  -- Pañales Pampers
+(60, 650.00, 162, 25),   -- Shampoo Johnson Baby
+(80, 450.00, 162, 27),   -- Toallitas Húmedas
+-- Miércoles 13 Nov (HOY) - Sucursal 2
+(100, 320.00, 164, 37),  -- Alcohol en Gel
+(150, 1200.00, 164, 38), -- Barbijos Quirúrgicos
+(70, 280.00, 164, 40);   -- Curitas Adhesivas
+
+PRINT 'Facturas de compra insertadas: 9 facturas';
+
+-- ====================================================================================================
+-- FACTURAS DE VENTA - SEMANA ACTUAL (11-13 NOV 2025)
+-- ====================================================================================================
+
+PRINT 'Insertando facturas de venta...';
+
+-- Lunes 11 de Noviembre 2025
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES
+('2025-11-11 09:30:00', 1, 1, 1, 1, 0), -- Sucursal 1
+('2025-11-11 10:45:00', 2, 4, 1, 2, 0), -- Sucursal 1
+('2025-11-11 11:20:00', 3, 2, 2, 3, 0), -- Sucursal 2
+('2025-11-11 14:15:00', 4, 6, 2, 1, 0), -- Sucursal 2
+('2025-11-11 15:30:00', 5, 3, 3, 2, 0), -- Sucursal 3
+('2025-11-11 16:45:00', 6, 8, 3, 4, 0); -- Sucursal 3
+
+-- Martes 12 de Noviembre 2025
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES
+('2025-11-12 08:30:00', 1, 5, 1, 1, 0), -- Sucursal 1
+('2025-11-12 10:00:00', 2, 7, 1, 3, 0), -- Sucursal 1
+('2025-11-12 11:30:00', 3, 9, 2, 2, 0), -- Sucursal 2
+('2025-11-12 13:00:00', 4, 11, 2, 4, 0), -- Sucursal 2
+('2025-11-12 14:45:00', 5, 13, 3, 1, 0), -- Sucursal 3
+('2025-11-12 16:00:00', 6, 15, 3, 2, 0); -- Sucursal 3
+
+-- Miércoles 13 de Noviembre 2025 (HOY)
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES
+('2025-11-13 09:00:00', 1, 10, 1, 1, 0), -- Sucursal 1
+('2025-11-13 10:30:00', 2, 12, 1, 2, 0), -- Sucursal 1
+('2025-11-13 11:45:00', 3, 14, 2, 3, 0), -- Sucursal 2
+('2025-11-13 13:15:00', 4, 16, 2, 1, 0), -- Sucursal 2
+('2025-11-13 14:30:00', 5, 18, 3, 4, 0), -- Sucursal 3
+('2025-11-13 15:45:00', 6, 20, 3, 2, 0); -- Sucursal 3
+
+PRINT 'Facturas de venta insertadas: 18 facturas';
+
+-- ====================================================================================================
+-- DETALLES DE FACTURAS DE VENTA - MEDICAMENTOS
+-- ====================================================================================================
+
+PRINT 'Insertando detalles de ventas de medicamentos...';
+
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES
+-- Lunes 11 Nov
+(2, 450.00, 1, 4, 101),    -- Factura 101: Tafirol con cobertura
+(1, 680.00, NULL, 8, 101), -- Factura 101: Ibupirac sin cobertura
+(1, 950.00, 4, 35, 102),   -- Factura 102: Azitromicina con cobertura
+(2, 620.00, NULL, 5, 103), -- Factura 103: Actron
+(1, 890.00, NULL, 15, 104), -- Factura 104: Omeprazol
+(2, 450.00, NULL, 4, 105),  -- Factura 105: Tafirol
+(1, 1200.00, 8, 1, 106),    -- Factura 106: Meloxicam con cobertura
+
+-- Martes 12 Nov
+(1, 380.00, 5, 6, 107),     -- Factura 107: Bayaspirina con cobertura
+(2, 520.00, NULL, 7, 107),  -- Factura 107: Mejoral
+(1, 850.00, 7, 18, 108),    -- Factura 108: Losartan con cobertura
+(1, 680.00, NULL, 31, 108), -- Factura 108: Clonazepam
+(2, 890.00, NULL, 9, 109),  -- Factura 109: Amoxidal
+(1, 1250.00, NULL, 10, 110), -- Factura 110: Clavulin
+(1, 900.00, 9, 3, 111),     -- Factura 111: Metronidazol con cobertura
+(2, 450.00, NULL, 4, 112),  -- Factura 112: Tafirol
+
+-- Miércoles 13 Nov (HOY)
+(1, 620.00, 10, 5, 113),    -- Factura 113: Actron con cobertura
+(1, 680.00, NULL, 8, 113),  -- Factura 113: Ibupirac
+(2, 420.00, NULL, 34, 114), -- Factura 114: Nimesulida
+(1, 850.00, NULL, 18, 114), -- Factura 114: Losartan
+(1, 890.00, NULL, 15, 115), -- Factura 115: Omeprazol
+(2, 680.00, NULL, 17, 115), -- Factura 115: Enalapril
+(1, 980.00, NULL, 12, 116), -- Factura 116: Cefalexina
+(1, 450.00, NULL, 4, 117),  -- Factura 117: Tafirol
+(2, 380.00, NULL, 6, 118);  -- Factura 118: Bayaspirina
+
+-- ====================================================================================================
+-- DETALLES DE FACTURAS DE VENTA - ARTÍCULOS
+-- ====================================================================================================
+
+PRINT 'Insertando detalles de ventas de artículos...';
+
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES
+-- Lunes 11 Nov
+(2, 850.00, 101, 1),    -- Factura 101: Head & Shoulders
+(1, 520.00, 102, 7),    -- Factura 102: Jabón Líquido Dove
+(2, 320.00, 102, 9),    -- Factura 102: Crema Dental Colgate
+(1, 2800.00, 103, 24),  -- Factura 103: Pañales Pampers
+(2, 450.00, 103, 27),   -- Factura 103: Toallitas Húmedas
+(1, 1200.00, 104, 22),  -- Factura 104: Colonia Agua de Rosas
+(2, 380.00, 104, 36),   -- Factura 104: Gasas Estériles
+(1, 1200.00, 105, 31),  -- Factura 105: Termómetro Digital
+(1, 320.00, 106, 37),   -- Factura 106: Alcohol en Gel
+(2, 280.00, 106, 40),   -- Factura 106: Curitas Adhesivas
+
+-- Martes 12 Nov
+(2, 780.00, 107, 2),    -- Factura 107: Acondicionador Pantene
+(1, 650.00, 108, 10),   -- Factura 108: Enjuague Bucal Listerine
+(2, 450.00, 108, 12),   -- Factura 108: Papel Higiénico
+(1, 1850.00, 109, 15),  -- Factura 109: Protector Solar Eucerin
+(1, 950.00, 109, 14),   -- Factura 109: Crema Hidratante Nivea
+(2, 320.00, 110, 9),    -- Factura 110: Crema Dental Colgate
+(1, 650.00, 111, 25),   -- Factura 111: Shampoo Johnson Baby
+(2, 450.00, 111, 27),   -- Factura 111: Toallitas Húmedas
+(1, 1200.00, 112, 38),  -- Factura 112: Barbijos Quirúrgicos
+(2, 320.00, 112, 37),   -- Factura 112: Alcohol en Gel
+
+-- Miércoles 13 Nov (HOY)
+(1, 850.00, 113, 1),    -- Factura 113: Head & Shoulders
+(2, 320.00, 113, 9),    -- Factura 113: Crema Dental Colgate
+(1, 1200.00, 114, 31),  -- Factura 114: Termómetro Digital
+(1, 4500.00, 114, 32),  -- Factura 114: Tensiómetro Digital
+(2, 380.00, 115, 23),   -- Factura 115: Desodorante Roll-On Nivea
+(1, 1200.00, 115, 22),  -- Factura 115: Colonia Agua de Rosas
+(2, 450.00, 116, 35),   -- Factura 116: Jeringas Descartables
+(2, 320.00, 116, 37),   -- Factura 116: Alcohol en Gel
+(1, 2800.00, 117, 33),  -- Factura 117: Glucómetro
+(2, 280.00, 117, 40),   -- Factura 117: Curitas Adhesivas
+(1, 650.00, 118, 39),   -- Factura 118: Vendas Elásticas
+(2, 380.00, 118, 36);   -- Factura 118: Gasas Estériles
+

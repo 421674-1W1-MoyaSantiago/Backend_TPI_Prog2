@@ -318,14 +318,14 @@ INSERT INTO Articulos (cod_barra, descripcion, precioUnitario, cod_Proveedor, co
 ('7790988901234', 'Coenzima Q10 x60', 2200.00, 1, 1);
 
 -- Empleados de ejemplo (NECESARIOS ANTES que las facturas)
-INSERT INTO Empleados (nom_Empleado, ape_Empleado, nro_Tel, calle, altura, email, fechaIngreso, codTipoEmpleado, codTipoDocumento, codSucursal)
+INSERT INTO Empleados (nom_Empleado, ape_Empleado, nro_Tel, calle, altura, email, fechaIngreso, codTipoEmpleado, codTipoDocumento, codSucursal, activo)
 VALUES 
-('Admin', 'Administrador', '011-1111-1111', 'Av. Admin', 100, 'admin@farmacia.ejemplo.com', '2024-01-15', 4, 1, 1),
-('Miguel', 'Rojas', '011-2222-2222', 'Calle Ejemplo', 200, 'rmiguel@farmacia.ejemplo.com', '2024-02-01', 2, 1, 1),
-('Claudio', 'Eleuterio', '0221-3333-3333', 'Av. Muestra', 300, 'eclaudio@farmacia.ejemplo.com', '2024-03-01', 1, 1, 2),
-('Sofia', 'Martinez', '0221-4444-4444', 'Calle Córdoba', 456, 'smartinez@farmacia.ejemplo.com', '2024-04-10', 5, 1, 2),
-('Ricardo', 'Fernandez', '0351-5555-5555', 'Av. Colón', 789, 'rfernandez@farmacia.ejemplo.com', '2024-05-20', 1, 1, 3),
-('Lucia', 'Garcia', '0351-6666-6666', 'Bv. San Juan', 1234, 'lgarcia@farmacia.ejemplo.com', '2024-06-15', 3, 1, 3);
+('Admin', 'Administrador', '011-1111-1111', 'Av. Admin', 100, 'admin@farmacia.ejemplo.com', '2024-01-15', 4, 1, 1, 1),
+('Miguel', 'Rojas', '011-2222-2222', 'Calle Ejemplo', 200, 'rmiguel@farmacia.ejemplo.com', '2024-02-01', 2, 1, 1, 1),
+('Claudio', 'Eleuterio', '0221-3333-3333', 'Av. Muestra', 300, 'eclaudio@farmacia.ejemplo.com', '2024-03-01', 1, 1, 2, 1),
+('Sofia', 'Martinez', '0221-4444-4444', 'Calle Córdoba', 456, 'smartinez@farmacia.ejemplo.com', '2024-04-10', 5, 1, 2, 1),
+('Ricardo', 'Fernandez', '0351-5555-5555', 'Av. Colón', 789, 'rfernandez@farmacia.ejemplo.com', '2024-05-20', 1, 1, 3, 1),
+('Lucia', 'Garcia', '0351-6666-6666', 'Bv. San Juan', 1234, 'lgarcia@farmacia.ejemplo.com', '2024-06-15', 3, 1, 3, 1);
 
 -- Clientes de ejemplo (NECESARIOS ANTES que las coberturas)
 INSERT INTO Clientes (nomCliente, apeCliente, nroDoc, nroTel, calle, altura, email, cod_Tipo_Documento, cod_Obra_Social)

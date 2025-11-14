@@ -265,6 +265,9 @@ namespace Pharm_api.Data
                     .HasMaxLength(255)
                     .IsUnicode(false)
                     .HasColumnName("nro_Tel");
+                entity.Property(e => e.Activo)
+                    .HasDefaultValue(true)
+                    .HasColumnName("activo");
 
                 entity.HasOne(d => d.CodSucursalNavigation).WithMany(p => p.Empleados)
                     .HasForeignKey(d => d.CodSucursal)

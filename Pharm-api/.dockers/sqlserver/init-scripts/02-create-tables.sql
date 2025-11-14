@@ -93,6 +93,7 @@ CREATE TABLE Empleados (
     codTipoEmpleado INT NOT NULL,
     codTipoDocumento INT NOT NULL,
     codSucursal INT NOT NULL,
+    activo BIT NOT NULL DEFAULT 1,
     FOREIGN KEY (codTipoEmpleado) REFERENCES Tipos_Empleados(cod_tipo_empleado),
     FOREIGN KEY (codTipoDocumento) REFERENCES Tipos_Documento(cod_Tipo_Documento),
     FOREIGN KEY (codSucursal) REFERENCES Sucursales(cod_Sucursal)

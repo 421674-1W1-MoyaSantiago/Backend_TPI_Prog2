@@ -26,7 +26,7 @@ namespace Pharm_api.Repositories
                 .Include(e => e.CodTipoEmpleadoNavigation)
                 .Include(e => e.CodTipoDocumentoNavigation)
                 .Include(e => e.CodSucursalNavigation)
-                .Where(e => sucursalIds.Contains(e.CodSucursal))
+                .Where(e => sucursalIds.Contains(e.CodSucursal) && e.Activo)
                 .Select(e => new EmpleadoDto
                 {
                     CodEmpleado = e.CodEmpleado,
@@ -75,7 +75,8 @@ namespace Pharm_api.Repositories
                     CodTipoDocumento = e.CodTipoDocumento,
                     TipoDocumento = e.CodTipoDocumentoNavigation.Tipo,
                     CodSucursal = e.CodSucursal,
-                    NomSucursal = e.CodSucursalNavigation.NomSucursal
+                    NomSucursal = e.CodSucursalNavigation.NomSucursal,
+                    Activo = e.Activo
                 })
                 .FirstOrDefaultAsync();
         }
@@ -123,14 +124,11 @@ namespace Pharm_api.Repositories
             var empleado = await _context.Empleados.FindAsync(codEmpleado);
             if (empleado == null) return null;
 
-            empleado.NomEmpleado = updateDto.NomEmpleado;
-            empleado.ApeEmpleado = updateDto.ApeEmpleado;
             empleado.NroTel = updateDto.NroTel;
             empleado.Calle = updateDto.Calle;
             empleado.Altura = updateDto.Altura;
             empleado.Email = updateDto.Email;
             empleado.CodTipoEmpleado = updateDto.CodTipoEmpleado;
-            empleado.CodTipoDocumento = updateDto.CodTipoDocumento;
             empleado.CodSucursal = updateDto.CodSucursal;
 
             await _context.SaveChangesAsync();
@@ -145,10 +143,9 @@ namespace Pharm_api.Repositories
 
             var empleado = await _context.Empleados.FindAsync(codEmpleado);
             if (empleado == null) return false;
-
-            _context.Empleados.Remove(empleado);
-            await _context.SaveChangesAsync();
-            return true;
+            // Soft delete
+            empleado.Activo = false; 
+            return (await _context.SaveChangesAsync() > 0);
         }
 
         public async Task<IEnumerable<TiposEmpleado>> GetTiposEmpleadoAsync()

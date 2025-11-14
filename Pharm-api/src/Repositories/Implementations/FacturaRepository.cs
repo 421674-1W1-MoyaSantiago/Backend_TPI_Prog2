@@ -375,11 +375,6 @@ namespace Pharm_api.Repositories
             }
 
             // Actualizar los datos de la factura
-            facturaExistente.CodEmpleado = factura.CodEmpleado;
-            facturaExistente.CodCliente = factura.CodCliente;
-            facturaExistente.CodSucursal = factura.CodSucursal;
-            facturaExistente.CodFormaPago = factura.CodFormaPago;
-            //facturaExistente.Fecha = factura.Fecha; 
             facturaExistente.Total = totalFactura;
 
             _context.FacturasVenta.Update(facturaExistente);

@@ -27,6 +27,8 @@ namespace Pharm_api.Models
 
         public int CodSucursal { get; set; }
 
+        public bool Activo { get; set; } = true;
+
         public virtual Sucursale CodSucursalNavigation { get; set; } = null!;
 
         public virtual TiposDocumento CodTipoDocumentoNavigation { get; set; } = null!;

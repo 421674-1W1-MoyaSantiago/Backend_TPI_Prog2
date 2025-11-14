@@ -139,22 +139,6 @@ namespace Pharm_api.Controllers
             }
         }
 
-        // Endpoint de debug para verificar medicamentos en BD
-        [HttpGet("debug/medicamentos/{facturaId}")]
-        public async Task<ActionResult> DebugMedicamentos(int facturaId)
-        {
-            var medicamentos = await _facturaService.GetDetallesMedicamentoAsync(facturaId);
-            return Ok(new { FacturaId = facturaId, Medicamentos = medicamentos });
-        }
-
-        // Endpoint de debug para verificar detalles unificados
-        [HttpGet("debug/detalles/{facturaId}")]
-        public async Task<ActionResult> DebugDetalles(int facturaId)
-        {
-            var detalles = await _facturaService.GetDetallesUnificadosAsync(facturaId);
-            return Ok(new { FacturaId = facturaId, Detalles = detalles });
-        }
-
         [Authorize]
         [HttpGet("formas-pago")]
         public async Task<ActionResult<List<FormaPagoDto>>> GetFormasPagoAsync()

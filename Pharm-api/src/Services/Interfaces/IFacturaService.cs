@@ -12,8 +12,6 @@ namespace Pharm_api.Services
         Task<bool> CreateFacturaAsync(CreateFacturaVentaDto createDto, int usuarioId);
         Task<bool> EditFacturaAsync(EditFacturaVentaDto createDto, int codFacturaVenta, int usuarioId);
         Task<bool> DeleteFacturaAsync(int codFacturaVenta, int usuarioId);
-        Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId);
-        Task<List<DetalleFacturaBaseDto>> GetDetallesUnificadosAsync(int facturaId);
         Task<List<FormaPagoDto>> GetFormasPagoAsync();
     }
 }

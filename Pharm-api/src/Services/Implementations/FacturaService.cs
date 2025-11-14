@@ -149,16 +149,6 @@ namespace Pharm_api.Services
             return await _repository.DeleteFacturaAsync(codFacturaVenta, usuarioId);
         }
 
-        public async Task<List<DetalleMedicamentoDto>> GetDetallesMedicamentoAsync(int facturaId)
-        {
-            return await _repository.GetDetallesMedicamentoAsync(facturaId);
-        }
-
-        public async Task<List<DetalleFacturaBaseDto>> GetDetallesUnificadosAsync(int facturaId)
-        {
-            return await _repository.GetDetallesUnificadosAsync(facturaId);
-        }
-
         public async Task<List<FormaPagoDto>> GetFormasPagoAsync()
         {
             IEnumerable<FormasPago> formasPago = await _repository.GetFormasPagoAsync();

@@ -19,14 +19,14 @@ public class UsuariosController : ControllerBase
         _jwtService = jwtService;
     }
 
-        [HttpGet("by-username/{username}")]
-        public async Task<ActionResult<UsuarioDto>> GetUsuarioByUsername(string username)
-        {
-            var usuario = await _usuarioService.GetByUsernameAsync(username);
-            if (usuario == null)
-                return NotFound(new { message = "Usuario no encontrado" });
-            return Ok(usuario);
-        }
+    [HttpGet("by-username/{username}")]
+    public async Task<ActionResult<UsuarioDto>> GetUsuarioByUsername(string username)
+    {
+        var usuario = await _usuarioService.GetByUsernameAsync(username);
+        if (usuario == null)
+            return NotFound(new { message = "Usuario no encontrado" });
+        return Ok(usuario);
+    }
 
     [HttpPost]
     public async Task<ActionResult> CreateUsuarioFromAuth(CreateUsuarioDto createDto)
@@ -97,26 +97,6 @@ public class UsuariosController : ControllerBase
         }
     }
 
-
-    [HttpGet("generate-token/{username}")]
-    public async Task<IActionResult> GenerateToken(string username)
-    {
-        var user = await _usuarioService.GetByUsernameAsync(username);
-        if (user == null)
-        {
-            return NotFound(new { message = "Usuario no encontrado" });
-        }
-
-        var userModel = new Usuario
-        {
-            CodUsuario = user.Id,
-            Username = user.Username,
-            Email = user.Email,
-        };
-
-        var token = _jwtService.GenerateToken(userModel);
-        return Ok(new { token });
-    }
     
     [HttpGet("{username}/sucursales")]
     public async Task<ActionResult> GetSucursalesUsuario(string username)
@@ -174,18 +154,18 @@ public class UsuariosController : ControllerBase
         }
     }
 
-[Authorize]
-[HttpGet("me")]
-public async Task<ActionResult<object>> GetCurrentUser()
-{
-    var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
-    var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<ActionResult<object>> GetCurrentUser()
+    {
+        var username = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+        var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-    return Ok(new {
-        UserId = userId,
-        Username = username,
-        Email = email
-    });
-}
+        return Ok(new {
+            UserId = userId,
+            Username = username,
+            Email = email
+        });
+    }
 }

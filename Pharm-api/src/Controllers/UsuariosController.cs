@@ -168,4 +168,24 @@ public class UsuariosController : ControllerBase
             Email = email
         });
     }
+
+    [HttpGet("generate-token/{username}")] // TODO: DELETE THIS IN PRODUCTION !!!!!
+    public async Task<IActionResult> GenerateToken(string username)
+    {
+        var user = await _usuarioService.GetByUsernameAsync(username);
+        if (user == null)
+        {
+            return NotFound(new { message = "Usuario no encontrado" });
+        }
+
+        var userModel = new Usuario
+        {
+            CodUsuario = user.Id,
+            Username = user.Username,
+            Email = user.Email,
+        };
+
+        var token = _jwtService.GenerateToken(userModel);
+        return Ok(new { token });
+    }
 }

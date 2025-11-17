@@ -8,6 +8,7 @@ namespace Pharm_api.DTOs
     public decimal PrecioUnitario { get; set; }
     public decimal Subtotal => Cantidad * PrecioUnitario;
     public abstract string TipoDetalle { get; }
+    public int Codigo { get; set; }
 
     // Propiedades virtuales para nombre, siempre presentes en la serialización
     public virtual string? NombreMedicamento { get; set; }
@@ -21,6 +22,7 @@ namespace Pharm_api.DTOs
     public int CodMedicamento { get; set; }
     public override string? NombreMedicamento { get; set; } = string.Empty;
     public override string? NombreArticulo { get; set; } = null;
+    
     public string? Concentracion { get; set; }
     public string? Presentacion { get; set; }
     public int? CodCobertura { get; set; }

@@ -1,3 +1,4 @@
+   
 using Pharm_api.DTOs;
 using Pharm_api.Models;
 
@@ -12,6 +13,7 @@ namespace Pharm_api.Services
         Task<bool> DeleteEmpleadoAsync(int codEmpleado, int usuarioId);
         Task<IEnumerable<TiposEmpleado>> GetTiposEmpleadoAsync();
         Task<IEnumerable<TiposDocumento>> GetTiposDocumentoAsync();
+        Task<IEnumerable<EmpleadoDto>> GetEmpleadosBySucursalAsync(int codSucursal, int usuarioId);
         Task<IEnumerable<Sucursale>> GetSucursalesByUsuarioAsync(int usuarioId);
     }
 }

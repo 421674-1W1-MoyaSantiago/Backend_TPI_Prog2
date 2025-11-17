@@ -1076,6 +1076,7 @@ INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codForma
 
 PRINT 'Facturas de venta insertadas: 18 facturas';
 
+
 -- ====================================================================================================
 -- DETALLES DE FACTURAS DE VENTA - MEDICAMENTOS
 -- ====================================================================================================
@@ -1157,4 +1158,26 @@ INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaV
 (2, 280.00, 117, 40),   -- Factura 117: Curitas Adhesivas
 (1, 650.00, 118, 39),   -- Factura 118: Vendas Elásticas
 (2, 380.00, 118, 36);   -- Factura 118: Gasas Estériles
+
+
+-- Jueves 14 Noviembre 2025
+INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codFormaPago, total) VALUES
+('2025-11-14 09:15:00', 1, 17, 1, 1, 0), -- Sucursal 1
+('2025-11-14 10:45:00', 2, 18, 2, 2, 0), -- Sucursal 2
+('2025-11-14 12:00:00', 3, 19, 3, 3, 0), -- Sucursal 3
+('2025-11-14 13:30:00', 4, 20, 1, 4, 0); -- Sucursal 1
+
+-- Detalles de medicamentos para las nuevas facturas
+INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES
+(1, 450.00, 1, 4, 119),   -- Sucursal 1, Tafirol
+(2, 680.00, NULL, 8, 120), -- Sucursal 2, Ibupirac
+(1, 850.00, 2, 18, 121),   -- Sucursal 3, Losartan
+(2, 890.00, NULL, 15, 122); -- Sucursal 1, Omeprazol
+
+-- Detalles de artículos para las nuevas facturas
+INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES
+(1, 850.00, 119, 1),    -- Sucursal 1, Head & Shoulders
+(2, 320.00, 120, 9),    -- Sucursal 2, Crema Dental Colgate
+(1, 1200.00, 121, 31),  -- Sucursal 3, Termómetro Digital
+(2, 450.00, 122, 27);   -- Sucursal 1, Toallitas Húmedas
 

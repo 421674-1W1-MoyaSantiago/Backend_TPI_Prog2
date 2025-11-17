@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Pharm_api.DTOs;
@@ -139,6 +140,20 @@ public class EmpleadosController : ControllerBase
     {
         var tipos = await _empleadoService.GetTiposDocumentoAsync();
         return Ok(tipos);
+    }
+
+    [HttpGet("sucursal/{codSucursal}")]
+    public async Task<ActionResult<IEnumerable<EmpleadoDto>>> GetEmpleadosPorSucursal(int codSucursal)
+    {
+        var userId = _usuarioService.GetUserIdFromToken(HttpContext);
+        if (userId == null)
+            return Unauthorized();
+
+        // Validar que el usuario tenga acceso a la sucursal
+        // (opcional, según reglas de negocio)
+
+        var empleados = await _empleadoService.GetEmpleadosBySucursalAsync(codSucursal, userId.Value);
+        return Ok(empleados);
     }
 
     [HttpGet("mis-sucursales")]

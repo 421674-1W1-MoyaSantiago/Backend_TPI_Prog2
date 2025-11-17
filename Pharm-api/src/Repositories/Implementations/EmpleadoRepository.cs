@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using Pharm_api.Data;
 using Pharm_api.DTOs;
@@ -214,6 +215,35 @@ namespace Pharm_api.Repositories
                 query = query.Where(e => e.CodEmpleado != excludeEmpleadoId.Value);
 
             return await query.AnyAsync();
+        }
+
+                
+        public async Task<IEnumerable<EmpleadoDto>> GetEmpleadosBySucursalAsync(int codSucursal)
+        {
+            return await _context.Empleados
+                .Include(e => e.CodTipoEmpleadoNavigation)
+                .Include(e => e.CodTipoDocumentoNavigation)
+                .Include(e => e.CodSucursalNavigation)
+                .Where(e => e.CodSucursal == codSucursal && e.Activo)
+                .Select(e => new EmpleadoDto
+                {
+                    CodEmpleado = e.CodEmpleado,
+                    NomEmpleado = e.NomEmpleado,
+                    ApeEmpleado = e.ApeEmpleado,
+                    NroTel = e.NroTel,
+                    Calle = e.Calle,
+                    Altura = e.Altura,
+                    Email = e.Email,
+                    FechaIngreso = e.FechaIngreso,
+                    CodTipoEmpleado = e.CodTipoEmpleado,
+                    TipoEmpleado = e.CodTipoEmpleadoNavigation.Tipo,
+                    CodTipoDocumento = e.CodTipoDocumento,
+                    TipoDocumento = e.CodTipoDocumentoNavigation.Tipo,
+                    CodSucursal = e.CodSucursal,
+                    NomSucursal = e.CodSucursalNavigation.NomSucursal,
+                    Activo = e.Activo
+                })
+                .ToListAsync();
         }
     }
 }

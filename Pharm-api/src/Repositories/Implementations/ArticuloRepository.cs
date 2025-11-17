@@ -52,9 +52,9 @@ namespace Pharm_api.Repositories.Implementations
         public async Task<IEnumerable<ArticuloDto>> GetBySucursalAsync(int codSucursal)
         {
             var articulos = await _context.Articulos
-                .Join(_context.StockMedicamentos,
+                .Join(_context.StockArticulos,
                     articulo => articulo.CodArticulo,
-                    stock => stock.CodMedicamento, // Asumiendo que CodMedicamento se usa para ambos
+                    stock => stock.CodArticulo,
                     (articulo, stock) => new { articulo, stock })
                 .Where(asoc => asoc.stock.CodSucursal == codSucursal && asoc.stock.Cantidad > 0)
                 .Select(asoc => new ArticuloDto
@@ -62,7 +62,8 @@ namespace Pharm_api.Repositories.Implementations
                     CodArticulo = asoc.articulo.CodArticulo,
                     CodBarra = asoc.articulo.CodBarra,
                     Descripcion = asoc.articulo.Descripcion,
-                    PrecioUnitario = asoc.articulo.PrecioUnitario
+                    PrecioUnitario = asoc.articulo.PrecioUnitario,
+                    StockDisponible = asoc.stock.Cantidad
                 })
                 .ToListAsync();
             return articulos;

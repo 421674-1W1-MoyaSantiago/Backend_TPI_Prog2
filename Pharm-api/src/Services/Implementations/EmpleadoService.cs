@@ -1,3 +1,4 @@
+
 using Pharm_api.DTOs;
 using Pharm_api.Models;
 using Pharm_api.Repositories;
@@ -13,6 +14,15 @@ namespace Pharm_api.Services
             _repository = repository;
         }
 
+        public async Task<IEnumerable<EmpleadoDto>> GetEmpleadosBySucursalAsync(int codSucursal, int usuarioId)
+        {
+            // Validar que la sucursal pertenece al usuario
+            var sucursalExists = await _repository.SucursalExistsForUserAsync(codSucursal, usuarioId);
+            if (!sucursalExists)
+                throw new InvalidOperationException("La sucursal especificada no existe o no tienes acceso a ella");
+            return await _repository.GetEmpleadosBySucursalAsync(codSucursal);
+        }
+   
         public async Task<IEnumerable<EmpleadoDto>> GetEmpleadosByUsuarioAsync(int usuarioId)
         {
             return await _repository.GetEmpleadosByUsuarioAsync(usuarioId);
@@ -57,7 +67,9 @@ namespace Pharm_api.Services
                 Calle = updateDto.Calle,
                 Altura = updateDto.Altura,
                 Email = updateDto.Email,
+                FechaIngreso = updateDto.FechaIngreso,
                 CodTipoEmpleado = updateDto.CodTipoEmpleado,
+                CodTipoDocumento = updateDto.CodTipoDocumento,
                 CodSucursal = updateDto.CodSucursal
             };
             
@@ -140,4 +152,5 @@ namespace Pharm_api.Services
             }
         }
     }
+    
 }

@@ -60,19 +60,25 @@ namespace Pharm_api.DTOs
     {
         [Phone(ErrorMessage = "Formato de teléfono inválido")]
         public string? NroTel { get; set; }
-        
+
         [StringLength(200, ErrorMessage = "La calle no puede exceder 200 caracteres")]
         public string? Calle { get; set; }
-        
+
         [Range(1, 99999, ErrorMessage = "La altura debe ser un número válido")]
         public int? Altura { get; set; }
-        
+
         [EmailAddress(ErrorMessage = "Formato de email inválido")]
         public string? Email { get; set; }
-        
+
+        [Required(ErrorMessage = "La fecha de ingreso es requerida")]
+        public DateTime FechaIngreso { get; set; }
+
         [Required(ErrorMessage = "El tipo de empleado es requerido")]
         public int CodTipoEmpleado { get; set; }
-                
+
+        [Required(ErrorMessage = "El tipo de documento es requerido")]
+        public int CodTipoDocumento { get; set; }
+
         [Required(ErrorMessage = "La sucursal es requerida")]
         public int CodSucursal { get; set; }
     }

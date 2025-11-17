@@ -1,4 +1,4 @@
-using Pharm_api.DTOs;
+using Pharm_api.DTOs; 
 using Pharm_api.Models;
 
 namespace Pharm_api.Repositories;
@@ -16,6 +16,8 @@ public interface IEmpleadoRepository
     Task<IEnumerable<TiposEmpleado>> GetTiposEmpleadoAsync();
     Task<IEnumerable<TiposDocumento>> GetTiposDocumentoAsync();
     Task<IEnumerable<Sucursale>> GetSucursalesByUsuarioAsync(int usuarioId);
+    Task<IEnumerable<EmpleadoDto>> GetEmpleadosBySucursalAsync(int codSucursal);
+
     
     // Métodos de validación
     Task<bool> EmpleadoExistsAsync(int codEmpleado);

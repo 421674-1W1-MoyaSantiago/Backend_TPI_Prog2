@@ -6,5 +6,6 @@ namespace Pharm_api.DTOs
         public string? CodBarra { get; set; }
         public string Descripcion { get; set; } = null!;
         public decimal PrecioUnitario { get; set; }
+        public int StockDisponible { get; set; }
     }
 }

@@ -1171,13 +1171,13 @@ INSERT INTO FacturasVenta (fecha, codEmpleado, codCliente, codSucursal, codForma
 INSERT INTO DetallesFacturaVentasMedicamento (cantidad, precioUnitario, codCobertura, codMedicamento, codFacturaVenta) VALUES
 (1, 450.00, 1, 4, 119),   -- Sucursal 1, Tafirol
 (2, 680.00, NULL, 8, 120), -- Sucursal 2, Ibupirac
-(1, 850.00, 2, 18, 121),   -- Sucursal 3, Losartan
+(1, 450.00, 2, 4, 121),   -- Sucursal 3, Tafirol  << REEMPLAZO: Antes Losartan (18) no existía en stock de sucursal 3
 (2, 890.00, NULL, 15, 122); -- Sucursal 1, Omeprazol
 
 -- Detalles de artículos para las nuevas facturas
 INSERT INTO DetallesFacturaVentasArticulo (cantidad, precioUnitario, codFacturaVenta, codArticulo) VALUES
 (1, 850.00, 119, 1),    -- Sucursal 1, Head & Shoulders
 (2, 320.00, 120, 9),    -- Sucursal 2, Crema Dental Colgate
-(1, 1200.00, 121, 31),  -- Sucursal 3, Termómetro Digital
+(1, 2800.00, 121, 24),  -- Sucursal 3, Pañales Pampers  << REEMPLAZO: Antes Termómetro Digital (31) no existía en stock de sucursal 3
 (2, 450.00, 122, 27);   -- Sucursal 1, Toallitas Húmedas
 
